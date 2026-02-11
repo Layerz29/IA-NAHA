@@ -46,5 +46,5 @@ L’enjeu est de développer un modèle capable de :
      │
      ├── docs/
      │
-     ├── requirements.txt
+     ├── .gitignore
      └── README.md
