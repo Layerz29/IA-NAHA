@@ -48,3 +48,57 @@ L’enjeu est de développer un modèle capable de :
      │
      ├── .gitignore
      └── README.md
+
+
+### ENGLISH
+
+##🧠 IA-NAHA
+AI and Machine Learning Applied to Sports and Nutrition
+#📌 Project Description
+IA-NAHA is a research and development project aimed at exploring how Artificial Intelligence can function as a smart virtual coach for athletes.
+The main goal is to design a system capable of automatically adapting an athlete’s nutrition based on:
+•Their level of physical activity
+•Their performance
+•Their recovery needs
+•Their fatigue level
+•Their sleep data
+The project relies on Machine Learning techniques, biometric data analysis, and predictive modeling.
+#❓ Problem Statement
+How can AI act as a virtual coach to adjust an athlete’s nutrition by anticipating their sleep and recovery needs?
+The challenge is to develop a model capable of:
+
+•Predicting energy requirements
+•Adjusting macronutrient intake
+•Recommending nutritional adjustments
+•Considering sleep quality
+•Optimizing recovery
+# 🌍 Sources
+# -https://pacompendium.com/adult-compendium/ 
+# -https://ciqual.anses.fr/#/cms/telechargement/node/20 
+# -https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset/data 
+# -https://www.kaggle.com/datasets/valakhorasani/gym-members-exercise-dataset 
+
+# 🏗️ Project Architecture
+     IA-NAHA/
+     │
+     ├── data/
+     │   ├── raw/
+     │   ├── processed/
+     │
+     ├── database/
+     │   ├── schema.sql
+     │   ├── dump.sql
+     │
+     ├── notebooks/
+     │
+     ├── src/
+     │   ├── preprocessing/
+     │   ├── models/
+     │   ├── api/
+     │
+     ├── reports/
+     │
+     ├── docs/
+     │
+     ├── .gitignore
+     └── README.md
