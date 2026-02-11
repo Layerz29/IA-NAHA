@@ -50,7 +50,7 @@ L’enjeu est de développer un modèle capable de :
      └── README.md
 
 
-## ENGLISH
+## 🇺🇸 ENGLISH
 
 ## 🧠 IA-NAHA
 # AI and Machine Learning Applied to Sports and Nutrition
