@@ -18,7 +18,33 @@ L’enjeu est de développer un modèle capable de :
  -Prendre en compte la qualité du sommeil
  -Optimiser la récupération
 ## 🌍 Sources
--https://pacompendium.com/adult-compendium/ 
--https://ciqual.anses.fr/#/cms/telechargement/node/20 
--https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset/data 
--https://www.kaggle.com/datasets/valakhorasani/gym-members-exercise-dataset 
+# -https://pacompendium.com/adult-compendium/ 
+# -https://ciqual.anses.fr/#/cms/telechargement/node/20 
+# -https://www.kaggle.com/datasets/uom190346a/sleep-health-and-lifestyle-dataset/data 
+# -https://www.kaggle.com/datasets/valakhorasani/gym-members-exercise-dataset 
+
+## 🏗️ Architecture du projet
+
+     IA-NAHA/
+     │
+     ├── data/
+     │   ├── raw/
+     │   ├── processed/
+     │
+     ├── database/
+     │   ├── schema.sql
+     │   ├── dump.sql
+     │
+     ├── notebooks/
+     │
+     ├── src/
+     │   ├── preprocessing/
+     │   ├── models/
+     │   ├── api/
+     │
+     ├── reports/
+     │
+     ├── docs/
+     │
+     ├── requirements.txt
+     └── README.md
