@@ -1,0 +1,67 @@
+/* carte du conseil */
+.conseil-card {
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 18px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.conseil-card h3 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.conseil-card p {
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+/* bloc newsletter */
+.newsletter-box {
+    background: #f7f9fc;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+}
+
+.newsletter-box h4 {
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+#newsletter-form {
+    display: flex;
+    gap: 12px;
+}
+
+#newsletter-form input[type="email"] {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+#newsletter-form button {
+    background: var(--primary, #4c5bf9);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+#newsletter-form button:hover {
+    opacity: 0.85;
+}
+
+#newsletter-msg {
+    margin-top: 8px;
+    font-size: 14px;
+}

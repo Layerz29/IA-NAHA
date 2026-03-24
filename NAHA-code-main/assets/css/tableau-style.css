@@ -1,0 +1,544 @@
+
+
+/* hérite de ta DA (accueil-style.css) */
+:root{
+  --primary:#4c5bf9; --ink:#0f0f10; --muted:#6b7280;
+  --border:#e6e7eb; --bg-soft:#f7f9fc;
+  --green:#45c778; --red:#ef4444;
+  --prot:#6e8efb; --glu:#60a5fa; --lip:#faca63;
+}
+
+/* Hero */
+.dash-hero{background:linear-gradient(180deg,#f7f9fc 0%, #fff 60%)}
+.dash-title{font-size:42px; font-weight:800; text-align:center; margin:28px 0 6px}
+.dash-sub{color:#6b7280; text-align:center; margin-bottom:22px}
+
+/* KPIs */
+.kpis{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:16px}
+.kpi{
+  background:#fff; border:1px solid var(--border); border-radius:16px; padding:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.05);
+  display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+}
+.kpi__icon{font-size:28px}
+.kpi__title{color:#6b7280; font-weight:600}
+.kpi__num{font-size:32px; font-weight:800}
+.kpi__delta{font-size:.92rem; font-weight:700}
+.kpi__delta.is-up{color:var(--green)}
+.kpi__delta.is-down{color:var(--red)}
+
+/* Grid charts */
+.dash-grid{padding:18px 0 8px}
+.grid{display:grid; grid-template-columns:2fr 1fr; gap:18px}
+.grid .card:last-child{grid-column:2 / span 1}
+.card{
+  background:#fff; border:1px solid var(--border); border-radius:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.05);
+  display:flex; flex-direction:column; min-height:280px;
+}
+.card__head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border)}
+.card__head h3{font-size:18px; font-weight:800}
+.badge{background:#f1f2f4; border:1px solid #e1e4ea; color:#111; padding:4px 8px; border-radius:999px; font-size:.85rem; font-weight:700}
+.card__body{padding:14px 16px}
+.donut-wrap{display:flex; align-items:center; gap:16px}
+.legend{list-style:none; display:grid; gap:8px; font-weight:600; color:#6b7280}
+.dot{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; transform:translateY(1px)}
+.dot--prot{background:var(--prot)}
+.dot--glu{background:var(--glu)}
+.dot--lip{background:var(--lip)}
+
+/* List */
+.list{list-style:none; padding:6px 8px}
+.list li{display:flex; align-items:center; justify-content:space-between; padding:10px 6px; border-bottom:1px dashed #eceff4}
+.list li:last-child{border-bottom:none}
+.list__left{display:flex; align-items:center; gap:10px}
+.list__icon{font-size:20px}
+.list__title{font-weight:700}
+.list__sub{font-size:.92rem; color:#6b7280}
+
+/* CTA */
+.dash-cta{padding:8px 0 34px}
+.cta__inner{
+  background:linear-gradient(90deg, rgba(76,91,249,.06), rgba(69,199,120,.06));
+  border:1px solid var(--border); border-radius:16px; padding:18px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.btn.big{padding:12px 18px; border-radius:12px; font-weight:800}
+
+/* Animations */
+[data-animate]{
+  opacity: 1;
+  transform: none;
+  transition: .4s ease;
+}
+
+/* Progress bar */
+.scroll-progress{position:sticky; top:0; height:3px; background:var(--primary); width:0; z-index:50}
+
+/* Responsive */
+@media (max-width: 980px){
+  .kpis{grid-template-columns:1fr; gap:12px}
+  .grid{grid-template-columns:1fr; gap:14px}
+}
+/* ===== Carte objectif calorique ===== */
+
+.goal-card{
+  background: linear-gradient(180deg,#eef2ff,#ffffff);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.goal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+}
+
+.goal-label{
+  font-size:0.8rem;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:#6b7280;
+  margin:0 0 4px;
+}
+
+.goal-type{
+  margin:0;
+  font-size:1.1rem;
+  font-weight:800;
+}
+
+.goal-maint{
+  margin:6px 0 0;
+  font-size:0.9rem;
+  color:#4b5563;
+}
+
+.goal-main-number{
+  text-align:right;
+}
+
+.goal-number{
+  display:block;
+  font-size:2rem;
+  font-weight:800;
+  line-height:1;
+}
+
+.goal-unit{
+  display:block;
+  font-size:0.8rem;
+  color:#6b7280;
+}
+
+.goal-chip{
+  display:inline-block;
+  margin-top:8px;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:0.75rem;
+  background:#111827;
+  color:#f9fafb;
+}
+
+.goal-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:0.8rem;
+  color:#6b7280;
+}
+
+.goal-link{
+  font-size:0.8rem;
+  text-decoration:none;
+  color:#4c5bf9;
+  font-weight:600;
+}
+
+.goal-link:hover{
+  text-decoration:underline;
+}
+
+.goal-chart{
+  margin-top:6px;
+}
+/* ===== Carte objectif calorique ===== */
+
+.goal-card{
+  background: linear-gradient(180deg,#eef2ff,#ffffff);
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 18px 20px;
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.10);
+}
+
+.goal-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.goal-left{
+  max-width: 60%;
+}
+
+.goal-label{
+  margin: 0 0 4px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7280;
+}
+
+.goal-type{
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.goal-text{
+  margin: 2px 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.goal-right{
+  text-align: right;
+}
+
+.goal-number{
+  display: block;
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.goal-unit{
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.goal-link{
+  font-size: 0.8rem;
+  color: #4c5bf9;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.goal-link:hover{
+  text-decoration: underline;
+}
+
+@media (max-width: 900px){
+  .goal-row{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .goal-left{
+    max-width: 100%;
+  }
+  .goal-right{
+    text-align: left;
+  }
+}
+/* Donut plus petit */
+.donut-wrap canvas {
+  max-width: 220px;
+  max-height: 220px;
+}
+/* ===== Carte progression objectif du jour ===== */
+
+.day-progress-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.day-progress-card .card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.day-progress-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.day-progress-main {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.day-progress-sub {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.day-progress-bar {
+  margin-top: 10px;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.day-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4c5bf9, #45c778);
+  transition: width 0.4s ease-out;
+}
+
+.day-progress-hint {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+.macro-goal-box {
+  margin-top: 20px;
+  padding: 14px 18px;
+  background: #f7f9fc;
+  border-radius: 14px;
+  border: 1px solid #e6e7eb;
+}
+
+.macro-goal-box h4 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.macro-goal-box p {
+  margin: 4px 0;
+  font-size: 14px;
+}
+.mini-goal {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+
+.mini-goal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.mini-goal-head h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.mini-goal-sub {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.mini-goal-percent {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 5px 0;
+}
+
+.mini-bar {
+    width: 100%;
+    height: 7px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.mini-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4c5bf9, #45c778);
+    border-radius: 10px;
+}
+
+.mini-goal-hint {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 6px;
+}
+.bilan-week {
+  padding: 10px 0;
+}
+
+.bilan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.bilan-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bilan-emoji {
+  font-size: 28px;
+}
+
+.bilan-title {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 3px;
+}
+
+.bilan-num {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.bilan-num.green {
+  color: #45c778;
+}
+/* ----- Légende charts ----- */
+.chart-legend {
+   display: flex;
+   gap: 16px;
+   font-size: 14px;
+   color: var(--muted);
+   padding: 0 16px 6px;
+   margin-top: -10px;
+}
+
+.chart-legend .dot {
+   width: 10px;
+   height: 10px;
+   border-radius: 50%;
+   display: inline-block;
+   margin-right: 6px;
+   position: relative;
+   top: 1px;
+}
+
+.legend-in { background: #4ade80; }
+.legend-out { background: #60a5fa; }
+.legend-cardio { background: #facc15; }
+
+/* ============================ */
+/*      CONSEIL DU JOUR CARD    */
+/* ============================ */
+
+.tip-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.05);
+}
+
+.tip-card h3 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.tip-card p {
+    margin: 0;
+    font-size: 15px;
+    color: #444;
+}
+
+
+/* ============================ */
+/*             KPIS             */
+/* ============================ */
+
+.kpis-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 20px;
+    justify-items: center;
+}
+
+.kpi {
+    width: 100%;
+    max-width: 340px;
+    position: relative;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 10px 24px rgba(0,0,0,.05);
+    min-height: 170px;
+    cursor: pointer;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.kpi:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+
+/* ========================== */
+/*     FIX FLIP FINAL         */
+/* ========================== */
+
+/* Empêche l'autre côté d'être visible */
+.flip-card {
+    perspective: 1200px;
+    height: 180px;      /* tu peux ajuster à ton goût */
+    position: relative;
+}
+
+.flip-inner {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform .6s ease;
+    position: relative;
+}
+
+/* Les deux faces couvrent entièrement la carte */
+.flip-front, .flip-back {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;    /* 🔥 masque totalement l’autre face */
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;               /* 🔥 empêche le texte de dépasser */
+    padding: 18px;
+}
+
+/* Le verso uniquement tourne */
+.flip-back {
+    transform: rotateY(180deg);
+}
+
+.flip-card:hover .flip-inner {
+    transform: rotateY(180deg);
+}
+
+/* Limite la hauteur du verso + scroll */
+.flip-list {
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.flip-list li {
+    margin-bottom: 6px;
+}

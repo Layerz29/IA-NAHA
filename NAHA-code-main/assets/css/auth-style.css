@@ -1,0 +1,315 @@
+/* Auth / inscription / connexion NAHA */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #f9fafb 0%, #eef2ff 100%);
+  color: #111827;
+}
+
+
+/* ─── Topbar ───────────────────────────────────────── */
+
+.topbar {
+  background: #111827;
+  color: #f9fafb;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #10b981;
+}
+
+.brand-text {
+  font-size: 1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-links a:hover {
+  background: #1f2937;
+  color: #ffffff;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-small {
+  padding-inline: 0.9rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.btn-ghost:hover {
+  background: #1f2937;
+}
+
+.btn-primary {
+  background: #10b981;
+  color: #022c22;
+  font-weight: 600;
+  border-color: #10b981;
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.35);
+}
+
+.btn-primary:hover {
+  background: #059669;
+  border-color: #059669;
+  box-shadow: 0 10px 24px rgba(16, 185, 129, 0.4);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* active */
+
+.nav-actions .active {
+  background: #f9fafb;
+  color: #111827;
+  box-shadow: none;
+}
+
+
+
+
+/* Form */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field label {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.field input {
+  border-radius: 0.9rem;
+  border: 1px solid #e5e7eb;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  background: #f9fafb;
+}
+
+
+.switch-auth {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.switch-auth a {
+  color: #059669;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.switch-auth a:hover {
+  text-decoration: underline;
+}
+
+/* ─── Footer ───────────────────────────────────────── */
+
+.footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  padding: 1rem 1.5rem 2rem;
+}
+
+/* ─── Responsive ───────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar-inner {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .nav-links {
+    display: none; /* simplif sur mobile */
+  }
+
+  .page {
+    padding-top: 2rem;
+  }
+
+  .auth-card {
+    padding: 1.6rem 1.4rem;
+    border-radius: 1.25rem;
+  }
+}
+/* ─── Layout page ─────────────────────────────────── */
+
+.page {
+  /* la zone centrale (main) prend presque tout l'écran,
+     donc le footer se retrouve EN DESSOUS, pas visible directement */
+  min-height: calc(100vh - 80px); /* 80px ≈ hauteur de la topbar, ajuste si besoin */
+  display: flex;
+  justify-content: center;
+  align-items: center;      /* centre verticalement le contenu */
+  padding: 4rem 1rem;       /* marge autour du bloc */
+}
+
+.hero {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  gap: 3rem;
+  align-items: center;
+}
+
+.hero-text h1 {
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  margin: 0 0 1rem;
+}
+
+.hero-text p {
+  margin: 0;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+/* ─── Carte d'auth ─────────────────────────────────── */
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 1.75rem;
+  padding: 3rem 2.5rem;  /* plus grande carte */
+  width: 420px;          /* largeur fixe propre */
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+}
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.auth-user {
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.auth-tag {
+  padding: 0.12rem 0.6rem;
+  border-radius: 999px;
+  background: #16a34a;
+  color: #ecfdf5;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+/* Bouton Déconnexion — version propre */
+.btn-ghost,
+.btn-ghost:visited,
+.btn-ghost:active {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #e5e7eb !important;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover */
+.btn-ghost:hover {
+  background: #f9fafb;
+  color: #111827 !important;
+}
+.input-error {
+    border: 2px solid #e11d48 !important;
+    background: #ffe6ea;
+}
+.input-error {
+    border: 2px solid #e11d48 !important;
+    background: #ffe6ea !important;
+}

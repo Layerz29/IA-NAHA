@@ -1,0 +1,40 @@
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2rem;
+}
+
+.card-settings {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.card-settings h2 {
+    margin-bottom: 1rem;
+}
+
+.card-settings label {
+    font-weight: 600;
+    margin-top: 10px;
+    display: block;
+}
+
+.card-settings input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.card-settings .btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: #4f46e5;
+    color: white;
+    border-radius: 10px;
+    font-weight: 700;
+}

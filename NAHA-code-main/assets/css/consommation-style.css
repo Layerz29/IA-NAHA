@@ -1,0 +1,295 @@
+/* ========= PAGE CONSOMMATION ========= */
+
+.page-cons {
+  background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 70%);
+  padding: 64px 0 80px;
+}
+
+/* Titre + sous-titre dans le style Accueil/Tableau */
+.cons-hero {
+  margin-bottom: 24px;
+}
+
+.cons-title {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+
+.cons-sub {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.98rem;
+}
+
+/* Bloc principal centré comme les grosses cartes du dashboard */
+.cons-container {
+  width: min(880px, 92%);
+  margin: 0 auto;
+}
+
+.cons-card {
+  background: #ffffff;
+  border-radius: 26px;
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  padding: 30px 30px 26px;
+}
+
+.cons-card h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.cons-intro {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+
+/* Sous-cartes produit / sport */
+.subcard {
+  background: #fafafa;
+  border-radius: 18px;
+  border: 1px solid #e5e7eb;
+  padding: 18px 18px 16px;
+  margin-bottom: 20px;
+}
+
+.subcard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.subcard h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.subtag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.subtag--blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.field label {
+  color: #374151;
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+select,
+input[type="number"] {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #dcdfe4;
+  padding: 0 12px;
+  font-size: 0.95rem;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+select:focus,
+input[type="number"]:focus {
+  border-color: #4c5bf9;
+  box-shadow: 0 0 0 3px rgba(76, 91, 249, 0.15);
+  background: #ffffff;
+}
+
+.mini {
+  font-size: 0.86rem;
+  color: #6b7280;
+}
+
+/* Bouton d'action aligné DA NAHA */
+.btn.full {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.log-msg {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.log-ok {
+  color: #16a34a;
+}
+
+.log-error {
+  color: #b91c1c;
+}
+
+/* Bloc d’explication en bas de la carte */
+.cons-note {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.cons-note h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.cons-note ul {
+  margin-left: 1.1rem;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.cons-note li {
+  margin: 3px 0;
+}
+
+/* ========= SECTION ÉTAPES / CTA ========= */
+.cons-steps {
+  margin-top: 60px;
+  padding: 50px 0 70px;
+  background: linear-gradient(180deg,#ffffff 0%, #f4f9ff 100%);
+  border-top: 1px solid #e5e7eb;
+}
+
+.steps-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.steps-sub {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 24px;
+  width: min(960px,92%);
+  margin: 0 auto 30px;
+}
+
+.step-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 20px 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+  text-align: center;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: #4c5bf9;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.step-item h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.step-item p {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+/* CTA bouton final */
+.steps-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.steps-btn {
+  padding: 12px 20px;
+  font-weight: 700;
+  background: #4c5bf9;
+  border-radius: 12px;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 12px 24px rgba(76,91,249,.25);
+}
+
+.steps-btn:hover {
+  opacity: .92;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .cons-card {
+    padding: 22px 18px 20px;
+  }
+
+  .cons-title {
+    font-size: 28px;
+  }
+}
+
+
+/* ======= BARRE DE RECHERCHE ======= */
+
+#search-global {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  font-size: 1rem;
+  
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: 0.25s ease;
+  margin-bottom: 20px;
+}
+
+#search-global:focus {
+  border-color: #4c5bf9;
+  box-shadow: 0 0 0 3px rgba(76,91,249,0.25);
+}
+
