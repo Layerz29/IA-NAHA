@@ -49,8 +49,8 @@ if ($mdp1 !== $mdp2) {
     respond(false, "Les mots de passe ne correspondent pas.");
 }
 
-/* Vérifier si mail existe */
-$sql = "SELECT id_utilisateur FROM utilisateurs WHERE mail = ?";
+/* Vérifier si email existe */
+$sql = "SELECT id FROM users WHERE email = ?";
 $stmt = $bdd->prepare($sql);
 $stmt->execute([$mail]);
 
@@ -61,10 +61,10 @@ if ($stmt->fetch()) {
 /* Inscription */
 $hash = password_hash($mdp1, PASSWORD_DEFAULT);
 
-$sql = "INSERT INTO utilisateurs (nom, prenom, adresse, numero, mail, mdp)
-        VALUES (?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO users (nom, prenom, email, password)
+        VALUES (?, ?, ?, ?)";
 
 $stmt = $bdd->prepare($sql);
-$stmt->execute([$nom, $prenom, $adresse, $numero, $mail, $hash]);
+$stmt->execute([$nom, $prenom, $mail, $hash]);
 
 respond(true, "Inscription réussie !", "seconnecter.php");

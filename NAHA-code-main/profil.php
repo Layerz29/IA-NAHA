@@ -21,27 +21,16 @@ $id = $_SESSION['utilisateur']['id_utilisateur'];
 /* -----------------------------------------------------------
    Récupérer les informations de l’utilisateur
 ------------------------------------------------------------ */
-$req = $bdd->prepare("SELECT * FROM utilisateurs WHERE id_utilisateur=?");
+$req = $bdd->prepare("SELECT * FROM users WHERE id=?");
 $req->execute([$id]);
 $user = $req->fetch(PDO::FETCH_ASSOC);
 
 /* -----------------------------------------------------------
-   Récupérer le dernier objectif de l'utilisateur
+   Profil (BD = `users`) → valeurs par défaut
 ------------------------------------------------------------ */
-$req2 = $bdd->prepare("
-    SELECT * FROM objectif_utilisateur 
-    WHERE id_utilisateur=? 
-    ORDER BY date_maj DESC LIMIT 1
-");
-$req2->execute([$id]);
-$goal = $req2->fetch(PDO::FETCH_ASSOC);
-
-/* -----------------------------------------------------------
-   Si aucun objectif trouvé → valeurs par défaut
------------------------------------------------------------- */
-$age    = $goal['age']    ?? "Non défini";
-$poids  = $goal['poids']  ?? 0;
-$taille = $goal['taille'] ?? 0;
+$age    = $user['age'] !== null ? (int)$user['age'] : "Non défini";
+$poids  = $user['poids'] !== null ? (float)$user['poids'] : 0;
+$taille = $user['taille'] !== null ? (float)$user['taille'] : 0;
 
 /* -----------------------------------------------------------
    Calcul de l’IMC si données disponibles
@@ -52,16 +41,16 @@ if ($poids > 0 && $taille > 0) {
 }
 
 /* -----------------------------------------------------------
-   Historique du poids pour le graphique
+   Pas d'historique de poids dans la BD fournie
+   → on affiche un point (poids actuel) pour éviter les erreurs.
 ------------------------------------------------------------ */
-$req3 = $bdd->prepare("
-    SELECT poids, date_maj 
-    FROM objectif_utilisateur 
-    WHERE id_utilisateur=?
-    ORDER BY date_maj ASC
-");
-$req3->execute([$id]);
-$poidsData = $req3->fetchAll(PDO::FETCH_ASSOC);
+$poidsData = [];
+if (!empty($poids) && $poids > 0) {
+    $poidsData[] = [
+        'poids' => $poids,
+        'date_maj' => $user['updated_at'] ?? date('Y-m-d H:i:s'),
+    ];
+}
 
 ?>
 <!DOCTYPE html>

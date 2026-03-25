@@ -19,11 +19,11 @@ if ($new !== $confirm) {
 }
 
 // récupérer le mot de passe actuel
-$req = $bdd->prepare("SELECT pswrd FROM utilisateurs WHERE id_utilisateur=?");
+$req = $bdd->prepare("SELECT password FROM users WHERE id=?");
 $req->execute([$id]);
 $user = $req->fetch();
 
-if (!password_verify($old, $user['pswrd'])) {
+if (!password_verify($old, $user['password'])) {
     die("Mot de passe actuel incorrect.");
 }
 
@@ -31,7 +31,7 @@ if (!password_verify($old, $user['pswrd'])) {
 $newHash = password_hash($new, PASSWORD_DEFAULT);
 
 // mettre à jour
-$update = $bdd->prepare("UPDATE utilisateurs SET pswrd=? WHERE id_utilisateur=?");
+$update = $bdd->prepare("UPDATE users SET password=? WHERE id=?");
 $update->execute([$newHash, $id]);
 
 header("Location: parametres.php?success=password");

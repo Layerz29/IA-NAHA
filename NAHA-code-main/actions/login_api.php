@@ -16,8 +16,8 @@ if ($mail === '' || $pass === '') {
     exit;
 }
 
-// Recherche utilisateur
-$stmt = $bdd->prepare("SELECT * FROM utilisateurs WHERE mail = ?");
+// Recherche utilisateur (table BD = `users`)
+$stmt = $bdd->prepare("SELECT * FROM users WHERE email = ?");
 $stmt->execute([$mail]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,18 +26,20 @@ if (!$user) {
     exit;
 }
 
-// Vérifier mot de passe (colonne = pswrd)
-if (!password_verify($pass, $user['pswrd'])) {
+// Vérifier mot de passe (colonne = password)
+if (!password_verify($pass, $user['password'])) {
     echo json_encode(["success" => false, "msg" => "Mot de passe incorrect."]);
     exit;
 }
 
 // On charge la session
 $_SESSION['utilisateur'] = [
-    "id_utilisateur" => $user['id_utilisateur'],
+    // Convention interne du code : on expose les deux clés
+    "id_utilisateur" => (int)$user['id'],
+    "id" => (int)$user['id'],
     "nom" => $user['nom'],
     "prenom" => $user['prenom'],
-    "mail" => $user['mail']
+    "mail" => $user['email']
 ];
 
 

@@ -23,9 +23,9 @@ if (empty($mail) || empty($mdp)) {
     exit;
 }
 
-// Chercher l'utilisateur
-$sql = "SELECT id_utilisateur, nom, prenom, mail, pswrd 
-        FROM utilisateurs WHERE mail = :mail LIMIT 1";
+// Chercher l'utilisateur (table BD = `users`)
+$sql = "SELECT id, nom, prenom, email, password 
+        FROM users WHERE email = :mail LIMIT 1";
 $stmt = $bdd->prepare($sql);
 $stmt->execute(['mail' => $mail]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -36,7 +36,7 @@ if (!$user) {
 }
 
 // Vérifier le mot de passe
-if (!password_verify($mdp, $user['pswrd'])) {
+if (!password_verify($mdp, $user['password'])) {
     header("Location: seconnecter.php?err=" . urlencode("Mot de passe incorrect."));
     exit;
 }
@@ -46,10 +46,11 @@ session_regenerate_id(true);
 
 // Stocker les infos utilisateur
 $_SESSION['utilisateur'] = [
-    'id'     => $user['id_utilisateur'],
+    'id'     => (int)$user['id'],
+    'id_utilisateur' => (int)$user['id'],
     'nom'    => $user['nom'],
     'prenom' => $user['prenom'],
-    'mail'   => $user['mail']
+    'mail'   => $user['email']
 ];
 
 header("Location: accueil.php");

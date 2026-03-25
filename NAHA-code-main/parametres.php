@@ -15,11 +15,11 @@ if (!isset($_SESSION['utilisateur'])) {
 $id = $_SESSION['utilisateur']['id_utilisateur'];
 
 // récupérer les infos utilisateur
-$req = $bdd->prepare("SELECT * FROM utilisateurs WHERE id_utilisateur=?");
+$req = $bdd->prepare("SELECT * FROM users WHERE id=?");
 $req->execute([$id]);
 $user = $req->fetch(PDO::FETCH_ASSOC);
 
-$email = $user['mail'] ?? ""; // IMPORTANT : éviter les NULL
+$email = $user['email'] ?? ""; // IMPORTANT : éviter les NULL
 ?>
 <!DOCTYPE html>
 <html lang="fr">

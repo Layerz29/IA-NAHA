@@ -16,8 +16,8 @@ if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
     die("Email invalide.");
 }
 
-// vérifier si existe déjà
-$check = $bdd->prepare("SELECT * FROM utilisateurs WHERE mail=?");
+// vérifier si existe déjà (unicité sur users.email)
+$check = $bdd->prepare("SELECT * FROM users WHERE email=?");
 $check->execute([$new_email]);
 
 if ($check->rowCount() > 0) {
@@ -25,7 +25,7 @@ if ($check->rowCount() > 0) {
 }
 
 // update email
-$update = $bdd->prepare("UPDATE utilisateurs SET mail=? WHERE id_utilisateur=?");
+$update = $bdd->prepare("UPDATE users SET email=? WHERE id=?");
 $update->execute([$new_email, $id]);
 
 header("Location: parametres.php?success=email");

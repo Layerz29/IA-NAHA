@@ -5,35 +5,29 @@ $bdd = getBD();
 
 $id = $_SESSION['utilisateur']['id_utilisateur'];
 
-// Avatar
-$avatarPath = null;
-if (!empty($_FILES['avatar']['name'])) {
-    $fileName = time() . "_" . basename($_FILES["avatar"]["name"]);
-    $target = "uploads/" . $fileName;
-    move_uploaded_file($_FILES["avatar"]["tmp_name"], $target);
-    $avatarPath = $target;
-}
+// MAJ table BD = `users`
+// La table fournie ne contient pas de champ `avatar` ni d'historique `objectif_utilisateur`,
+// donc on se limite aux infos présentes : nom/prenom/age/poids/taille.
+$ageVal = $_POST['age'] ?? null;
+$poidsVal = $_POST['poids'] ?? null;
+$tailleVal = $_POST['taille'] ?? null;
 
-// MAJ table utilisateurs
-$req = $bdd->prepare("UPDATE utilisateurs SET nom=?, prenom=?, avatar=IFNULL(?, avatar) WHERE id_utilisateur=?");
-$req->execute([$_POST['nom'], $_POST['prenom'], $avatarPath, $id]);
+$ageVal = ($ageVal === '' || $ageVal === null) ? null : (int)$ageVal;
+$poidsVal = ($poidsVal === '' || $poidsVal === null) ? null : (float)$poidsVal;
+$tailleVal = ($tailleVal === '' || $tailleVal === null) ? null : (float)$tailleVal;
 
-// MAJ table objectif_utilisateur
-$req2 = $bdd->prepare("
-    INSERT INTO objectif_utilisateur 
-    (id_utilisateur, age, poids, taille, activite, sexe, objectif_nom, objectif_kcal, maintenance, date_maj)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+$req = $bdd->prepare("
+    UPDATE users
+    SET nom = ?, prenom = ?, age = ?, poids = ?, taille = ?
+    WHERE id = ?
 ");
-$req2->execute([
-    $id,
-    $_POST['age'],
-    $_POST['poids'],
-    $_POST['taille'],
-    1,      // placeholder
-    'H',    // placeholder
-    'Mise à jour',
-    0,
-    0
+$req->execute([
+    $_POST['nom'] ?? null,
+    $_POST['prenom'] ?? null,
+    $ageVal,
+    $poidsVal,
+    $tailleVal,
+    $id
 ]);
 
 header("Location: profil.php");

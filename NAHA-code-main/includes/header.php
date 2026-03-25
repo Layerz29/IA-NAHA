@@ -20,14 +20,10 @@ $user = null;
 // ----------------------------------------------------
 if (isset($_SESSION['utilisateur']['id_utilisateur'])) {
 
-    $req = $bdd->prepare("SELECT nom, prenom, avatar FROM utilisateurs WHERE id_utilisateur=?");
+    // La table BD du projet est `users` (pas `utilisateurs`)
+    $req = $bdd->prepare("SELECT nom, prenom FROM users WHERE id=?");
     $req->execute([$_SESSION['utilisateur']['id_utilisateur']]);
     $user = $req->fetch(PDO::FETCH_ASSOC);
-
-    // Si avatar existe en BDD → on l'utilise
-    if (!empty($user['avatar'])) {
-        $avatar = $user['avatar'];
-    }
 }
 ?>
 

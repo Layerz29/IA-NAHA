@@ -36,7 +36,7 @@ if ($mdp1 !== $mdp2) {
   exit;
 }
 
-$sql = "SELECT mail FROM utilisateurs WHERE mail = :mail LIMIT 1";
+$sql = "SELECT email FROM users WHERE email = :mail LIMIT 1";
 $stmt = $bdd->prepare($sql);
 $stmt->execute(['mail' => $mail]);
 if ($stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -52,17 +52,15 @@ if ($stmt->fetch(PDO::FETCH_ASSOC)) {
 
 $hash = password_hash($_POST['mdp1'], PASSWORD_BCRYPT);
 
-$sql = "INSERT INTO utilisateurs(nom, prenom, numero, adresse, mail, pswrd)
-        VALUES(:nom, :prenom, :numero, :adresse, :mail, :pswrd)";
+$sql = "INSERT INTO users(nom, prenom, email, password)
+        VALUES(:nom, :prenom, :mail, :password)";
 
 $stmt = $bdd->prepare($sql);
 $stmt->execute([
   'nom' => $nom,
   'prenom' => $prenom,
-  'numero' => $numero,
-  'adresse' => $adresse,
   'mail' => $mail,
-  'pswrd' => $hash
+  'password' => $hash
 ]);
 
 header("Location: seconnecter.php");
