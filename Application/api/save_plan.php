@@ -1,137 +1,109 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+set_exception_handler(function($e) {
+    ob_clean();
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()]);
+    exit;
+});
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    ob_clean();
+    http_response_code(500);
+    header('Content-Type: application/json');
+    echo json_encode(['error' => $errstr, 'file' => $errfile, 'line' => $errline]);
+    exit;
+});
 // ─────────────────────────────────────────────
-// save_plan.php — Sauvegarde le plan Gemini en MySQL
-// POST /api/save_plan.php
-// Body JSON : { profil: {...}, plan: {...} }
+// SAVE PLAN — IA-NAHA
 // ─────────────────────────────────────────────
+require_once __DIR__ . '/config.php';
 
-require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Méthode non autorisée']);
-    exit();
+    jsonOut(['error' => 'Méthode non autorisée'], 405);
 }
 
-// Récupère le body JSON
-$body = json_decode(file_get_contents('php://input'), true);
-if (!$body || !isset($body['profil']) || !isset($body['plan'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Body invalide — profil et plan requis']);
-    exit();
+$body   = getBody();
+$profil = $body['profil'] ?? [];
+$plan   = $body['plan']   ?? [];
+$userId = (int)($body['user_id'] ?? 0);
+
+if (!$plan || !$userId) {
+    jsonOut(['error' => 'Données manquantes (user_id ou plan)'], 422);
 }
 
-$profil = $body['profil'];
-$plan   = $body['plan'];
-$db     = getDB();
+$pdo = getPDO();
 
+// ── Mise à jour du profil user ──
 try {
-    $db->beginTransaction();
+    $pdo->prepare('
+        UPDATE users SET
+            age = ?, sexe = ?, poids = ?, taille = ?,
+            activite = ?, objectif = ?, restrictions = ?, allergies = ?
+        WHERE id = ?
+    ')->execute([
+        $profil['age']          ?? null,
+        $profil['sexe']         ?? null,
+        $profil['poids']        ?? null,
+        $profil['taille']       ?? null,
+        $profil['activite']     ?? null,
+        $profil['objectif']     ?? null,
+        $profil['restrictions'] ?? null,
+        $profil['allergies']    ?? null,
+        $userId,
+    ]);
+} catch (\Throwable $e) { /* non bloquant */ }
 
-    // ── 1. Créer ou retrouver l'utilisateur ──────────────
-    // On utilise l'email si fourni, sinon on crée un user anonyme
-    $email = $profil['email'] ?? null;
-    $user_id = null;
+// ── Insertion nutrition_plan ──
+$stmt = $pdo->prepare('
+    INSERT INTO nutrition_plans
+        (user_id, duree_jours, repas_par_jour, calories_cibles,
+         proteines_g, glucides_g, lipides_g, bmr, plan_texte, date_creation)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+');
+$stmt->execute([
+    $userId,
+    (int)($profil['duree']  ?? count($plan['jours'] ?? [])),
+    (int)($profil['repas']  ?? 3),
+    (int)($plan['calories_cibles'] ?? 0),
+    (float)($plan['proteines_g']   ?? 0),
+    (float)($plan['glucides_g']    ?? 0),
+    (float)($plan['lipides_g']     ?? 0),
+    (int)($plan['bmr']             ?? 0),
+    json_encode($plan, JSON_UNESCAPED_UNICODE),
+]);
+$planId = (int)$pdo->lastInsertId();
 
-    if ($email) {
-        $stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
-        if ($user) {
-            $user_id = $user['id'];
-            // Met à jour le profil
-            $stmt = $db->prepare("
-                UPDATE users SET age=?, sexe=?, poids=?, taille=?, activite=?, objectif=?, restrictions=?, allergies=?
-                WHERE id=?
-            ");
-            $stmt->execute([
-                $profil['age']    ?? null,
-                $profil['sexe']   ?? null,
-                $profil['poids']  ?? null,
-                $profil['taille'] ?? null,
-                $profil['activite']    ?? null,
-                $profil['objectifs']   ?? null,
-                $profil['restrictions'] ?? null,
-                $profil['allergies']   ?? null,
-                $user_id
-            ]);
-        }
-    }
+// ── Insertion meals ──
+$stmtMeal = $pdo->prepare('
+    INSERT INTO meals
+        (plan_id, jour, type_repas, nom, calories,
+         proteines, glucides, lipides, fibres, detail)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+');
 
-    if (!$user_id) {
-        // Crée un nouvel utilisateur
-        $stmt = $db->prepare("
-            INSERT INTO users (email, age, sexe, poids, taille, activite, objectif, restrictions, allergies)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([
-            $email,
-            $profil['age']         ?? null,
-            $profil['sexe']        ?? null,
-            $profil['poids']       ?? null,
-            $profil['taille']      ?? null,
-            $profil['activite']    ?? null,
-            $profil['objectifs']   ?? null,
-            $profil['restrictions'] ?? null,
-            $profil['allergies']   ?? null,
+foreach ($plan['jours'] ?? [] as $jour) {
+    foreach ($jour['repas'] ?? [] as $repas) {
+        $stmtMeal->execute([
+            $planId,
+            (int)$jour['jour'],
+            $repas['type']      ?? '',
+            $repas['nom']       ?? '',
+            (float)($repas['calories']  ?? 0),
+            (float)($repas['proteines'] ?? 0),
+            (float)($repas['glucides']  ?? 0),
+            (float)($repas['lipides']   ?? 0),
+            (float)($repas['fibres']    ?? 0),
+            json_encode($repas['aliments'] ?? [], JSON_UNESCAPED_UNICODE),
         ]);
-        $user_id = $db->lastInsertId();
     }
-
-    // ── 2. Créer le plan nutritionnel ────────────────────
-    $stmt = $db->prepare("
-        INSERT INTO nutrition_plans
-            (user_id, duree_jours, repas_par_jour, calories_cibles, proteines_g, glucides_g, lipides_g, bmr, plan_texte)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->execute([
-        $user_id,
-        $profil['duree']          ?? 7,
-        $profil['repas']          ?? 3,
-        $plan['calories_cibles']  ?? null,
-        $plan['proteines_g']      ?? null,
-        $plan['glucides_g']       ?? null,
-        $plan['lipides_g']        ?? null,
-        $plan['bmr']              ?? null,
-        json_encode($plan, JSON_UNESCAPED_UNICODE), // stocke le JSON complet
-    ]);
-    $plan_id = $db->lastInsertId();
-
-    // ── 3. Insérer les repas ────────────────────────────
-    $stmt = $db->prepare("
-        INSERT INTO meals (plan_id, jour, type_repas, nom, calories, proteines, glucides, lipides, fibres, detail)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
-
-    foreach ($plan['jours'] ?? [] as $jour) {
-        foreach ($jour['repas'] ?? [] as $repas) {
-            $detail = json_encode($repas['aliments'] ?? [], JSON_UNESCAPED_UNICODE);
-            $stmt->execute([
-                $plan_id,
-                $jour['jour']       ?? null,
-                $repas['type']      ?? null,
-                $repas['nom']       ?? null,
-                $repas['calories']  ?? null,
-                $repas['proteines'] ?? null,
-                $repas['glucides']  ?? null,
-                $repas['lipides']   ?? null,
-                $repas['fibres']    ?? null,
-                $detail,
-            ]);
-        }
-    }
-
-    $db->commit();
-
-    echo json_encode([
-        'success'  => true,
-        'user_id'  => (int)$user_id,
-        'plan_id'  => (int)$plan_id,
-        'message'  => 'Plan sauvegardé avec succès',
-    ]);
-
-} catch (Exception $e) {
-    $db->rollBack();
-    http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
 }
+
+jsonOut([
+    'success' => true,
+    'plan_id' => $planId,
+    'user_id' => $userId,
+    'message' => 'Plan sauvegardé avec succès.',
+]);
