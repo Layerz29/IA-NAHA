@@ -1,113 +1,52 @@
 <?php
 // ─────────────────────────────────────────────
-// get_plans.php — Récupère les plans pour le dashboard
-// GET /api/get_plans.php?user_id=1
-// GET /api/get_plans.php?plan_id=5  (détail complet)
+// GET PLANS — IA-NAHA
 // ─────────────────────────────────────────────
+require_once __DIR__ . '/config.php';
 
-require_once 'config.php';
+$pdo    = getPDO();
+$userId = (int)($_GET['user_id'] ?? 0);
+$planId = (int)($_GET['plan_id'] ?? 0);
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Méthode non autorisée']);
-    exit();
-}
-
-$db = getDB();
-
-// ── Détail d'un plan spécifique ──────────────
-if (isset($_GET['plan_id'])) {
-    $plan_id = (int)$_GET['plan_id'];
-
-    // Plan + infos user
-    $stmt = $db->prepare("
-        SELECT np.*, u.age, u.sexe, u.poids, u.taille, u.activite, u.objectif, u.restrictions
+// ── Détail d'un plan ──
+if ($planId) {
+    $stmt = $pdo->prepare('
+        SELECT np.*, np.date_creation AS created_at,
+               u.age, u.sexe, u.poids, u.taille, u.activite, u.objectif, u.restrictions
         FROM nutrition_plans np
-        JOIN users u ON np.user_id = u.id
+        JOIN users u ON u.id = np.user_id
         WHERE np.id = ?
-    ");
-    $stmt->execute([$plan_id]);
+        LIMIT 1
+    ');
+    $stmt->execute([$planId]);
     $plan = $stmt->fetch();
 
-    if (!$plan) {
-        http_response_code(404);
-        echo json_encode(['error' => 'Plan introuvable']);
-        exit();
-    }
+    if (!$plan) jsonOut(['error' => 'Plan introuvable'], 404);
 
-    // Repas du plan
-    $stmt = $db->prepare("
-        SELECT * FROM meals WHERE plan_id = ? ORDER BY jour, 
-        FIELD(type_repas, 'petit_dejeuner', 'dejeuner', 'collation', 'diner')
-    ");
-    $stmt->execute([$plan_id]);
-    $meals = $stmt->fetchAll();
+    // Récupère les meals
+    $stmtM = $pdo->prepare('SELECT * FROM meals WHERE plan_id = ? ORDER BY jour, id');
+    $stmtM->execute([$planId]);
+    $plan['meals'] = $stmtM->fetchAll();
 
-    // Parse le detail JSON des aliments
-    foreach ($meals as &$meal) {
-        $meal['aliments'] = json_decode($meal['detail'], true) ?? [];
-        unset($meal['detail']);
-    }
-
-    // Groupe les repas par jour
-    $jours = [];
-    foreach ($meals as $meal) {
-        $jours[$meal['jour']][] = $meal;
-    }
-
-    // Stats par jour (calories totales)
-    $stats_jours = [];
-    foreach ($jours as $j => $repas) {
-        $stats_jours[] = [
-            'jour'     => $j,
-            'calories' => round(array_sum(array_column($repas, 'calories'))),
-            'proteines'=> round(array_sum(array_column($repas, 'proteines')), 1),
-            'glucides' => round(array_sum(array_column($repas, 'glucides')), 1),
-            'lipides'  => round(array_sum(array_column($repas, 'lipides')), 1),
-        ];
-    }
-
-    echo json_encode([
-        'plan'       => $plan,
-        'jours'      => $jours,
-        'stats_jours'=> $stats_jours,
-    ]);
-    exit();
+    jsonOut($plan);
 }
 
-// ── Liste des plans d'un utilisateur ────────
-if (isset($_GET['user_id'])) {
-    $user_id = (int)$_GET['user_id'];
-
-    $stmt = $db->prepare("
-        SELECT np.id, np.date_creation, np.duree_jours, np.repas_par_jour,
-               np.calories_cibles, np.proteines_g, np.glucides_g, np.lipides_g, np.bmr,
-               u.age, u.sexe, u.poids, u.objectif,
-               (SELECT COUNT(id) FROM meals WHERE plan_id = np.id) as nb_repas
+// ── Liste des plans d'un user ──
+if ($userId) {
+    $stmt = $pdo->prepare('
+        SELECT id, duree_jours, repas_par_jour, calories_cibles,
+               proteines_g, glucides_g, lipides_g, bmr, date_creation AS created_at,
+               (SELECT objectif FROM users WHERE id = np.user_id) as objectif,
+               (SELECT activite FROM users WHERE id = np.user_id) as activite,
+               (SELECT restrictions FROM users WHERE id = np.user_id) as restrictions
         FROM nutrition_plans np
-        JOIN users u ON np.user_id = u.id
-        WHERE np.user_id = ?
-        ORDER BY np.date_creation DESC
-    ");
-    $stmt->execute([$user_id]);
+        WHERE user_id = ?
+        ORDER BY date_creation DESC
+    ');
+    $stmt->execute([$userId]);
     $plans = $stmt->fetchAll();
 
-    echo json_encode(['plans' => $plans, 'total' => count($plans)]);
-    exit();
+    jsonOut($plans);
 }
 
-// ── Tous les plans (dashboard admin) ────────
-$stmt = $db->prepare("
-    SELECT np.id, np.date_creation, np.duree_jours, np.calories_cibles,
-           np.proteines_g, np.glucides_g, np.lipides_g,
-           u.age, u.sexe, u.poids, u.objectif,
-           (SELECT COUNT(id) FROM meals WHERE plan_id = np.id) as nb_repas
-    FROM nutrition_plans np
-    JOIN users u ON np.user_id = u.id
-    ORDER BY np.date_creation DESC
-    LIMIT 50
-");
-$stmt->execute();
-$plans = $stmt->fetchAll();
-
-echo json_encode(['plans' => $plans, 'total' => count($plans)]);
+jsonOut(['error' => 'user_id ou plan_id requis'], 422);

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA-NAHA · Connexion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:      #060d05;
+            --bg2:     #0c1a0a;
+            --bg3:     #112210;
+            --green:   #7ecb5a;
+            --green2:  #4a9e2a;
+            --green3:  #2d6618;
+            --green4:  #1a3d0f;
+            --muted:   #4a6b42;
+            --text:    #ddecd7;
+            --text2:   #a8c99e;
+            --border:  rgba(126,203,90,0.12);
+            --border2: rgba(126,203,90,0.32);
+            --card:    rgba(255,255,255,0.025);
+            --error:   #f87171;
+            --success: #86efac;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ── Grain ── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ── Orbs ── */
+        .orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(100px); pointer-events: none; z-index: 0;
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+        .orb-1 { width:600px;height:600px;top:-200px;left:-150px;background:rgba(74,158,42,0.07); animation-duration:14s; }
+        .orb-2 { width:400px;height:400px;bottom:-100px;right:-100px;background:rgba(45,102,24,0.05); animation-duration:10s; }
+        .orb-3 { width:300px;height:300px;top:40%;left:40%;background:rgba(126,203,90,0.04); animation-duration:16s; }
+
+        @keyframes drift {
+            from { transform: translate(0,0) scale(1); }
+            to   { transform: translate(30px,20px) scale(1.05); }
+        }
+
+        /* ── Layout ── */
+        .left-panel {
+            width: 45%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+            position: relative;
+            z-index: 1;
+            border-right: 1px solid var(--border);
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Left panel content ── */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--green2), var(--green3));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .logo-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 1px;
+        }
+        .logo-text span { color: var(--green); }
+
+        .left-hero {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        .left-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.8rem, 4vw, 4.5rem);
+            font-weight: 300;
+            line-height: 1.1;
+            color: #f0f8ee;
+            margin-bottom: 1.2rem;
+        }
+        .left-hero h1 em {
+            font-style: italic;
+            color: var(--green);
+        }
+
+        .left-hero p {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.9;
+            max-width: 340px;
+            letter-spacing: 0.3px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .stat {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1rem;
+            background: var(--card);
+        }
+        .stat-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--green);
+            display: block;
+        }
+        .stat-lbl {
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 2px;
+            display: block;
+        }
+
+        .left-footer {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+        .left-footer a { color: var(--green); text-decoration: none; }
+
+        /* ── Form card ── */
+        .form-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            animation: slideUp 0.5s ease both;
+        }
+
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(24px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* ── Tabs ── */
+        .tabs {
+            display: flex;
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+        .tab {
+            flex: 1; padding: 10px;
+            border: none; background: transparent;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 9px;
+            transition: all 0.25s;
+            letter-spacing: 1px;
+        }
+        .tab.active {
+            background: linear-gradient(135deg, var(--green2), var(--green3));
+            color: #e8f8e0;
+        }
+
+        /* ── Form title ── */
+        .form-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.7rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+        .form-sub {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 1.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Fields ── */
+        .field {
+            margin-bottom: 1.1rem;
+        }
+        .field-label {
+            font-size: 9px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+        .field-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .field-input:focus {
+            border-color: var(--border2);
+            background: rgba(126,203,90,0.05);
+            box-shadow: 0 0 0 3px rgba(126,203,90,0.06);
+        }
+        .field-input::placeholder { color: var(--muted); opacity: 0.6; }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        /* ── Password toggle ── */
+        .field-wrap {
+            position: relative;
+        }
+        .field-wrap .field-input { padding-right: 44px; }
+        .eye-btn {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            color: var(--muted); cursor: pointer;
+            font-size: 14px; padding: 2px;
+            transition: color 0.2s;
+        }
+        .eye-btn:hover { color: var(--green); }
+
+        /* ── Divider ── */
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 1.2rem 0;
+            font-size: 10px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--muted);
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1;
+            height: 1px; background: var(--border);
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--green2), var(--green3));
+            border: none; border-radius: 12px;
+            color: #e8f8e0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem; font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(74,158,42,0.25);
+            margin-top: 0.5rem;
+        }
+        .btn-primary:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(74,158,42,0.35);
+        }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-google {
+            width: 100%;
+            padding: 11px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text2);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: border-color 0.2s, background 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .btn-google:hover {
+            border-color: var(--border2);
+            background: rgba(126,203,90,0.04);
+        }
+        .google-icon {
+            width: 18px; height: 18px;
+        }
+
+        /* ── Checkbox ── */
+        .check-row {
+            display: flex; align-items: center; gap: 10px;
+            margin: 0.8rem 0;
+        }
+        .check-box {
+            width: 18px; height: 18px;
+            border: 1px solid var(--border2);
+            border-radius: 5px;
+            background: rgba(255,255,255,0.03);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .check-box.checked {
+            background: var(--green2);
+            border-color: var(--green2);
+        }
+        .check-box.checked::after {
+            content: '✓';
+            color: #e8f8e0;
+            font-size: 11px;
+        }
+        .check-label {
+            font-size: 0.75rem;
+            color: var(--muted);
+            cursor: pointer;
+        }
+        .check-label a { color: var(--green); text-decoration: none; }
+
+        /* ── Forgot ── */
+        .forgot {
+            display: block; text-align: right;
+            font-size: 0.72rem; color: var(--muted);
+            text-decoration: none; margin-top: -0.4rem;
+            margin-bottom: 0.8rem;
+            transition: color 0.2s;
+        }
+        .forgot:hover { color: var(--green); }
+
+        /* ── Alert ── */
+        .alert {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+        .alert.show { display: block; }
+        .alert-error {
+            background: rgba(248,113,113,0.08);
+            border: 1px solid rgba(248,113,113,0.25);
+            color: var(--error);
+        }
+        .alert-success {
+            background: rgba(134,239,172,0.08);
+            border: 1px solid rgba(134,239,172,0.25);
+            color: var(--success);
+        }
+
+        /* ── Loader ── */
+        .btn-inner {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .spinner-sm {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(232,248,224,0.3);
+            border-top-color: #e8f8e0;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+        .loading .spinner-sm { display: block; }
+
+        /* ── Strength bar ── */
+        .strength-bar {
+            display: flex; gap: 4px; margin-top: 6px;
+        }
+        .strength-seg {
+            height: 3px; flex: 1; border-radius: 2px;
+            background: var(--border);
+            transition: background 0.3s;
+        }
+        .strength-seg.weak   { background: #f87171; }
+        .strength-seg.medium { background: #fbbf24; }
+        .strength-seg.strong { background: var(--green); }
+
+        /* ── Panels switch ── */
+        .panel { display: none; }
+        .panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .left-panel { display: none; }
+            .right-panel { padding: 1.5rem; }
+            .form-card { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ── LEFT ── -->
+<div class="left-panel">
+    <a href="index.html" class="logo">
+        <div class="logo-icon">🌿</div>
+        <span class="logo-text">IA<span>-NAHA</span></span>
+    </a>
+
+    <div class="left-hero">
+        <h1>Votre santé,<br><em>réinventée</em><br>par l'IA.</h1>
+        <p>Plans nutritionnels personnalisés générés par Gemini AI, basés sur la base officielle CIQUAL ANSES de 2976 aliments.</p>
+
+        <div class="stats-row">
+            <div class="stat">
+                <span class="stat-val">2 976</span>
+                <span class="stat-lbl">Aliments CIQUAL</span>
+            </div>
+            <div class="stat">
+                <span class="stat-val">7j</span>
+                <span class="stat-lbl">Plans sur mesure</span>
+            </div>
+            <div class="stat">
+                <span class="stat-val">IA</span>
+                <span class="stat-lbl">Gemini 2.5 Flash</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="left-footer">
+        © 2025 IA-NAHA · <a href="#">Mentions légales</a> · <a href="#">Confidentialité</a>
+    </div>
+</div>
+
+<!-- ── RIGHT ── -->
+<div class="right-panel">
+    <div class="form-card">
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('login', this)">Connexion</button>
+            <button class="tab" onclick="switchTab('register', this)">Inscription</button>
+        </div>
+
+        <!-- ══ LOGIN ══ -->
+        <div class="panel active" id="panel-login">
+            <div class="form-title">Bon retour 👋</div>
+            <div class="form-sub">Connecte-toi à ton espace nutritionnel</div>
+
+            <div class="alert alert-error" id="login-error"></div>
+            <div class="alert alert-success" id="login-success"></div>
+
+            <div class="field">
+                <label class="field-label">Email</label>
+                <input class="field-input" type="email" id="login-email" placeholder="toi@exemple.fr" autocomplete="email">
+            </div>
+
+            <div class="field">
+                <label class="field-label">Mot de passe</label>
+                <div class="field-wrap">
+                    <input class="field-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+                    <button class="eye-btn" onclick="toggleEye('login-password', this)" type="button">👁</button>
+                </div>
+            </div>
+
+            <a href="#" class="forgot">Mot de passe oublié ?</a>
+
+            <div class="check-row">
+                <div class="check-box" id="remember-box" onclick="this.classList.toggle('checked')"></div>
+                <span class="check-label" onclick="document.getElementById('remember-box').classList.toggle('checked')">Se souvenir de moi</span>
+            </div>
+
+            <button class="btn-primary" id="btn-login" onclick="doLogin()">
+                <div class="btn-inner">
+                    <div class="spinner-sm" id="login-spinner"></div>
+                    <span id="login-txt">Se connecter</span>
+                </div>
+            </button>
+
+            <div class="divider">ou</div>
+
+            <button class="btn-google" onclick="alert('Google OAuth — à configurer')">
+                <svg class="google-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Continuer avec Google
+            </button>
+        </div>
+
+        <!-- ══ REGISTER ══ -->
+        <div class="panel" id="panel-register">
+            <div class="form-title">Créer un compte</div>
+            <div class="form-sub">Rejoins IA-NAHA et commence ton parcours</div>
+
+            <div class="alert alert-error" id="register-error"></div>
+            <div class="alert alert-success" id="register-success"></div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label class="field-label">Prénom</label>
+                    <input class="field-input" type="text" id="reg-prenom" placeholder="Léa">
+                </div>
+                <div class="field">
+                    <label class="field-label">Nom</label>
+                    <input class="field-input" type="text" id="reg-nom" placeholder="Martin">
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field-label">Email</label>
+                <input class="field-input" type="email" id="reg-email" placeholder="lea@exemple.fr" autocomplete="email">
+            </div>
+
+            <div class="field">
+                <label class="field-label">Mot de passe</label>
+                <div class="field-wrap">
+                    <input class="field-input" type="password" id="reg-password" placeholder="••••••••" oninput="checkStrength(this.value)" autocomplete="new-password">
+                    <button class="eye-btn" onclick="toggleEye('reg-password', this)" type="button">👁</button>
+                </div>
+                <div class="strength-bar">
+                    <div class="strength-seg" id="s1"></div>
+                    <div class="strength-seg" id="s2"></div>
+                    <div class="strength-seg" id="s3"></div>
+                    <div class="strength-seg" id="s4"></div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="field-label">Confirmer le mot de passe</label>
+                <div class="field-wrap">
+                    <input class="field-input" type="password" id="reg-confirm" placeholder="••••••••" autocomplete="new-password">
+                    <button class="eye-btn" onclick="toggleEye('reg-confirm', this)" type="button">👁</button>
+                </div>
+            </div>
+
+            <div class="check-row">
+                <div class="check-box" id="terms-box" onclick="this.classList.toggle('checked')"></div>
+                <span class="check-label" onclick="document.getElementById('terms-box').classList.toggle('checked')">
+          J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a>
+        </span>
+            </div>
+
+            <button class="btn-primary" id="btn-register" onclick="doRegister()">
+                <div class="btn-inner">
+                    <div class="spinner-sm" id="register-spinner"></div>
+                    <span id="register-txt">Créer mon compte</span>
+                </div>
+            </button>
+
+            <div class="divider">ou</div>
+
+            <button class="btn-google" onclick="alert('Google OAuth — à configurer')">
+                <svg class="google-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Continuer avec Google
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API = 'http://localhost:8888/SD4/IA-NAHA/Application/api';
+    // ── Tab switch ──
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + tab).classList.add('active');
+    }
+
+    // ── Eye toggle ──
+    function toggleEye(id, btn) {
+        const input = document.getElementById(id);
+        input.type = input.type === 'password' ? 'text' : 'password';
+        btn.textContent = input.type === 'password' ? '👁' : '🙈';
+    }
+
+    // ── Password strength ──
+    function checkStrength(val) {
+        const segs = ['s1','s2','s3','s4'];
+        segs.forEach(s => {
+            document.getElementById(s).className = 'strength-seg';
+        });
+        if (!val) return;
+        let score = 0;
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        const cls = score <= 1 ? 'weak' : score <= 2 ? 'medium' : 'strong';
+        for (let i = 0; i < score; i++) {
+            document.getElementById(segs[i]).classList.add(cls);
+        }
+    }
+
+    // ── Alert helpers ──
+    function showAlert(id, msg, type = 'error') {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.className = `alert alert-${type} show`;
+        setTimeout(() => el.classList.remove('show'), 5000);
+    }
+
+    function setLoading(btn, spinner, txt, label, loading) {
+        document.getElementById(btn).disabled = loading;
+        document.getElementById(spinner).style.display = loading ? 'block' : 'none';
+        document.getElementById(txt).textContent = loading ? '' : label;
+    }
+
+    // ── LOGIN ──
+    async function doLogin() {
+        const email    = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+
+        if (!email || !password) {
+            showAlert('login-error', 'Remplis tous les champs.');
+            return;
+        }
+
+        setLoading('btn-login', 'login-spinner', 'login-txt', 'Se connecter', true);
+
+        try {
+            const res = await fetch(`${API}/login.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            localStorage.setItem('naha_user_id', data.user_id);
+            localStorage.setItem('naha_prenom', data.prenom);
+            showAlert('login-success', '✓ Connexion réussie ! Redirection…', 'success');
+            setTimeout(() => {
+                window.location.href = `dashboard.html`;
+            }, 1200);
+
+        } catch(e) {
+            showAlert('login-error', e.message || 'Erreur de connexion.');
+        } finally {
+            setLoading('btn-login', 'login-spinner', 'login-txt', 'Se connecter', false);
+        }
+    }
+
+    // ── REGISTER ──
+    async function doRegister() {
+        const prenom   = document.getElementById('reg-prenom').value.trim();
+        const nom      = document.getElementById('reg-nom').value.trim();
+        const email    = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const confirm  = document.getElementById('reg-confirm').value;
+        const terms    = document.getElementById('terms-box').classList.contains('checked');
+
+        if (!prenom || !nom || !email || !password) {
+            showAlert('register-error', 'Remplis tous les champs.');
+            return;
+        }
+        if (password !== confirm) {
+            showAlert('register-error', 'Les mots de passe ne correspondent pas.');
+            return;
+        }
+        if (password.length < 8) {
+            showAlert('register-error', 'Le mot de passe doit faire au moins 8 caractères.');
+            return;
+        }
+        if (!terms) {
+            showAlert('register-error', 'Accepte les conditions d\'utilisation.');
+            return;
+        }
+
+        setLoading('btn-register', 'register-spinner', 'register-txt', 'Créer mon compte', true);
+
+        try {
+            const res = await fetch(`${API}/register.php`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prenom, nom, email, password }),
+            });
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            showAlert('register-success', '✓ Compte créé ! Redirection vers le formulaire…', 'success');
+            setTimeout(() => {
+                localStorage.setItem('naha_user_id', data.user_id);
+                window.location.href = `onboarding.html`;
+            }, 1500);
+
+        } catch(e) {
+            showAlert('register-error', e.message || 'Erreur lors de l\'inscription.');
+        } finally {
+            setLoading('btn-register', 'register-spinner', 'register-txt', 'Créer mon compte', false);
+        }
+    }
+
+    // ── Enter key support ──
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            const active = document.querySelector('.panel.active');
+            if (active.id === 'panel-login') doLogin();
+            else doRegister();
+        }
+    });
+</script>
+</body>
+</html>

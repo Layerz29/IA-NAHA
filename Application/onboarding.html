@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA-NAHA · Votre profil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:      #060d05;
+            --bg2:     #0c1a0a;
+            --bg3:     #112210;
+            --green:   #7ecb5a;
+            --green2:  #4a9e2a;
+            --green3:  #2d6618;
+            --muted:   #4a6b42;
+            --text:    #ddecd7;
+            --text2:   #a8c99e;
+            --border:  rgba(126,203,90,0.12);
+            --border2: rgba(126,203,90,0.32);
+            --card:    rgba(255,255,255,0.025);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; overflow: hidden; }
+
+        body {
+            font-family: 'DM Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Grain */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 0;
+        }
+
+        .orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+        .orb-1 { width:600px;height:600px;top:-150px;left:-150px;background:rgba(74,158,42,0.07); }
+        .orb-2 { width:400px;height:400px;bottom:-100px;right:-100px;background:rgba(45,102,24,0.05); }
+
+        /* ── NAV ── */
+        .nav {
+            position: fixed; top:0; left:0; right:0; z-index:100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2rem;
+            backdrop-filter: blur(20px);
+            background: rgba(6,13,5,0.8);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { display:flex; align-items:center; gap:8px; text-decoration:none; }
+        .logo-icon { width:30px;height:30px; background:linear-gradient(135deg,var(--green2),var(--green3)); border-radius:8px; display:flex;align-items:center;justify-content:center; font-size:13px; }
+        .logo-text { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:600; color:var(--text); }
+        .logo-text span { color:var(--green); }
+
+        .nav-right { display:flex; align-items:center; gap:1.5rem; }
+        .nav-step-info { font-size:0.75rem; color:var(--muted); letter-spacing:1px; }
+        .nav-step-info span { color:var(--green); }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar {
+            position: fixed; top:61px; left:0; right:0; z-index:99;
+            height: 2px;
+            background: var(--border);
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green2), var(--green));
+            transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* ── MAIN ── */
+        .main {
+            position: fixed; inset:0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 5rem 2rem 5rem;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* ── QUESTION WRAPPER ── */
+        .questions-wrap {
+            width: 100%; max-width: 680px;
+            position: relative;
+        }
+
+        /* ── QUESTION ── */
+        .question {
+            position: absolute; top: 0; left: 0; right: 0;
+            display: flex; flex-direction: column;
+            opacity: 0; pointer-events: none;
+            transform: translateY(40px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+        .question.active {
+            position: relative;
+            opacity: 1; pointer-events: all;
+            transform: translateY(0);
+        }
+        .question.exit-up {
+            opacity: 0;
+            transform: translateY(-40px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .q-index {
+            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .q-index::before { content:'◆'; color:var(--green); font-size:8px; }
+
+        .q-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 300; line-height: 1.15;
+            color: #f0f8ee; margin-bottom: 0.6rem;
+        }
+        .q-title em { font-style: italic; color: var(--green); }
+
+        .q-hint {
+            font-size: 0.75rem; color: var(--muted);
+            margin-bottom: 2rem; letter-spacing: 0.3px;
+        }
+
+        /* ── INPUT TYPES ── */
+
+        /* Number input */
+        .num-input-wrap { position: relative; display: inline-flex; align-items: center; }
+        .num-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--border2);
+            color: var(--green);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 300;
+            width: 220px;
+            outline: none;
+            text-align: center;
+            padding: 0 0.5rem 0.3rem;
+            transition: border-color 0.2s;
+            -moz-appearance: textfield;
+        }
+        .num-input::-webkit-inner-spin-button,
+        .num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+        .num-input:focus { border-color: var(--green); }
+        .num-unit {
+            font-size: 1.2rem; color: var(--muted);
+            margin-left: 0.5rem; align-self: flex-end;
+            padding-bottom: 0.8rem;
+        }
+
+        /* Choice chips */
+        .choices { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+        .choice {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 20px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--card);
+            cursor: pointer;
+            font-size: 0.85rem; color: var(--text2);
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .choice:hover { border-color: var(--border2); background: rgba(126,203,90,0.05); color: var(--text); }
+        .choice.selected { background: rgba(126,203,90,0.12); border-color: var(--green2); color: #c5e8b0; }
+        .choice-key {
+            width: 22px; height: 22px; flex-shrink: 0;
+            border: 1px solid var(--muted);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; color: var(--muted);
+            transition: all 0.2s;
+        }
+        .choice.selected .choice-key { background: var(--green2); border-color: var(--green2); color: #e8f8e0; }
+
+        /* Multi-select chips */
+        .multi-choices { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+        .mchip {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            background: var(--card);
+            cursor: pointer;
+            font-size: 0.8rem; color: var(--text2);
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .mchip:hover { border-color: var(--border2); color: var(--text); }
+        .mchip.selected { background: rgba(126,203,90,0.12); border-color: var(--green2); color: #c5e8b0; }
+
+        /* Text input */
+        .text-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--border2);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 1.2rem;
+            width: 100%; max-width: 500px;
+            outline: none;
+            padding: 0.5rem 0;
+            transition: border-color 0.2s;
+        }
+        .text-input::placeholder { color: var(--muted); opacity: 0.5; }
+        .text-input:focus { border-color: var(--green); }
+
+        /* Slider */
+        .slider-wrap { width: 100%; max-width: 500px; }
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            outline: none;
+            margin: 1rem 0;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green2), var(--green3));
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(74,158,42,0.4);
+        }
+        .slider-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem; font-weight: 300;
+            color: var(--green); text-align: center;
+        }
+        .slider-labels { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); }
+
+        /* ── ACTIONS ── */
+        .actions {
+            display: flex; align-items: center; gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .btn-next {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--green2), var(--green3));
+            border: none; border-radius: 12px;
+            color: #e8f8e0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem; font-weight: 600; letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(74,158,42,0.25);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(74,158,42,0.35); }
+        .btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+        .btn-back {
+            padding: 12px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-back:hover { border-color: var(--border2); color: var(--text2); }
+
+        .enter-hint {
+            font-size: 0.72rem; color: var(--muted);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .key-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border2); border-radius: 5px;
+            padding: 1px 6px; font-size: 10px; color: var(--muted);
+        }
+
+        /* ── BOTTOM ── */
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--border);
+            background: rgba(6,13,5,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .step-dots { display: flex; gap: 6px; }
+        .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--border2);
+            transition: all 0.3s;
+        }
+        .dot.active { background: var(--green); width: 20px; border-radius: 3px; }
+        .dot.done { background: var(--green2); }
+
+        .bottom-right { font-size: 0.72rem; color: var(--muted); }
+
+        /* ── SUMMARY ── */
+        .summary-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0.8rem; margin-bottom: 2rem;
+        }
+        .summary-item {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 1rem 1.2rem;
+        }
+        .summary-lbl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); display: block; }
+        .summary-val { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 600; color: var(--green); display: block; margin-top: 2px; }
+
+        /* ── LOADER ── */
+        .loader-overlay {
+            display: none;
+            position: fixed; inset: 0; z-index: 200;
+            background: var(--bg);
+            flex-direction: column; align-items: center; justify-content: center;
+            gap: 2rem;
+        }
+        .loader-overlay.show { display: flex; }
+        .loader-ring {
+            width: 60px; height: 60px;
+            border: 2px solid var(--border);
+            border-top-color: var(--green);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .loader-text {
+            font-size: 0.82rem; color: var(--muted); letter-spacing: 1px;
+            text-align: center;
+        }
+        .loader-steps { display: flex; flex-direction: column; gap: 6px; }
+        .loader-step { opacity: 0; animation: fadeIn 0.4s ease forwards; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from{opacity:0} to{opacity:0.7} }
+    </style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- NAV -->
+<div class="nav">
+    <a href="index.html" class="logo">
+        <div class="logo-icon">🌿</div>
+        <span class="logo-text">IA<span>-NAHA</span></span>
+    </a>
+    <div class="nav-right">
+        <span class="nav-step-info">Question <span id="nav-current">1</span> sur <span id="nav-total">9</span></span>
+    </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:11%"></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+    <div class="questions-wrap" id="questions-wrap">
+
+        <!-- Q1 : Prénom -->
+        <div class="question active" data-q="0">
+            <div class="q-index">01 · Bienvenue</div>
+            <h2 class="q-title">Comment vous<br><em>appelez-vous ?</em></h2>
+            <p class="q-hint">Votre prénom pour personnaliser votre expérience</p>
+            <input class="text-input" type="text" id="q-prenom" placeholder="Votre prénom…" autocomplete="given-name">
+            <div class="actions">
+                <button class="btn-next" onclick="next()">Continuer <span>→</span></button>
+                <span class="enter-hint"><span class="key-badge">↵</span> pour continuer</span>
+            </div>
+        </div>
+
+        <!-- Q2 : Âge -->
+        <div class="question" data-q="1">
+            <div class="q-index">02 · Profil</div>
+            <h2 class="q-title">Quel est<br><em>votre âge ?</em></h2>
+            <p class="q-hint">Pour calculer votre métabolisme de base (BMR)</p>
+            <div class="num-input-wrap">
+                <input class="num-input" type="number" id="q-age" min="10" max="100" placeholder="25">
+                <span class="num-unit">ans</span>
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+                <span class="enter-hint"><span class="key-badge">↵</span></span>
+            </div>
+        </div>
+
+        <!-- Q3 : Sexe -->
+        <div class="question" data-q="2">
+            <div class="q-index">03 · Profil</div>
+            <h2 class="q-title">Quel est<br><em>votre sexe ?</em></h2>
+            <p class="q-hint">Utilisé pour le calcul nutritionnel</p>
+            <div class="choices">
+                <div class="choice" data-group="sexe" data-val="homme" onclick="selectChoice(this)">
+                    <div class="choice-key">H</div> Homme
+                </div>
+                <div class="choice" data-group="sexe" data-val="femme" onclick="selectChoice(this)">
+                    <div class="choice-key">F</div> Femme
+                </div>
+                <div class="choice" data-group="sexe" data-val="autre" onclick="selectChoice(this)">
+                    <div class="choice-key">A</div> Autre / Non précisé
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+            </div>
+        </div>
+
+        <!-- Q4 : Poids -->
+        <div class="question" data-q="3">
+            <div class="q-index">04 · Morphologie</div>
+            <h2 class="q-title">Quel est<br><em>votre poids ?</em></h2>
+            <p class="q-hint">En kilogrammes, à jeun de préférence</p>
+            <div class="num-input-wrap">
+                <input class="num-input" type="number" id="q-poids" min="30" max="300" placeholder="70">
+                <span class="num-unit">kg</span>
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+                <span class="enter-hint"><span class="key-badge">↵</span></span>
+            </div>
+        </div>
+
+        <!-- Q5 : Taille -->
+        <div class="question" data-q="4">
+            <div class="q-index">05 · Morphologie</div>
+            <h2 class="q-title">Quelle est<br><em>votre taille ?</em></h2>
+            <p class="q-hint">En centimètres</p>
+            <div class="num-input-wrap">
+                <input class="num-input" type="number" id="q-taille" min="100" max="250" placeholder="170">
+                <span class="num-unit">cm</span>
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+                <span class="enter-hint"><span class="key-badge">↵</span></span>
+            </div>
+        </div>
+
+        <!-- Q6 : Activité -->
+        <div class="question" data-q="5">
+            <div class="q-index">06 · Mode de vie</div>
+            <h2 class="q-title">Votre niveau<br><em>d'activité ?</em></h2>
+            <p class="q-hint">En moyenne sur la semaine</p>
+            <div class="choices" style="flex-direction:column; max-width:500px;">
+                <div class="choice" data-group="activite" data-val="sedentaire" onclick="selectChoice(this, true)">
+                    <div class="choice-key">1</div>
+                    <div><div style="color:var(--text)">Sédentaire</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Bureau, peu de déplacements</div></div>
+                </div>
+                <div class="choice" data-group="activite" data-val="leger" onclick="selectChoice(this, true)">
+                    <div class="choice-key">2</div>
+                    <div><div style="color:var(--text)">Légèrement actif</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Sport 1-2x par semaine</div></div>
+                </div>
+                <div class="choice" data-group="activite" data-val="modere" onclick="selectChoice(this, true)">
+                    <div class="choice-key">3</div>
+                    <div><div style="color:var(--text)">Modérément actif</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Sport 3-4x par semaine</div></div>
+                </div>
+                <div class="choice" data-group="activite" data-val="actif" onclick="selectChoice(this, true)">
+                    <div class="choice-key">4</div>
+                    <div><div style="color:var(--text)">Très actif</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Sport 5x+ par semaine</div></div>
+                </div>
+                <div class="choice" data-group="activite" data-val="tres_actif" onclick="selectChoice(this, true)">
+                    <div class="choice-key">5</div>
+                    <div><div style="color:var(--text)">Athlète</div><div style="font-size:0.72rem;color:var(--muted);margin-top:2px">Entraînement intensif quotidien</div></div>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+            </div>
+        </div>
+
+        <!-- Q7 : Objectifs -->
+        <div class="question" data-q="6">
+            <div class="q-index">07 · Objectifs</div>
+            <h2 class="q-title">Quels sont vos<br><em>objectifs ?</em></h2>
+            <p class="q-hint">Sélectionnez tout ce qui vous correspond</p>
+            <div class="multi-choices">
+                <div class="mchip" data-group="objectifs" data-val="perte_poids" onclick="this.classList.toggle('selected')">🎯 Perte de poids</div>
+                <div class="mchip" data-group="objectifs" data-val="prise_masse" onclick="this.classList.toggle('selected')">💪 Prise de masse</div>
+                <div class="mchip" data-group="objectifs" data-val="maintien" onclick="this.classList.toggle('selected')">⚖️ Maintien</div>
+                <div class="mchip" data-group="objectifs" data-val="endurance" onclick="this.classList.toggle('selected')">🏃 Endurance</div>
+                <div class="mchip" data-group="objectifs" data-val="sante" onclick="this.classList.toggle('selected')">❤️ Santé générale</div>
+                <div class="mchip" data-group="objectifs" data-val="vegetarien" onclick="this.classList.toggle('selected')">🌿 Végétarien / vegan</div>
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+            </div>
+        </div>
+
+        <!-- Q8 : Restrictions -->
+        <div class="question" data-q="7">
+            <div class="q-index">08 · Restrictions</div>
+            <h2 class="q-title">Restrictions<br><em>alimentaires ?</em></h2>
+            <p class="q-hint">Sélectionnez vos contraintes — laissez vide si aucune</p>
+            <div class="multi-choices">
+                <div class="mchip" data-group="restrictions" data-val="sans_gluten" onclick="this.classList.toggle('selected')">🌾 Sans gluten</div>
+                <div class="mchip" data-group="restrictions" data-val="sans_lactose" onclick="this.classList.toggle('selected')">🥛 Sans lactose</div>
+                <div class="mchip" data-group="restrictions" data-val="halal" onclick="this.classList.toggle('selected')">☪️ Halal</div>
+                <div class="mchip" data-group="restrictions" data-val="casher" onclick="this.classList.toggle('selected')">✡️ Casher</div>
+                <div class="mchip" data-group="restrictions" data-val="vegan" onclick="this.classList.toggle('selected')">🌱 Vegan</div>
+                <div class="mchip" data-group="restrictions" data-val="sans_noix" onclick="this.classList.toggle('selected')">🥜 Sans fruits à coque</div>
+            </div>
+            <div style="margin-top:1.5rem">
+                <p class="q-hint" style="margin-bottom:0.5rem">Autres allergies</p>
+                <input class="text-input" type="text" id="q-allergies" placeholder="Ex : arachides, crustacés…">
+            </div>
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="next()">Continuer →</button>
+            </div>
+        </div>
+
+        <!-- Q9 : Plan -->
+        <div class="question" data-q="8">
+            <div class="q-index">09 · Votre plan</div>
+            <h2 class="q-title">Durée et fréquence<br><em>des repas ?</em></h2>
+            <p class="q-hint">Configurez votre plan nutritionnel</p>
+
+            <div style="margin-bottom:2rem">
+                <p class="q-hint" style="margin-bottom:0.8rem; font-size:0.78rem; color:var(--text2)">Durée du plan</p>
+                <div class="choices">
+                    <div class="choice" data-group="duree" data-val="1" onclick="selectChoice(this)">
+                        <div class="choice-key">A</div> 1 jour
+                    </div>
+                    <div class="choice" data-group="duree" data-val="3" onclick="selectChoice(this)">
+                        <div class="choice-key">B</div> 3 jours
+                    </div>
+                    <div class="choice selected" data-group="duree" data-val="7" onclick="selectChoice(this)">
+                        <div class="choice-key">C</div> 7 jours
+                    </div>
+                    <div class="choice" data-group="duree" data-val="14" onclick="selectChoice(this)">
+                        <div class="choice-key">D</div> 14 jours
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <p class="q-hint" style="margin-bottom:0.8rem; font-size:0.78rem; color:var(--text2)">Repas par jour</p>
+                <div class="choices">
+                    <div class="choice" data-group="repas" data-val="2" onclick="selectChoice(this)">
+                        <div class="choice-key">1</div> 2 repas
+                    </div>
+                    <div class="choice selected" data-group="repas" data-val="3" onclick="selectChoice(this)">
+                        <div class="choice-key">2</div> 3 repas
+                    </div>
+                    <div class="choice" data-group="repas" data-val="4" onclick="selectChoice(this)">
+                        <div class="choice-key">3</div> 4 repas
+                    </div>
+                    <div class="choice" data-group="repas" data-val="5" onclick="selectChoice(this)">
+                        <div class="choice-key">4</div> 5 repas
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn-back" onclick="prev()">← Retour</button>
+                <button class="btn-next" onclick="submitProfile()" style="background:linear-gradient(135deg,#2d6618,#1a3d0f); box-shadow:0 4px 20px rgba(45,102,24,0.4)">
+                    ✦ Générer mon plan
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+    <div class="step-dots" id="step-dots"></div>
+    <div class="bottom-right" id="bottom-pct">11%</div>
+</div>
+
+<!-- LOADER -->
+<div class="loader-overlay" id="loader">
+    <div class="loader-ring"></div>
+    <div class="loader-text">
+        <div class="loader-steps">
+            <div class="loader-step" style="animation-delay:0s">Analyse du profil…</div>
+            <div class="loader-step" style="animation-delay:1.5s">Sélection des aliments CIQUAL…</div>
+            <div class="loader-step" style="animation-delay:3s">Calcul des macronutriments…</div>
+            <div class="loader-step" style="animation-delay:4.5s">Génération du plan complet…</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API      = 'http://localhost:8888/SD4/IA-NAHA/Application/api';
+    const TOTAL    = 9;
+    let current    = 0;
+
+    // user_id depuis localStorage
+    const USER_ID  = localStorage.getItem('naha_user_id') || sessionStorage.getItem('naha_user_id') || null;
+
+    // ── Init dots ──
+    function initDots() {
+        const wrap = document.getElementById('step-dots');
+        wrap.innerHTML = '';
+        for (let i = 0; i < TOTAL; i++) {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            wrap.appendChild(d);
+        }
+    }
+    initDots();
+    document.getElementById('nav-total').textContent = TOTAL;
+
+    // ── Update UI ──
+    function updateUI() {
+        const pct = Math.round(((current + 1) / TOTAL) * 100);
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('nav-current').textContent = current + 1;
+        document.getElementById('bottom-pct').textContent = pct + '%';
+
+        document.querySelectorAll('.dot').forEach((d, i) => {
+            d.className = 'dot' + (i < current ? ' done' : i === current ? ' active' : '');
+        });
+    }
+
+    // ── Navigation ──
+    function next() {
+        if (!validate(current)) return;
+
+        const qs = document.querySelectorAll('.question');
+        qs[current].classList.add('exit-up');
+
+        setTimeout(() => {
+            qs[current].classList.remove('active', 'exit-up');
+            if (current < TOTAL - 1) {
+                current++;
+                qs[current].classList.add('active');
+                updateUI();
+                focusQuestion(current);
+            }
+        }, 300);
+    }
+
+    function prev() {
+        if (current === 0) return;
+        const qs = document.querySelectorAll('.question');
+        qs[current].classList.remove('active');
+        current--;
+        qs[current].classList.add('active');
+        updateUI();
+        focusQuestion(current);
+    }
+
+    function focusQuestion(idx) {
+        setTimeout(() => {
+            const inp = document.querySelector(`.question[data-q="${idx}"] input`);
+            if (inp) inp.focus();
+        }, 400);
+    }
+
+    // ── Validation ──
+    function validate(idx) {
+        switch(idx) {
+            case 0: return !!document.getElementById('q-prenom').value.trim();
+            case 1: { const v = +document.getElementById('q-age').value; return v >= 10 && v <= 100; }
+            case 2: return !!document.querySelector('.choice[data-group="sexe"].selected');
+            case 3: { const v = +document.getElementById('q-poids').value; return v >= 30 && v <= 300; }
+            case 4: { const v = +document.getElementById('q-taille').value; return v >= 100 && v <= 250; }
+            case 5: return !!document.querySelector('.choice[data-group="activite"].selected');
+            case 6: return true; // objectifs optionnels
+            case 7: return true; // restrictions optionnelles
+            case 8: return !!(
+                document.querySelector('.choice[data-group="duree"].selected') &&
+                document.querySelector('.choice[data-group="repas"].selected')
+            );
+            default: return true;
+        }
+    }
+
+    // ── Choice selection ──
+    function selectChoice(el, autoNext = false) {
+        const group = el.dataset.group;
+        document.querySelectorAll(`.choice[data-group="${group}"]`)
+            .forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        if (autoNext) setTimeout(() => next(), 350);
+    }
+
+    // ── Collect data ──
+    function collectData() {
+        const getSelected = (group, multi = false) => {
+            const els = [...document.querySelectorAll(
+                multi ? `.mchip[data-group="${group}"].selected`
+                    : `.choice[data-group="${group}"].selected`
+            )];
+            if (multi) return els.map(e => e.dataset.val).join(', ');
+            return els[0]?.dataset.val || '';
+        };
+
+        return {
+            prenom:       document.getElementById('q-prenom').value.trim(),
+            age:          document.getElementById('q-age').value,
+            sexe:         getSelected('sexe'),
+            poids:        document.getElementById('q-poids').value,
+            taille:       document.getElementById('q-taille').value,
+            activite:     getSelected('activite'),
+            objectif:     getSelected('objectifs', true),
+            restrictions: getSelected('restrictions', true),
+            allergies:    document.getElementById('q-allergies').value.trim(),
+            duree:        getSelected('duree'),
+            repas:        getSelected('repas'),
+        };
+    }
+
+    // ── Submit ──
+    async function submitProfile() {
+        if (!validate(8)) return;
+
+        document.getElementById('loader').classList.add('show');
+
+        const data = collectData();
+
+        try {
+            // Sauvegarde profil si user connecté
+            if (USER_ID) {
+                await fetch(`${API}/save_profile.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: USER_ID, ...data }),
+                });
+            }
+
+            // Stocke dans sessionStorage pour la page de génération
+            sessionStorage.setItem('naha_profil', JSON.stringify(data));
+            sessionStorage.setItem('naha_user_id', USER_ID || '');
+
+            // Redirect vers génération
+            window.location.href = `generate.html`;
+
+        } catch(e) {
+            document.getElementById('loader').classList.remove('show');
+            alert('Erreur : ' + e.message);
+        }
+    }
+
+    // ── Keyboard ──
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            if (current === TOTAL - 1) submitProfile();
+            else next();
+        }
+        if (e.key === 'Backspace' && e.target.tagName !== 'INPUT') prev();
+
+        // Raccourcis clavier pour les choices
+        const keyMap = { 'h':'homme','f':'femme','a':'autre', '1':'sedentaire','2':'leger','3':'modere','4':'actif','5':'tres_actif' };
+        if (keyMap[e.key.toLowerCase()]) {
+            const el = document.querySelector(`.choice[data-val="${keyMap[e.key.toLowerCase()]}"]`);
+            if (el && document.querySelector(`.question[data-q="${current}"].active`)) {
+                const group = el.dataset.group;
+                const autoNext = ['sexe','activite'].includes(group);
+                document.querySelectorAll(`.choice[data-group="${group}"]`).forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                if (autoNext) setTimeout(() => next(), 350);
+            }
+        }
+    });
+
+    // Focus premier input
+    focusQuestion(0);
+</script>
+</body>
+</html>
