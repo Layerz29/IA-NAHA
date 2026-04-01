@@ -18,7 +18,7 @@ if (!$prompt) {
 }
 
 // ── Clé API Gemini (côté serveur uniquement) ──
-define('GEMINI_API_KEY', 'AIzaSyB-OKg2fe9aiQSYtwB2qMrORfWXr2fYh68');
+define('GEMINI_API_KEY', 'AIzaSyBJt3FwkC6jZEabXv_HF8wA1ygMsDoe11A');
 define('GEMINI_MODEL',   'gemini-2.5-flash');
 
 $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . GEMINI_MODEL . ':generateContent?key=' . GEMINI_API_KEY;

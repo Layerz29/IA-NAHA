@@ -1,0 +1,294 @@
+/* =====================================================
+   BASE
+===================================================== */
+
+.projet-section {
+  padding: 60px 0;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: #e5e7eb;
+  margin: 50px 0;
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.projet-hero {
+  padding: 100px 0 60px;
+  text-align: center;
+}
+
+.projet-hero__inner {
+  max-width: 700px;
+  margin: auto;
+}
+
+.projet-tag {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #6366f1;
+  font-weight: 700;
+}
+
+.projet-title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.projet-subtitle {
+  font-size: 1.1rem;
+  color: #475569;
+}
+
+/* =====================================================
+   VISION (cartes)
+===================================================== */
+
+.vision-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.vision-card {
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  transition: transform 0.20s ease, box-shadow 0.20s ease, border-color 0.20s ease;
+  cursor: pointer;
+}
+
+.vision-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1e293b;
+}
+
+.vision-caption {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #64748b;
+}
+
+/* Hover */
+.vision-card.is-hovered {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+/* Pinned (au clic) */
+.vision-card.is-pinned {
+  border-color: #6366f1;
+  box-shadow: 0 15px 45px rgba(99, 102, 241, 0.25);
+}
+
+/* =====================================================
+   PILIERS
+===================================================== */
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.pillar-card {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  transition: transform .20s, box-shadow .20s;
+}
+
+.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+}
+
+.pillar-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* =====================================================
+   STEPS (parcours)
+===================================================== */
+
+.steps-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.step-card {
+  padding: 25px;
+  background: white;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  transition: transform .20s ease, box-shadow .20s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+}
+
+.step-chip {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #6366f1;
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+/* =====================================================
+   ÉQUIPE
+===================================================== */
+
+.team-section {
+  text-align: center;
+}
+
+.team-grid {
+  margin-top: 35px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 30px;
+}
+
+.team-card {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  transition: transform .20s ease, box-shadow .20s ease, border-color .20s ease;
+  cursor: pointer;
+}
+
+.team-card h3 {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.team-role {
+  margin-top: 4px;
+  color: #475569;
+}
+
+/* avatar rond */
+.team-avatar {
+  width: 75px;
+  height: 75px;
+  background: #6366f1;
+  border-radius: 50%;
+  display: flex;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Hover */
+.team-card.is-hovered {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+}
+
+/* Focus au clic */
+.team-card.is-active {
+  border-color: #6366f1;
+  box-shadow: 0 12px 45px rgba(99,102,241,0.25);
+}
+
+/* =====================================================
+   FEEDBACK
+===================================================== */
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.feedback-form textarea {
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  font-size: 1rem;
+  resize: none;
+  background: #f8fafc;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.feedback-form textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  outline: none;
+}
+
+.feedback-btn {
+  background: #6366f1;
+  color: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background .20s ease, transform .20s ease;
+}
+
+.feedback-btn:hover {
+  background: #4f46e5;
+  transform: translateY(-2px);
+}
+
+.feedback-status {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-height: 20px;
+}
+/* ===== Footer ===== */
+.footer{background:#0b0c0d; color:#dfe3ea; border-top:1px solid #151515}
+.footer__inner{display:flex; justify-content:space-between; gap:28px; padding:24px 0}
+.cols{display:grid; grid-template-columns:repeat(3, minmax(160px, 1fr)); gap:24px}
+.col h4{color:#fff; margin-bottom:10px}
+.col a{display:block; text-decoration:none; color:#cbd3df; margin:5px 0; font-size:.95rem}
+.col a:hover{color:#fff}
+.footer__right{display:flex; flex-direction:column; align-items:center; gap:10px}
+.illus{width:120px;height:90px;background:linear-gradient(180deg,#fefefe,#f5f5f5); border:1px solid #e7e7e7; border-radius:12px}
+.mini-quote{font-style:italic; color:#cfd5e1; font-size:.92rem; text-align:center}
+.legal{border-top:1px solid #141414; text-align:center; color:#b4bcc9; padding:12px 0; font-size:.92rem}

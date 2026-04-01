@@ -12,7 +12,7 @@ $planId = (int)($_GET['plan_id'] ?? 0);
 if ($planId) {
     $stmt = $pdo->prepare('
         SELECT np.*, np.date_creation AS created_at,
-               u.age, u.sexe, u.poids, u.taille, u.activite, u.objectif, u.restrictions
+               u.age, u.gender, u.poids, u.taille, u.intensity, u.objectif, u.restrictions
         FROM nutrition_plans np
         JOIN users u ON u.id = np.user_id
         WHERE np.id = ?
@@ -35,9 +35,9 @@ if ($planId) {
 if ($userId) {
     $stmt = $pdo->prepare('
         SELECT id, duree_jours, repas_par_jour, calories_cibles,
-               proteines_g, glucides_g, lipides_g, bmr, date_creation AS created_at,
-               (SELECT objectif FROM users WHERE id = np.user_id) as objectif,
-               (SELECT activite FROM users WHERE id = np.user_id) as activite,
+               proteines_g, glucides_g, lipides_g, bmr, temps_sommeil, date_creation AS created_at,
+               (SELECT objectif     FROM users WHERE id = np.user_id) as objectif,
+               (SELECT intensity    FROM users WHERE id = np.user_id) as activite,
                (SELECT restrictions FROM users WHERE id = np.user_id) as restrictions
         FROM nutrition_plans np
         WHERE user_id = ?

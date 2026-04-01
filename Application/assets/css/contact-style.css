@@ -1,0 +1,255 @@
+:root{
+    --primary:#4c5bf9;
+    --ink:#0f0f10;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --bg-soft:#f7f9fc;
+    --danger:#ef4444;
+    --success:#22c55e;
+    --radius-lg:18px;
+}
+
+body{
+    font-family:'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background:#ffffff;
+    color:var(--ink);
+}
+
+/* Container générique (same vibe que accueil-style si besoin) */
+.container{
+    width:100%;
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 16px;
+}
+
+/* ===== Hero ===== */
+.contact-main{
+    padding-bottom:40px;
+}
+
+
+.contact-hero {
+    padding: 80px 0 30px; /* déjà présent → OK */
+    margin-top: 60px; /* on ajoute ça */
+}
+
+
+
+.contact-hero__inner{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 10px;
+    border-radius:999px;
+    background:rgba(76,91,249,0.08);
+    color:var(--primary);
+    font-size:12px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+}
+
+.contact-title{
+    font-size:32px;
+    font-weight:800;
+    margin:8px 0 4px;
+}
+
+.contact-sub{
+    color:var(--muted);
+    max-width:540px;
+    font-size:14px;
+}
+
+/* ===== Section principale ===== */
+.contact-section{
+    padding:8px 0 40px;
+}
+
+.contact-grid{
+    display:grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.4fr);
+    gap:24px;
+}
+
+@media (max-width:840px){
+    .contact-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+/* ===== Carte formulaire ===== */
+.contact-card{
+    background:#ffffff;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--border);
+    padding:22px 20px 20px;
+    box-shadow:0 18px 35px rgba(15,23,42,0.06);
+}
+
+.contact-card h2{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 4px;
+}
+
+.contact-card__sub{
+    color:var(--muted);
+    font-size:14px;
+    margin:0 0 16px;
+}
+
+/* ===== Champs ===== */
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    margin-bottom:14px;
+}
+
+.field label{
+    font-size:13px;
+    font-weight:600;
+}
+
+.field input,
+.field textarea{
+    border-radius:10px;
+    border:1px solid var(--border);
+    padding:9px 11px;
+    font-size:14px;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+    background:#f9fafb;
+}
+
+.field input:focus,
+.field textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 1px rgba(76,91,249,0.28);
+    background:#ffffff;
+}
+
+.field textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+/* Messages d’erreur */
+.field-error{
+    min-height:14px;
+    font-size:12px;
+    color:var(--danger);
+}
+
+/* Feedback global */
+.form-feedback{
+    margin-top:10px;
+    font-size:13px;
+}
+
+/* ===== Bouton ===== */
+.btn-primary{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:9px 16px;
+    border-radius:999px;
+    border:none;
+    background:var(--primary);
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    margin-top:4px;
+    transition:transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+    box-shadow:0 10px 25px rgba(76,91,249,0.35);
+}
+
+.btn-primary:hover{
+    background:#3d4ad5;
+    transform:translateY(-1px);
+}
+
+.btn-primary:disabled{
+    opacity:.65;
+    cursor:default;
+    box-shadow:none;
+    transform:none;
+}
+
+/* ===== Colonne droite ===== */
+.contact-side{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.side-card{
+    background:#ffffff;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--border);
+    padding:16px 16px 14px;
+}
+
+.side-card h3{
+    font-size:16px;
+    font-weight:700;
+    margin:0 0 6px;
+}
+
+.side-card p{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 6px;
+}
+
+.side-card ul{
+    padding-left:18px;
+    margin:4px 0 0;
+}
+
+.side-card li{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:3px;
+}
+
+/* ===== Topbar ===== */
+.topbar{background:#0b0c0d; color:#fff; border-bottom:1px solid #151515; position:sticky; top:0; z-index:40; transition:box-shadow .2s, background .2s}
+.topbar.scrolled{box-shadow:0 8px 24px rgba(17,24,39,.08); background:rgba(11,12,13,.9); backdrop-filter: blur(6px);}
+.topbar__inner{display:flex; align-items:center; justify-content:space-between; gap:18px; padding:10px 0}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none}
+.brand__logo{font-size:22px}
+.brand__text{color:#fff; font-weight:800; letter-spacing:.3px}
+.pill.is-active{background:#fff}
+.link{color:#e9ecf3; text-decoration:none; font-weight:600}
+.link:hover{color:#fff}
+.btn{background:var(--primary); color:#fff; text-decoration:none; padding:8px 14px; border-radius:10px; font-weight:800; box-shadow:0 6px 14px rgba(76,91,249,.25)}
+.btn.big{padding:12px 18px; border-radius:12px}
+.btn.ghost{background:#fff; color:#111; box-shadow:none; border:1px solid var(--border)}
+
+/* ===== Footer version large EXCLUSIF à contact.php ===== */
+.contact-main ~ .footer {
+    padding: 1px 0;          /* footer plus haut */
+}
+
+.contact-main ~ .footer .footer__inner {
+    padding: 20px 0 10px;
+    gap: 40px;
+}
+
+.contact-main ~ .footer .legal {
+    padding: 18px 0;
+    font-size: 1rem;
+}
+
+.contact-main ~ .footer .mini-quote {
+    font-size: 1rem;
+}

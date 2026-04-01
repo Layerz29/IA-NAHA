@@ -1,0 +1,138 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1775049175289,
+  "projectRoot": "/Applications/MAMP/htdocs/SD4/IA-NAHA/Application",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "react",
+        "version": "19.2.4",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.4",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": "npm test",
+    "lintCommand": null,
+    "devCommand": "npm run start",
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test",
+      "eject": "react-scripts eject"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "api": {
+      "path": "api",
+      "purpose": "API routes",
+      "fileCount": 11,
+      "lastAccessed": 1775049175264,
+      "keyFiles": [
+        "config.php",
+        "delete_plan.php",
+        "gemini.php",
+        "get_plans.php",
+        "get_user.php"
+      ]
+    },
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 0,
+      "lastAccessed": 1775049175266,
+      "keyFiles": []
+    },
+    "modeles": {
+      "path": "modeles",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1775049175267,
+      "keyFiles": [
+        "modele_machine_learning.joblib",
+        "scaler_machine_learning.joblib"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "onboarding.html",
+      "accessCount": 13,
+      "lastAccessed": 1775050772353,
+      "type": "file"
+    },
+    {
+      "path": "dashboard.html",
+      "accessCount": 6,
+      "lastAccessed": 1775051488022,
+      "type": "file"
+    },
+    {
+      "path": "assets/css/dashboard-app.css",
+      "accessCount": 3,
+      "lastAccessed": 1775049345890,
+      "type": "file"
+    },
+    {
+      "path": "assets/css/onboarding-app.css",
+      "accessCount": 2,
+      "lastAccessed": 1775050721648,
+      "type": "file"
+    },
+    {
+      "path": "api/config.php",
+      "accessCount": 1,
+      "lastAccessed": 1775051311045,
+      "type": "file"
+    },
+    {
+      "path": "api/get_stats.php",
+      "accessCount": 1,
+      "lastAccessed": 1775051363800,
+      "type": "file"
+    },
+    {
+      "path": "dataviz.html",
+      "accessCount": 1,
+      "lastAccessed": 1775051478012,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

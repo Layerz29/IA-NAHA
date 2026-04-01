@@ -1,0 +1,142 @@
+.calc-page {
+  padding: 24px 0 48px;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.card.big {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+}
+
+.sub {
+  color: #4b5563;
+}
+
+.calc-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.field label,
+.field span {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.segmented {
+  display: flex;
+  gap: 8px;
+}
+
+.segmented-btn {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.segmented-btn.is-active {
+  border-color: #4c5bf9;
+  color: #fff;
+  background: #4c5bf9;
+}
+
+.result-card {
+  margin-top: 18px;
+}
+
+.res-main {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.res-text,
+.mini {
+  color: #4b5563;
+}
+
+.goals {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.goal-btn {
+  text-align: left;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.goal-btn.is-active {
+  border-color: #4c5bf9;
+  box-shadow: 0 0 0 2px rgba(76, 91, 249, 0.15);
+}
+
+.goal-label {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.goal-kcal {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.goal-active-text {
+  display: none;
+  font-size: 0.78rem;
+  color: #4c5bf9;
+  font-weight: 700;
+}
+
+.goal-btn.is-active .goal-active-text {
+  display: inline;
+}
+
+.goal-sub {
+  color: #4b5563;
+}
+
+.next-steps {
+  margin-top: 20px;
+}
+
+.next-steps__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.next-step {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+}

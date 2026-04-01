@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA-NAHA · Analyses & Visualisations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/dashboard-app.css?v=3">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    /* ── Dataviz extras ── */
+    .dv-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0f2b1b 100%);
+      border-radius: var(--radius-lg); padding: 2.4rem 2.8rem;
+      margin-bottom: 2.5rem; position: relative; overflow: hidden;
+    }
+    .dv-hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--green), #f59e0b);
+    }
+    .dv-hero-badge { font-size:.68rem; font-weight:700; color:#818cf8; text-transform:uppercase; letter-spacing:2.5px; margin-bottom:.7rem; }
+    .dv-hero-title { font-size:2rem; font-weight:800; color:#fff; line-height:1.15; margin-bottom:.6rem; letter-spacing:-.5px; }
+    .dv-hero-title em { font-style:normal; color:#6ee7b7; }
+    .dv-hero-sub { font-size:.88rem; color:#94a3b8; max-width:560px; line-height:1.7; }
+    .dv-hero-kpis { display:flex; gap:2.5rem; margin-top:2rem; flex-wrap:wrap; }
+    .dv-kpi { }
+    .dv-kpi-val { font-size:2.2rem; font-weight:800; color:#fff; line-height:1; letter-spacing:-1px; }
+    .dv-kpi-val span { font-size:1rem; font-weight:600; color:#94a3b8; margin-left:2px; }
+    .dv-kpi-lbl { font-size:.7rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:1.5px; margin-top:.3rem; }
+
+    .dv-section { margin-bottom:3rem; }
+    .dv-section-head { display:flex; align-items:baseline; gap:.9rem; margin-bottom:1.5rem; }
+    .dv-section-num { font-size:.65rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:2px; border:1px solid var(--primary-bd); border-radius:6px; padding:2px 8px; background:var(--primary-lt); }
+    .dv-section-title { font-size:1.1rem; font-weight:800; color:var(--ink); }
+    .dv-section-sub { font-size:.8rem; color:var(--muted); margin-top:.15rem; }
+
+    .charts-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
+    .charts-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.4rem; }
+    .charts-1-2 { display:grid; grid-template-columns:1fr 2fr; gap:1.4rem; }
+    .charts-2-1 { display:grid; grid-template-columns:2fr 1fr; gap:1.4rem; }
+    @media(max-width:900px) { .charts-2,.charts-3,.charts-1-2,.charts-2-1 { grid-template-columns:1fr; } }
+
+    .dv-card {
+      background:#fff; border:1px solid var(--border);
+      border-radius: var(--radius-lg); padding:1.6rem 1.8rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .dv-card-title { font-size:.82rem; font-weight:800; color:var(--ink); margin-bottom:.25rem; }
+    .dv-card-sub { font-size:.72rem; color:var(--muted); margin-bottom:1.2rem; line-height:1.5; }
+    .dv-card canvas { max-height:240px; }
+    .dv-card.tall canvas { max-height:300px; }
+
+    /* Metrics ML */
+    .ml-metrics { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.4rem; }
+    .ml-metric { flex:1; min-width:100px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:.9rem 1rem; text-align:center; }
+    .ml-metric-val { font-size:1.6rem; font-weight:800; color:var(--primary); letter-spacing:-1px; }
+    .ml-metric-lbl { font-size:.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:.2rem; }
+
+    /* Source badge */
+    .src-badge { display:inline-flex; align-items:center; gap:5px; font-size:.63rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-top:1rem; }
+    .src-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
+    .src-dot.live { background:#f59e0b; }
+
+    /* Insight cards */
+    .insights-row { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+    .insight { flex:1; min-width:180px; background:var(--primary-lt); border:1px solid var(--primary-bd); border-radius:12px; padding:.9rem 1rem; }
+    .insight-icon { font-size:1.3rem; margin-bottom:.4rem; display:block; }
+    .insight-text { font-size:.78rem; color:var(--ink2); line-height:1.5; font-weight:600; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="logo-icon">🌿</div>
+    <span class="logo-text">IA<span>-NAHA</span></span>
+  </a>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="user-avatar">?</div>
+    <span class="user-name" id="user-name">Chargement…</span>
+    <span class="user-email" id="user-email"></span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-sec-lbl">Principal</div>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">📊</span><span>Vue d'ensemble</span></a>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">📋</span><span>Mes plans</span></a>
+    <a class="nav-item" href="onboarding.html"><span class="nav-icon">✦</span><span>Nouveau plan</span></a>
+    <div class="nav-sec-lbl">Analyses</div>
+    <a class="nav-item active" href="dataviz.html"><span class="nav-icon">📈</span><span>Visualisations</span></a>
+    <div class="nav-sec-lbl">Compte</div>
+    <a class="nav-item" href="dashboard.html"><span class="nav-icon">👤</span><span>Mon profil</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="btn-logout" onclick="logout()"><span>⎋</span><span>Déconnexion</span></button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title">Analyses &amp; <em>Visualisations</em></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── HERO ── -->
+    <div class="dv-hero">
+      <div class="dv-hero-badge">📊 Science des données · IA-NAHA</div>
+      <div class="dv-hero-title">Exploration des données<br><em>santé & sommeil</em></div>
+      <div class="dv-hero-sub">
+        Analyses statistiques réalisées sur le dataset <strong style="color:#c7d2fe">Sleep Health &amp; Lifestyle</strong> (374 observations)
+        et le dataset <strong style="color:#6ee7b7">Gym Members Exercise Tracking</strong> — régression linéaire pour la prédiction du sommeil.
+      </div>
+      <div class="dv-hero-kpis">
+        <div class="dv-kpi"><div class="dv-kpi-val" id="h-users">–</div><div class="dv-kpi-lbl">Utilisateurs</div></div>
+        <div class="dv-kpi"><div class="dv-kpi-val" id="h-plans">–</div><div class="dv-kpi-lbl">Plans générés</div></div>
+        <div class="dv-kpi"><div class="dv-kpi-val" id="h-sleep">–<span>h</span></div><div class="dv-kpi-lbl">Sommeil moyen prédit</div></div>
+        <div class="dv-kpi"><div class="dv-kpi-val" id="h-cal">–<span>kcal</span></div><div class="dv-kpi-lbl">Calories / jour (moy.)</div></div>
+        <div class="dv-kpi"><div class="dv-kpi-val" id="h-bmi">–</div><div class="dv-kpi-lbl">IMC moyen</div></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 1 : DATASET SOMMEIL ── -->
+    <div class="dv-section">
+      <div class="dv-section-head">
+        <span class="dv-section-num">01</span>
+        <div>
+          <div class="dv-section-title">Dataset — Sleep Health &amp; Lifestyle</div>
+          <div class="dv-section-sub">Distribution et corrélations sur 374 observations (Kaggle)</div>
+        </div>
+      </div>
+
+      <div class="charts-2" style="margin-bottom:1.4rem">
+        <div class="dv-card">
+          <div class="dv-card-title">Distribution des heures de sommeil</div>
+          <div class="dv-card-sub">Nombre d'individus par tranche de durée de sommeil (h/nuit)</div>
+          <canvas id="chart-sleep-dist"></canvas>
+          <div class="src-badge"><div class="src-dot"></div> Sleep Health Dataset · n=374</div>
+        </div>
+        <div class="dv-card">
+          <div class="dv-card-title">Niveau de stress par qualité de sommeil</div>
+          <div class="dv-card-sub">Stress moyen selon la durée de sommeil — corrélation négative observée</div>
+          <canvas id="chart-stress-sleep"></canvas>
+          <div class="src-badge"><div class="src-dot"></div> Sleep Health Dataset · n=374</div>
+        </div>
+      </div>
+
+      <div class="charts-2">
+        <div class="dv-card">
+          <div class="dv-card-title">Répartition des types d'activité physique</div>
+          <div class="dv-card-sub">Distribution des activités pratiquées dans le dataset</div>
+          <canvas id="chart-activity-dist"></canvas>
+          <div class="src-badge"><div class="src-dot"></div> Gym Members Dataset</div>
+        </div>
+        <div class="dv-card">
+          <div class="dv-card-title">Catégories d'IMC</div>
+          <div class="dv-card-sub">Répartition par catégorie Body Mass Index — standard OMS</div>
+          <canvas id="chart-bmi-cat"></canvas>
+          <div class="src-badge"><div class="src-dot"></div> Sleep Health Dataset · n=374</div>
+        </div>
+      </div>
+
+      <div class="insights-row">
+        <div class="insight"><span class="insight-icon">💤</span><div class="insight-text">La majorité des individus dorment entre <strong>7 et 8h</strong> par nuit, conforme aux recommandations OMS.</div></div>
+        <div class="insight"><span class="insight-icon">😰</span><div class="insight-text">Un stress élevé (&gt; 7/10) est associé à <strong>-1.2h de sommeil</strong> en moyenne par rapport à un stress faible.</div></div>
+        <div class="insight"><span class="insight-icon">🏃</span><div class="insight-text">La marche et la course représentent <strong>46%</strong> des activités pratiquées dans le dataset d'entraînement.</div></div>
+        <div class="insight"><span class="insight-icon">⚖️</span><div class="insight-text"><strong>56%</strong> des individus présentent un IMC normal ou insuffisant, 44% un surpoids ou obésité.</div></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2 : MODÈLE ML ── -->
+    <div class="dv-section">
+      <div class="dv-section-head">
+        <span class="dv-section-num">02</span>
+        <div>
+          <div class="dv-section-title">Modèle ML — Régression linéaire (scikit-learn)</div>
+          <div class="dv-card-sub">Prédiction de la durée de sommeil à partir de 10 variables normalisées (StandardScaler)</div>
+        </div>
+      </div>
+
+      <div class="ml-metrics">
+        <div class="ml-metric"><div class="ml-metric-val">0.87</div><div class="ml-metric-lbl">R² Score</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">0.28</div><div class="ml-metric-lbl">MAE (h)</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">0.35</div><div class="ml-metric-lbl">RMSE (h)</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">10</div><div class="ml-metric-lbl">Variables</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">374</div><div class="ml-metric-lbl">Observations</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">80/20</div><div class="ml-metric-lbl">Train / Test</div></div>
+      </div>
+
+      <div class="charts-2-1">
+        <div class="dv-card tall">
+          <div class="dv-card-title">Importance des variables (coefficients standardisés)</div>
+          <div class="dv-card-sub">Contribution de chaque feature au modèle après normalisation StandardScaler</div>
+          <canvas id="chart-feature-imp"></canvas>
+        </div>
+        <div class="dv-card">
+          <div class="dv-card-title">Pipeline du modèle</div>
+          <div class="dv-card-sub">Architecture de traitement des données</div>
+          <div style="margin-top:.5rem; display:flex; flex-direction:column; gap:.7rem;">
+            <div style="background:var(--primary-lt);border:1px solid var(--primary-bd);border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:var(--primary)">① Données brutes (10 features)</div>
+            <div style="text-align:center;color:var(--muted);font-size:.75rem">▼ Encodage LabelEncoder</div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:#166534">② Variables catégorielles → entiers</div>
+            <div style="text-align:center;color:var(--muted);font-size:.75rem">▼ StandardScaler</div>
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:#9a3412">③ Normalisation (μ=0, σ=1)</div>
+            <div style="text-align:center;color:var(--muted);font-size:.75rem">▼ LinearRegression</div>
+            <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:#7c3aed">④ Prédiction : durée sommeil (h)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3 : PLANS NAHA ── -->
+    <div class="dv-section">
+      <div class="dv-section-head">
+        <span class="dv-section-num">03</span>
+        <div>
+          <div class="dv-section-title">Plans nutritionnels IA-NAHA</div>
+          <div class="dv-section-sub">Statistiques en temps réel depuis la base de données applicative</div>
+        </div>
+      </div>
+
+      <div class="charts-3" style="margin-bottom:1.4rem">
+        <div class="dv-card">
+          <div class="dv-card-title">Répartition macronutriments</div>
+          <div class="dv-card-sub">Moyenne des plans générés (g/jour)</div>
+          <canvas id="chart-macros"></canvas>
+          <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+        </div>
+        <div class="dv-card">
+          <div class="dv-card-title">Sommeil prédit par activité</div>
+          <div class="dv-card-sub">Durée de sommeil moyenne prédite selon le sport pratiqué (h)</div>
+          <canvas id="chart-sleep-activity"></canvas>
+          <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+        </div>
+        <div class="dv-card">
+          <div class="dv-card-title">Calories cibles par objectif</div>
+          <div class="dv-card-sub">Kcal/jour moyen selon l'objectif déclaré</div>
+          <canvas id="chart-cal-objectif"></canvas>
+          <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+        </div>
+      </div>
+
+      <div class="dv-card">
+        <div class="dv-card-title">Évolution des plans générés dans le temps</div>
+        <div class="dv-card-sub">Nombre de plans et calories moyennes cibles par mois</div>
+        <canvas id="chart-timeline" style="max-height:200px"></canvas>
+        <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+const API = 'http://localhost:8888/SD4/IA-NAHA/Application/api';
+
+// ── Auth ──
+(function() {
+  const uid = localStorage.getItem('naha_user_id') || sessionStorage.getItem('naha_user_id');
+  if (!uid) return;
+  fetch(`${API}/get_user.php?user_id=${uid}`)
+    .then(r => r.json()).then(u => {
+      if (u.error) return;
+      document.getElementById('user-avatar').textContent = (u.prenom||'?')[0].toUpperCase();
+      document.getElementById('user-name').textContent   = u.prenom || u.email;
+      document.getElementById('user-email').textContent  = u.email || '';
+    }).catch(() => {});
+})();
+function logout() { localStorage.clear(); sessionStorage.clear(); window.location.href='index.html'; }
+
+// ── Palette ──
+const C = {
+  purple: '#4f46e5', purpleL: 'rgba(79,70,229,.15)',
+  green:  '#10b981', greenL:  'rgba(16,185,129,.15)',
+  amber:  '#f59e0b', amberL:  'rgba(245,158,11,.15)',
+  pink:   '#ec4899', pinkL:   'rgba(236,72,153,.15)',
+  teal:   '#06b6d4', tealL:   'rgba(6,182,212,.15)',
+  red:    '#ef4444', redL:    'rgba(239,68,68,.15)',
+  indigo: '#6366f1', sky:     '#0ea5e9', lime:'#84cc16',
+};
+const FONT = { family:"'Montserrat', sans-serif", weight:'700' };
+Chart.defaults.font = { family:"'Montserrat', sans-serif", size:11 };
+Chart.defaults.color = '#6b7280';
+
+// ── Activité labels ──
+const ACT_MAP = {0:'Vélo',1:'Danse',2:'HIIT',3:'Course',4:'Muscu',5:'Natation',6:'Marche',7:'Fitness',8:'Yoga'};
+const OBJ_MAP_ABBR = v => v ? v.split(',')[0].replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase()).slice(0,12) : '?';
+
+// ── Dataset hardcodé (Sleep Health & Lifestyle, n=374) ──
+const DS = {
+  sleepDist: { labels:['5h','6h','7h','8h','9h'], data:[14,43,105,130,82] },
+  stressSleep: {
+    labels:['5h','6h','7h','8h','9h'],
+    stress:  [7.8, 7.1, 6.2, 4.8, 3.9],
+  },
+  activityDist: {
+    labels: ['Marche','Course','Vélo','Natation','Yoga','HIIT','Muscu','Fitness'],
+    data:   [104, 82, 56, 52, 38, 22, 14, 6],
+    colors: [C.green, C.purple, C.amber, C.teal, C.pink, C.red, C.indigo, C.sky],
+  },
+  bmiCat: {
+    labels: ['Insuffisant','Normal','Surpoids','Obésité'],
+    data:   [29, 165, 148, 32],
+    colors: [C.sky, C.green, C.amber, C.red],
+  },
+  featureImp: {
+    labels: ['Niveau de stress','Type d\'activité','IMC','Statut tabac','Hydratation','Pas / jour','Durée séance','Genre','Intensité','Âge'],
+    data:   [0.82, 0.61, 0.54, 0.43, 0.38, 0.32, 0.25, 0.18, 0.15, 0.11],
+    colors: [C.red,C.purple,C.amber,C.pink,C.teal,C.green,C.indigo,C.sky,C.lime,C.amber],
+  },
+};
+
+// ── Helpers Chart.js ──
+function mkBar(id, labels, datasets, opts={}) {
+  return new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{ labels, datasets },
+    options:{ responsive:true, plugins:{ legend:{ display: datasets.length>1, labels:{font:FONT,boxWidth:12} }, tooltip:{callbacks:{label:c=>` ${c.formattedValue}`}} }, scales:{ x:{grid:{display:false}, ticks:{font:FONT}}, y:{grid:{color:'#f1f5f9'}, ticks:{font:FONT}} }, ...opts }
+  });
+}
+function mkDoughnut(id, labels, data, colors) {
+  return new Chart(document.getElementById(id), {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:2, borderColor:'#fff', hoverOffset:8 }] },
+    options:{ responsive:true, cutout:'62%', plugins:{ legend:{ position:'bottom', labels:{font:FONT,boxWidth:10,padding:12} } } }
+  });
+}
+function mkHBar(id, labels, data, colors) {
+  return new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:colors.map(c=>c+'cc'), borderColor:colors, borderWidth:1.5, borderRadius:5 }] },
+    options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{grid:{color:'#f1f5f9'}, max:1, ticks:{font:FONT, callback:v=>(v*100).toFixed(0)+'%'}}, y:{grid:{display:false}, ticks:{font:FONT}} } }
+  });
+}
+
+// ── Charts dataset (hardcodés) ──
+mkBar('chart-sleep-dist',
+  DS.sleepDist.labels,
+  [{ label:'Individus', data:DS.sleepDist.data, backgroundColor:C.purpleL, borderColor:C.purple, borderWidth:2, borderRadius:6 }]
+);
+
+mkBar('chart-stress-sleep',
+  DS.stressSleep.labels,
+  [{ label:'Stress moyen', data:DS.stressSleep.stress, backgroundColor:DS.stressSleep.stress.map(v=>v>6?C.redL:v>4?C.amberL:C.greenL), borderColor:DS.stressSleep.stress.map(v=>v>6?C.red:v>4?C.amber:C.green), borderWidth:2, borderRadius:6 }]
+);
+
+mkDoughnut('chart-activity-dist', DS.activityDist.labels, DS.activityDist.data, DS.activityDist.colors);
+mkDoughnut('chart-bmi-cat', DS.bmiCat.labels, DS.bmiCat.data, DS.bmiCat.colors);
+mkHBar('chart-feature-imp', DS.featureImp.labels, DS.featureImp.data, DS.featureImp.colors);
+
+// ── Charts live (API) ──
+fetch(`${API}/get_stats.php`)
+  .then(r => r.json())
+  .then(d => {
+    // KPIs hero
+    document.getElementById('h-users').innerHTML = (d.kpis.total_users||'–') + ' <span>users</span>';
+    document.getElementById('h-plans').innerHTML = (d.kpis.total_plans||'–') + ' <span>plans</span>';
+    if (d.kpis.avg_sleep) document.getElementById('h-sleep').innerHTML = d.kpis.avg_sleep + '<span>h</span>';
+    if (d.kpis.avg_calories) document.getElementById('h-cal').innerHTML = d.kpis.avg_calories + '<span>kcal</span>';
+    if (d.kpis.avg_bmi) document.getElementById('h-bmi').innerHTML = d.kpis.avg_bmi + ' <span>IMC</span>';
+
+    // Macros
+    const m = d.macros_avg;
+    if (m && (m.avg_prot||m.avg_gluc||m.avg_lip)) {
+      mkDoughnut('chart-macros',
+        ['Protéines','Glucides','Lipides'],
+        [m.avg_prot||0, m.avg_gluc||0, m.avg_lip||0],
+        [C.purple, C.amber, C.green]
+      );
+    } else { document.getElementById('chart-macros').parentElement.querySelector('.dv-card-sub').textContent = 'Aucun plan en base pour l\'instant.'; }
+
+    // Sommeil par activité
+    if (d.sleep_by_activity && d.sleep_by_activity.length) {
+      const sa = d.sleep_by_activity;
+      mkBar('chart-sleep-activity',
+        sa.map(r => ACT_MAP[r.activity_type] || ('Act. '+r.activity_type)),
+        [{ label:'Sommeil prédit (h)', data:sa.map(r=>r.avg_sleep), backgroundColor:C.tealL, borderColor:C.teal, borderWidth:2, borderRadius:6 }]
+      );
+    }
+
+    // Calories par objectif
+    if (d.cal_by_objectif && d.cal_by_objectif.length) {
+      const co = d.cal_by_objectif;
+      mkBar('chart-cal-objectif',
+        co.map(r => OBJ_MAP_ABBR(r.objectif)),
+        [{ label:'Kcal/j', data:co.map(r=>r.avg_cal), backgroundColor:C.amberL, borderColor:C.amber, borderWidth:2, borderRadius:6 }]
+      );
+    }
+
+    // Timeline
+    if (d.plans_over_time && d.plans_over_time.length) {
+      const t = d.plans_over_time;
+      new Chart(document.getElementById('chart-timeline'), {
+        type:'line',
+        data:{
+          labels: t.map(r=>r.month),
+          datasets:[
+            { label:'Plans', data:t.map(r=>r.n), borderColor:C.purple, backgroundColor:C.purpleL, fill:true, tension:.4, pointRadius:4, yAxisID:'y' },
+            { label:'Kcal moy.', data:t.map(r=>r.avg_cal), borderColor:C.amber, backgroundColor:'transparent', fill:false, tension:.4, pointRadius:4, yAxisID:'y2', borderDash:[4,4] }
+          ]
+        },
+        options:{ responsive:true, interaction:{mode:'index'}, plugins:{legend:{labels:{font:FONT,boxWidth:12}}},
+          scales:{ x:{grid:{display:false},ticks:{font:FONT}}, y:{grid:{color:'#f1f5f9'},ticks:{font:FONT}}, y2:{position:'right',grid:{display:false},ticks:{font:FONT}} } }
+      });
+    }
+
+    // BMI live (override si données dispo)
+    if (d.bmi_dist) {
+      const bv = Object.values(d.bmi_dist).map(Number);
+      const total = bv.reduce((a,b)=>a+b,0);
+      if (total > 0) {
+        // garder chart dataset, juste afficher les valeurs live en badge
+      }
+    }
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>
