@@ -68,6 +68,8 @@ try {
 jsonOut([
     'success' => true,
     'user_id' => $userId,
+    'prenom'  => $prenom,
+    'email'   => $email,
     'token'   => $token,
     'message' => 'Compte créé avec succès.',
 ]);

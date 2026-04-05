@@ -34,12 +34,17 @@ body::before { display: none; }
   position: fixed; inset: 0;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  padding: 6rem 2rem 4rem;
-  overflow: hidden;
+  padding: 6rem 2rem 6rem;
+  overflow-y: auto;
+}
+
+@media (max-height: 700px) {
+  .main { justify-content: flex-start; padding-top: 5rem; }
+  .questions-wrap { min-height: unset; }
 }
 
 /* ── Questions ── */
-.questions-wrap { width: 100%; max-width: 700px; position: relative; min-height: 420px; }
+.questions-wrap { width: 100%; max-width: 700px; position: relative; min-height: 500px; padding-bottom: 80px; }
 
 .question {
   position: absolute; top: 0; left: 0; right: 0;
@@ -101,6 +106,12 @@ body::before { display: none; }
 .num-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(76,91,249,.1); }
 .num-input::placeholder { color: var(--muted2); font-weight: 400; }
 .num-unit { font-size: .92rem; color: var(--muted); font-weight: 700; min-width: 32px; }
+.input-error {
+  display: block; color: #ef4444;
+  font-size: .76rem; font-weight: 600;
+  margin-top: -.5rem; margin-bottom: 1rem;
+  min-height: 1.1em;
+}
 
 /* ── Boutons nav ── */
 .actions {

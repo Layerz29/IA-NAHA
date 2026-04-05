@@ -142,6 +142,35 @@ const API = window.location.origin + '/SD4/IA-NAHA/Application/api';
 
 ---
 
+### `CIQUAL.filter is not a function` à la génération
+
+**Symptôme :** cliquer sur "Générer" déclenche l'erreur `CIQUAL.filter is not a function`.
+
+**Cause :** `ciqual.php` peut retourner un objet d'erreur JSON (ex : `{"error":"..."}`) au lieu d'un tableau si la BDD est injoignable. Assigner cet objet à `CIQUAL` rend `.filter()` indisponible.
+
+**Solution appliquée** dans `generate.html` :
+```javascript
+const ciqualData = await ciqualRes.json();
+CIQUAL = Array.isArray(ciqualData) ? ciqualData : [];
+```
+
+---
+
+### Profil affiché "Chargement…" dans la sidebar
+
+**Symptôme :** le prénom et l'avatar ne s'affichent jamais dans la sidebar (dataviz, etc.) — reste bloqué sur "Chargement…".
+
+**Cause :** deux problèmes combinés :
+1. `register.php` ne renvoyait pas `prenom`/`email` dans sa réponse → `login.html` ne pouvait pas les stocker dans `localStorage`.
+2. Les utilisateurs déjà inscrits n'avaient pas `naha_prenom` en `localStorage`.
+
+**Solution appliquée :**
+- `register.php` retourne maintenant `prenom` et `email`
+- `login.html` stocke `naha_prenom` et `naha_email` dans les deux flows (connexion et inscription)
+- `dataviz.html` appelle `get_user.php` en fallback si `naha_prenom` est absent du `localStorage`, puis met la valeur en cache
+
+---
+
 ### Le serveur ML ne démarre pas
 
 **Symptôme :** `ModuleNotFoundError` ou `FileNotFoundError`.
@@ -333,91 +362,40 @@ const authHeaders = {
 
 ## 4. Mise en ligne (déploiement)
 
-L'application tourne en production sur deux hébergements séparés :
+L'application nécessite **deux hébergements séparés** car elle combine PHP/MySQL et un serveur Python Flask.
 
 ### Architecture de production
 
 ```
 Navigateur
-  ├─► InfinityFree  (PHP + MySQL)  — ianaha.rf.gd
-  └─► Render.com    (Python Flask) — ia-naha.onrender.com
+  ├─► PlanetHoster  (PHP + MySQL)  — pages HTML + API PHP
+  └─► Render.com    (Python Flask) — serveur ML prédiction sommeil
 ```
 
 ---
 
-### Étape 1 — Serveur ML sur Render.com (gratuit)
+### Étape 1 — Déployer le serveur ML sur Render.com (gratuit)
 
 1. Créer un compte sur [render.com](https://render.com)
-2. **New → Web Service** → connecter le repo GitHub `noahchrgs/IA-NAHA`
+2. **New → Web Service** → connecter le repo GitHub
 3. Configurer :
+   - **Root directory** : `Application/api`
+   - **Build command** : `pip install flask joblib numpy pandas scikit-learn`
+   - **Start command** : `python ml_server.py`
+4. Render fournit une URL publique, ex : `https://ia-naha-ml.onrender.com`
+5. Tester : `https://ia-naha-ml.onrender.com/health` doit retourner `{"status":"ok"}`
 
-| Champ | Valeur |
-|---|---|
-| Root directory | *(vide — racine du repo)* |
-| Runtime | Python 3 |
-| Build command | `pip install -r Application/api/requirements.txt` |
-| Start command | `python Application/api/ml_server.py` |
-
-4. URL du service : `https://ia-naha.onrender.com`
-5. Vérification : `https://ia-naha.onrender.com/health` → `{"status":"ok"}`
-
-**Points importants :**
-- Le Root directory doit être **vide** (pas `Application/api`) pour que `ml_server.py` puisse accéder à `modeles/` via `../../modeles`
-- Flask doit écouter sur `0.0.0.0` et non `127.0.0.1` — sinon Render ne détecte pas le port et timeout
-- Le plan gratuit Render se met en veille après 15 min — la première requête peut prendre ~30s
-- Le timeout dans `predict_sleep.php` est à **35 secondes** pour absorber ce délai de réveil
+> **Note** : sur le plan gratuit Render, le serveur se met en veille après 15 min d'inactivité — la première requête peut prendre ~30 secondes à répondre.
 
 ---
 
-### Étape 2 — PHP + MySQL sur InfinityFree (gratuit)
+### Étape 2 — Déployer PHP + MySQL sur PlanetHoster (gratuit)
 
-1. Créer un compte sur [infinityfree.com](https://infinityfree.com)
-2. Créer un hébergement → domaine : `ianaha.rf.gd`
-3. Dans le panel → **MySQL Databases** : créer une BDD et noter les identifiants
-4. Importer `database/ia-naha.sql` via phpMyAdmin
-5. Uploader le dossier `IA-NAHA/` via **FileZilla** dans `htdocs/`
-
----
-
-### Étape 3 — Fichier `.env` sur InfinityFree
-
-Créer `htdocs/IA-NAHA/Application/.env` via FileZilla :
-
-```
-GEMINI_API_KEY=ta_clé_gemini
-
-DB_HOST=sql211.infinityfree.com
-DB_PORT=3306
-DB_NAME=if0_41583765_ia_naha
-DB_USER=if0_41583765
-DB_PASS=ton_mot_de_passe
-
-ML_SERVER_URL=https://ia-naha.onrender.com
-```
-
----
-
-### Étape 4 — URLs de vérification
-
-| Test | URL |
-|---|---|
-| Page de connexion | `https://ianaha.rf.gd/IA-NAHA/Application/login.html` |
-| Dashboard | `https://ianaha.rf.gd/IA-NAHA/Application/dashboard.html` |
-| API PHP | `https://ianaha.rf.gd/IA-NAHA/Application/api/login.php` |
-| Serveur ML | `https://ia-naha.onrender.com/health` |
-
----
-
-### Problèmes rencontrés lors du déploiement
-
-| Problème | Cause | Solution |
-|---|---|---|
-| `load failed` sur register | URL API hardcodée sur `localhost:8888` | `window.location.origin` + détection locale/prod |
-| `Connexion BDD impossible` | `.env` absent ou mal configuré sur InfinityFree | Créer le `.env` avec les vraies valeurs InfinityFree |
-| CORS bloqué | Liste d'origines trop restrictive | `Access-Control-Allow-Origin: *` |
-| Render timeout | Flask écoutait sur `127.0.0.1` au lieu de `0.0.0.0` | `app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5050)))` |
-| Render ne trouve pas les `.joblib` | Root directory = `Application/api`, les modèles sont à la racine | Root directory vide + chemins relatifs `../../modeles` |
-| `requirements.txt` manquant | Fichier créé en local mais jamais pushé | `git add Application/api/requirements.txt && git push` |
+1. Créer un compte sur [planethoster.com](https://planethoster.com) → formule **World Lite**
+2. Dans le panel PlanetHoster :
+   - Créer une base de données MySQL
+   - Noter : host, port, nom BDD, user, password
+3. Importer `database/ia-naha.sql` via phpMyAdmin
 4. Uploader le dossier `Application/` via **FTP** (FileZilla) à la racine `public_html/`
 
 ---

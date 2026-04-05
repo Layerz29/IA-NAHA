@@ -21,7 +21,7 @@
     .dv-hero-badge { font-size:.68rem; font-weight:700; color:#818cf8; text-transform:uppercase; letter-spacing:2.5px; margin-bottom:.7rem; }
     .dv-hero-title { font-size:2rem; font-weight:800; color:#fff; line-height:1.15; margin-bottom:.6rem; letter-spacing:-.5px; }
     .dv-hero-title em { font-style:normal; color:#6ee7b7; }
-    .dv-hero-sub { font-size:.88rem; color:#94a3b8; max-width:580px; line-height:1.7; }
+    .dv-hero-sub { font-size:.88rem; color:#94a3b8; max-width:680px; line-height:1.7; }
     .dv-hero-kpis { display:flex; gap:2.5rem; margin-top:2rem; flex-wrap:wrap; }
     .dv-kpi-val { font-size:2.2rem; font-weight:800; color:#fff; line-height:1; letter-spacing:-1px; }
     .dv-kpi-val span { font-size:1rem; font-weight:600; color:#94a3b8; margin-left:2px; }
@@ -40,40 +40,30 @@
     @media(max-width:900px){.charts-2,.charts-3,.charts-1-2,.charts-2-1{grid-template-columns:1fr;}}
 
     .dv-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.6rem 1.8rem; box-shadow:var(--shadow-sm); }
-    .dv-card-title { font-size:.82rem; font-weight:800; color:var(--ink); margin-bottom:.25rem; }
-    .dv-card-sub { font-size:.72rem; color:var(--muted); margin-bottom:1.2rem; line-height:1.5; }
-    .dv-card canvas { max-height:240px; }
+    .dv-card-title { font-size:.9rem; font-weight:800; color:var(--ink); margin-bottom:.5rem; }
+    .dv-card-sub { font-size:.75rem; color:var(--muted); margin-bottom:1.2rem; line-height:1.6; }
+    .dv-card canvas { max-height:260px; }
     .dv-card.tall canvas { max-height:300px; }
 
     .ml-metrics { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.4rem; }
-    .ml-metric { flex:1; min-width:100px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:.9rem 1rem; text-align:center; }
-    .ml-metric-val { font-size:1.6rem; font-weight:800; color:var(--primary); letter-spacing:-1px; }
-    .ml-metric-lbl { font-size:.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:.2rem; }
+    .ml-metric { flex:1; min-width:120px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:1.2rem 1rem; text-align:center; }
+    .ml-metric-val { font-size:1.8rem; font-weight:800; color:var(--primary); letter-spacing:-1px; }
+    .ml-metric-lbl { font-size:.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:.4rem; }
 
     .src-badge { display:inline-flex; align-items:center; gap:5px; font-size:.63rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-top:1rem; }
     .src-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
-    .src-dot.live { background:#f59e0b; }
 
     .insights-row { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
     .insight { flex:1; min-width:180px; background:var(--primary-lt); border:1px solid var(--primary-bd); border-radius:12px; padding:.9rem 1rem; }
     .insight-icon { font-size:1.3rem; margin-bottom:.4rem; display:block; }
     .insight-text { font-size:.78rem; color:var(--ink2); line-height:1.5; font-weight:600; }
 
-    /* Corrélation nulle */
-    .null-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.4rem; }
-    @media(max-width:900px){.null-grid{grid-template-columns:1fr 1fr;}}
-    .null-card { background:var(--bg-soft); border:1px solid var(--border); border-radius:14px; padding:1.2rem 1rem; text-align:center; }
-    .null-r { font-size:1.8rem; font-weight:800; color:#94a3b8; letter-spacing:-1px; }
-    .null-var { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:.3rem; }
-    .null-verdict { display:inline-block; margin-top:.5rem; font-size:.62rem; font-weight:800; color:#6b7280; background:#f1f5f9; border-radius:6px; padding:2px 8px; }
-
-    /* Highlight r */
     .r-highlight { display:inline-block; font-size:.7rem; font-weight:800; background:#fee2e2; color:#dc2626; border-radius:6px; padding:2px 8px; margin-left:.5rem; }
+    .github-notice { background: var(--bg-soft); border-left: 4px solid var(--primary); padding: 1.2rem; border-radius: 8px; font-size: 0.85rem; color: var(--ink); margin-bottom: 2rem; line-height: 1.6;}
   </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <a href="index.html" class="sidebar-logo">
     <div class="logo-icon">🌿</div>
@@ -99,7 +89,6 @@
   </div>
 </aside>
 
-<!-- MAIN -->
 <main class="main">
   <div class="topbar">
     <div class="topbar-title">Analyses &amp; <em>Visualisations</em></div>
@@ -107,296 +96,233 @@
 
   <div class="content">
 
-    <!-- ── HERO ── -->
     <div class="dv-hero">
-      <div class="dv-hero-badge">📊 Science des données · IA-NAHA</div>
+      <div class="dv-hero-badge">Science des données 4 IA-NAHA</div>
       <div class="dv-hero-title">Exploration des données<br><em>santé & sommeil</em></div>
       <div class="dv-hero-sub">
-        Analyses réalisées sur le dataset <strong style="color:#c7d2fe">Gym Members Exercise Tracking</strong>
-        (3 000 profils globaux → <strong style="color:#6ee7b7">2 011 sportifs</strong> après filtrage)
-        et une base complémentaire <strong style="color:#6ee7b7">Sommeil Sportifs</strong> (1 196 profils).
-        Régression linéaire scikit-learn pour la prédiction du temps de sommeil.
+        Rapport détaillé des analyses réalisées sur nos bases de données. Ce document explique le processus de sélection des données, l'étude des corrélations et l'entraînement de notre Régression Linéaire pour la prédiction du temps de sommeil. La table ACTIVITE provient du dataset <strong>Gym Members Exercise Tracking</strong>, tandis que la table SOMMEIL a été trouvée directement, toutes les deux provenant de Kaggle. Nous avons analysé et trié ces deux bases pour comprendre et conserver les bonnes variables, un processus qui est détaillé juste en dessous.
       </div>
       <div class="dv-hero-kpis">
         <div class="dv-kpi"><div class="dv-kpi-val">3 000<span> profils</span></div><div class="dv-kpi-lbl">Dataset global</div></div>
-        <div class="dv-kpi"><div class="dv-kpi-val">2 011<span> sportifs</span></div><div class="dv-kpi-lbl">Population cible</div></div>
+        <div class="dv-kpi"><div class="dv-kpi-val">2 011<span> sportifs</span></div><div class="dv-kpi-lbl">Cible finale</div></div>
         <div class="dv-kpi"><div class="dv-kpi-val">7,10<span>h</span></div><div class="dv-kpi-lbl">Sommeil moyen</div></div>
-        <div class="dv-kpi"><div class="dv-kpi-val" id="h-plans">–<span> plans</span></div><div class="dv-kpi-lbl">Plans IA-NAHA</div></div>
-        <div class="dv-kpi"><div class="dv-kpi-val" id="h-sleep">–<span>h</span></div><div class="dv-kpi-lbl">Sommeil prédit (moy.)</div></div>
+        <div class="dv-kpi"><div class="dv-kpi-val">10<span> features</span></div><div class="dv-kpi-lbl">Variables ML</div></div>
       </div>
     </div>
+    
+    <div class="github-notice">
+      <strong>Transparence :</strong> Cette page documente notre démarche complète d'Analyse Exploratoire des Données (EDA). L'intégralité du code et l'analyse exhaustive, sous forme de Notebooks Python, sont disponibles en libre accès sur notre dépôt GitHub.
+    </div>
 
-    <!-- ── SECTION 01 : POPULATION & DISTRIBUTION ── -->
     <div class="dv-section">
       <div class="dv-section-head">
         <span class="dv-section-num">01</span>
         <div>
-          <div class="dv-section-title">Population & Distribution du sommeil</div>
-          <div class="dv-section-sub">Filtrage de la base globale (n=3 000) — population sportive retenue : 2 011 profils</div>
+          <div class="dv-section-title">Définition de la cible : Pourquoi filtrer les données ?</div>
+          <div class="dv-section-sub">Nettoyage de la base de données brute pour isoler les profils pertinents.</div>
         </div>
       </div>
 
       <div class="charts-1-2" style="margin-bottom:1.4rem">
         <div class="dv-card">
           <div class="dv-card-title">Sédentaires vs Sportifs</div>
-          <div class="dv-card-sub">Critère : séance ≥ 30 min & intensité Medium/High, ou ≥ 8 000 pas/jour</div>
+          <div class="dv-card-sub">Application de nos critères de sélection sportive sur la base initiale.</div>
           <canvas id="chart-sed-sport"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members · n=3 000</div>
+          <div class="src-badge"><div class="src-dot"></div> Base d'origine : n=3 000</div>
         </div>
         <div class="dv-card">
-          <div class="dv-card-title">Distribution du temps de sommeil (sportifs)</div>
-          <div class="dv-card-sub">Moyenne : <strong>7,10h</strong> · Médiane : <strong>7,10h</strong> · Écart-type : 0,97h · n=2 011</div>
-          <canvas id="chart-sleep-dist"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members Sportifs · n=2 011</div>
+          <div class="dv-card-title">Explication du ciblage</div>
+          <div class="dv-card-sub">
+            <p>Le dataset initial que nous avons exploré contenait 3 000 profils extrêmement variés. Cependant, pour concevoir un algorithme qui soit véritablement utile aux futurs utilisateurs d'IA-NAHA, il était impératif de se concentrer exclusivement sur les personnes physiquement actives. Cela nous a permis d'éliminer les biais statistiques importants liés à la sédentarité totale.</p>
+            <br>
+            <p><strong>Critères de conservation :</strong> Nous avons pris la décision de conserver uniquement les individus réalisant des séances de sport d'au moins 30 minutes avec une intensité Modérée ou Élevée, ou bien les individus effectuant plus de 8 000 pas par jour en moyenne. En appliquant ce filtre rigoureux, nous obtenons notre population cible finale composée de <strong>2 011 sportifs</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-section">
+      <div class="dv-section-head">
+        <span class="dv-section-num">02</span>
+        <div>
+          <div class="dv-section-title">Le choix de la bonne table : Matrices de corrélations</div>
+          <div class="dv-section-sub">Comparaison entre la base de données "Sommeil Logs" et la base "Activité Globale".</div>
+        </div>
+      </div>
+
+      <div class="dv-card" style="margin-bottom:1.4rem">
+        <div class="dv-card-title">L'analyse critique des données (Data Leakage)</div>
+        <div class="dv-card-sub">
+          Au tout début du projet, deux bases de données distinctes s'offraient à nous pour entraîner notre intelligence artificielle. Nous avons généré les matrices de corrélation pour chaque table afin d'identifier quels facteurs influençaient le plus le temps de sommeil. Voici les extraits des coefficients de corrélation de Pearson (noté r) ciblant la durée de sommeil pour chacune de ces deux tables.
         </div>
       </div>
 
       <div class="charts-2" style="margin-bottom:1.4rem">
         <div class="dv-card">
-          <div class="dv-card-title">Répartition des types d'activité</div>
-          <div class="dv-card-sub">Disciplines pratiquées dans le dataset (toutes intensités confondues)</div>
-          <canvas id="chart-activity-dist"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members · n=2 011</div>
+          <div class="dv-card-title">1. Base Sommeil Logs (REJETÉE)</div>
+          <div class="dv-card-sub">Corrélations trop élevées (0.88 pour la qualité du sommeil, -0.81 pour le stress). De plus, "qualité du sommeil" est inconnue avant la nuit (Data Leakage). Nous décidons de considérer que cette base est synthétique.</div>
+          <canvas id="chart-corr-fake"></canvas>
+          <div class="src-badge"><div class="src-dot" style="background:#ef4444"></div> Dataset Synthétique</div>
         </div>
         <div class="dv-card">
-          <div class="dv-card-title">Catégories d'IMC</div>
-          <div class="dv-card-sub">Répartition par catégorie Body Mass Index — standard OMS</div>
-          <canvas id="chart-bmi-cat"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members Sportifs · n=2 011</div>
+          <div class="dv-card-title">2. Base Activité Globale (CONSERVÉE)</div>
+          <div class="dv-card-sub">Corrélations faibles mais réalistes, ancrées dans le monde réel. Le stress se détache clairement des autres variables beaucoup plus complexes à analyser. Cela est logique car l'analyse de données biométriques est difficile.</div>
+          <canvas id="chart-corr-real"></canvas>
+          <div class="src-badge"><div class="src-dot"></div> Gym Members Sportifs</div>
         </div>
       </div>
 
       <div class="insights-row">
-        <div class="insight"><span class="insight-icon">🏃</span><div class="insight-text"><strong>67 %</strong> des 3 000 profils sont classifiés sportifs — 989 sédentaires exclus de l'analyse.</div></div>
-        <div class="insight"><span class="insight-icon">💤</span><div class="insight-text">Le sommeil moyen est de <strong>7,10h</strong> avec un 3e quartile à 7,8h — distribution centrée et quasi-symétrique.</div></div>
-        <div class="insight"><span class="insight-icon">🏊</span><div class="insight-text">Marche, Course et Yoga sont les disciplines les plus représentées — bonne diversité de profils d'entraînement.</div></div>
-        <div class="insight"><span class="insight-icon">⚖️</span><div class="insight-text">La majorité des sportifs présentent un IMC <strong>Normal ou Athlétique</strong>, cohérent avec la population cible.</div></div>
+        <div class="insight">
+          <span class="insight-icon">🛑</span>
+          <div class="insight-text"><strong>Table Sommeil :</strong> Rejetée. Les données sont trop parfaites pour être naturelles. De plus, inclure la qualité du sommeil pose un problème majeur de logique : nous ne pouvons pas prédire une nuit en utilisant une information qui n'est connue qu'au réveil.</div>
+        </div>
+        <div class="insight">
+          <span class="insight-icon">✅</span>
+          <div class="insight-text"><strong>Table Activité :</strong> Conservée. Sur le terrain réel, très peu de facteurs ont une influence directe et massive sur le temps de repos, à l'exception notable du <strong>stress psychologique</strong>. Les autres facteurs ont été gardés pour leurs interactions croisées dans le modèle.</div>
+        </div>
       </div>
     </div>
 
-    <!-- ── SECTION 02 : CORRÉLATIONS ── -->
-    <div class="dv-section">
-      <div class="dv-section-head">
-        <span class="dv-section-num">02</span>
-        <div>
-          <div class="dv-section-title">Facteurs influençant le sommeil — Corrélations</div>
-          <div class="dv-section-sub">Coefficients de Pearson calculés sur la population sportive (n=2 011)</div>
-        </div>
-      </div>
-
-      <!-- Stress (facteur dominant) -->
-      <div class="dv-card" style="margin-bottom:1.4rem">
-        <div class="dv-card-title">
-          Niveau de stress vs Durée de sommeil
-          <span class="r-highlight">r = −0,41 ★ Corrélation significative</span>
-        </div>
-        <div class="dv-card-sub">Sommeil moyen prédit par niveau de stress (1–10) — droite de régression linéaire. Plus le stress augmente, plus le sommeil diminue.</div>
-        <canvas id="chart-stress-sleep" style="max-height:220px"></canvas>
-        <div class="src-badge"><div class="src-dot"></div> Gym Members Sportifs · n=2 011 · r = −0,41 (Pearson)</div>
-      </div>
-
-      <!-- Récapitulatif corrélations -->
-      <div class="charts-2-1" style="margin-bottom:1.4rem">
-        <div class="dv-card">
-          <div class="dv-card-title">Récapitulatif — Coefficients de corrélation r (Pearson)</div>
-          <div class="dv-card-sub">Toutes les variables numériques testées contre la durée de sommeil. Seul le stress dépasse le seuil de significativité.</div>
-          <canvas id="chart-corr-summary" class="tall"></canvas>
-        </div>
-        <div class="dv-card">
-          <div class="dv-card-title">Interprétation</div>
-          <div class="dv-card-sub">Lecture des r de Pearson</div>
-          <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:.5rem">
-            <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;padding:.6rem .9rem;font-size:.76rem;font-weight:700;color:#dc2626">|r| &gt; 0,30 → Corrélation <strong>modérée à forte</strong></div>
-            <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:10px;padding:.6rem .9rem;font-size:.76rem;font-weight:700;color:#92400e">|r| entre 0,10–0,30 → Corrélation <strong>faible</strong></div>
-            <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:.6rem .9rem;font-size:.76rem;font-weight:700;color:#475569">|r| &lt; 0,10 → Corrélation <strong>nulle ou négligeable</strong></div>
-            <div style="background:var(--primary-lt);border:1px solid var(--primary-bd);border-radius:10px;padding:.6rem .9rem;font-size:.76rem;font-weight:700;color:var(--primary);margin-top:.3rem">
-              ✓ Seul <strong>stress_level</strong> (r=−0,41) est retenu comme prédicteur principal
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Intensité / Âge / Activité -->
-      <div class="charts-3" style="margin-bottom:1.4rem">
-        <div class="dv-card">
-          <div class="dv-card-title">Sommeil selon l'intensité</div>
-          <div class="dv-card-sub">Moyennes quasi-identiques — écart max ≈ 4 min entre Élevée et Modérée</div>
-          <canvas id="chart-intensity"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members · n=2 011</div>
-        </div>
-        <div class="dv-card">
-          <div class="dv-card-title">Sommeil par tranche d'âge</div>
-          <div class="dv-card-sub">r = −0,027 — l'âge n'a pas d'influence linéaire sur le sommeil chez les sportifs</div>
-          <canvas id="chart-age-group"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members · n=2 011</div>
-        </div>
-        <div class="dv-card">
-          <div class="dv-card-title">Sommeil par discipline (h/nuit)</div>
-          <div class="dv-card-sub">HIIT légèrement supérieur (7,25h) mais différences non significatives</div>
-          <canvas id="chart-activity-type"></canvas>
-          <div class="src-badge"><div class="src-dot"></div> Gym Members · n=2 011</div>
-        </div>
-      </div>
-
-      <div class="insights-row">
-        <div class="insight"><span class="insight-icon">😰</span><div class="insight-text">Le stress est le <strong>seul prédicteur significatif</strong> (r=−0,41). À stress=10, on prédit 6,38h vs 7,82h à stress=1 — soit −1,44h.</div></div>
-        <div class="insight"><span class="insight-icon">🏋️</span><div class="insight-text">L'intensité de l'entraînement n'a <strong>aucun effet</strong> mesurable : Faible=7,09h, Modérée=7,13h, Élevée=7,06h.</div></div>
-        <div class="insight"><span class="insight-icon">🎂</span><div class="insight-text">L'âge ne joue pas de rôle : 18–30 ans dorment en moyenne <strong>7,17h</strong>, les 46–64 ans <strong>7,07h</strong> — différence de 6 min.</div></div>
-        <div class="insight"><span class="insight-icon">⚡</span><div class="insight-text">Le HIIT est associé au plus de sommeil (7,25h) — mais les différences inter-disciplines restent <strong>statistiquement non significatives</strong>.</div></div>
-      </div>
-    </div>
-
-    <!-- ── SECTION 03 : VARIABLES SANS EFFET ── -->
     <div class="dv-section">
       <div class="dv-section-head">
         <span class="dv-section-num">03</span>
         <div>
-          <div class="dv-section-title">Variables sans effet sur le sommeil</div>
-          <div class="dv-section-sub">r ≈ 0 pour toutes ces variables — droite de régression horizontale dans chaque cas</div>
+          <div class="dv-section-title">Focus sur le facteur dominant : Le Stress</div>
+          <div class="dv-section-sub">Analyse détaillée sur le prédicteur principal de notre étude.</div>
         </div>
       </div>
 
-      <div class="null-grid">
-        <div class="null-card">
-          <div class="null-r">−0,011</div>
-          <div class="null-var">Pas / jour</div>
-          <div class="null-verdict">⊘ Non significatif</div>
+      <div class="dv-card" style="margin-bottom:1.4rem">
+        <div class="dv-card-title">
+          Niveau de stress perçu vs Durée de sommeil moyen
+          <span class="r-highlight">r = -0,41 ★ Corrélation significative</span>
         </div>
-        <div class="null-card">
-          <div class="null-r">+0,004</div>
-          <div class="null-var">Durée séance</div>
-          <div class="null-verdict">⊘ Non significatif</div>
-        </div>
-        <div class="null-card">
-          <div class="null-r">−0,019</div>
-          <div class="null-var">IMC</div>
-          <div class="null-verdict">⊘ Non significatif</div>
-        </div>
-        <div class="null-card">
-          <div class="null-r">−0,037</div>
-          <div class="null-var">Hydratation</div>
-          <div class="null-verdict">⊘ Non significatif</div>
-        </div>
-      </div>
-
-      <div class="dv-card">
-        <div class="dv-card-title">Conclusion de l'analyse exploratoire</div>
-        <div class="dv-card-sub" style="margin-bottom:0">
-          Contrairement aux idées reçues, augmenter son volume d'entraînement (nombre de pas, durée de séance)
-          n'améliore pas mécaniquement la durée de sommeil chez un sportif. L'IMC, l'hydratation, l'âge et l'intensité
-          sont également sans effet linéaire. <strong>Le stress psychologique perçu est le seul facteur avec une corrélation
-          substantielle (r = −0,41)</strong> — il est logiquement retenu comme variable principale du modèle ML.
-          Les 9 autres variables (genre, tabac, activité, IMC…) sont conservées pour leur apport combiné au modèle.
-        </div>
+        <div class="dv-card-sub">Ce graphique illustre l'évolution du sommeil moyen en fonction du niveau de stress déclaré sur une échelle de 1 à 10. Les données montrent clairement que plus le stress augmente, plus le temps de sommeil diminue de manière drastique chez les sportifs.</div>
+        <canvas id="chart-stress-sleep" style="max-height:240px"></canvas>
       </div>
     </div>
 
-    <!-- ── SECTION 04 : MODÈLE ML ── -->
     <div class="dv-section">
       <div class="dv-section-head">
         <span class="dv-section-num">04</span>
         <div>
-          <div class="dv-section-title">Modèle ML — Régression linéaire (scikit-learn)</div>
-          <div class="dv-section-sub">Prédiction de la durée de sommeil à partir de 10 variables normalisées (StandardScaler)</div>
+          <div class="dv-section-title">Analyse des variables écartées : La Pression Artérielle</div>
+          <div class="dv-section-sub">Pourquoi certains facteurs biométriques n'ont pas été retenus dans le modèle.</div>
         </div>
       </div>
 
-      <div class="ml-metrics">
-        <div class="ml-metric"><div class="ml-metric-val">0,87</div><div class="ml-metric-lbl">R² Score</div></div>
-        <div class="ml-metric"><div class="ml-metric-val">0,28</div><div class="ml-metric-lbl">MAE (h)</div></div>
-        <div class="ml-metric"><div class="ml-metric-val">0,35</div><div class="ml-metric-lbl">RMSE (h)</div></div>
-        <div class="ml-metric"><div class="ml-metric-val">10</div><div class="ml-metric-lbl">Variables</div></div>
-        <div class="ml-metric"><div class="ml-metric-val">2 011</div><div class="ml-metric-lbl">Observations</div></div>
-        <div class="ml-metric"><div class="ml-metric-val">80/20</div><div class="ml-metric-lbl">Train / Test</div></div>
-      </div>
-
-      <div class="charts-2-1">
-        <div class="dv-card tall">
-          <div class="dv-card-title">Importance des variables (coefficients standardisés)</div>
-          <div class="dv-card-sub">Contribution de chaque feature après normalisation StandardScaler — stress_level est le prédicteur dominant</div>
-          <canvas id="chart-feature-imp"></canvas>
+      <div class="charts-1-2">
+        <div class="dv-card">
+          <div class="dv-card-title">Pression Artérielle Systolique vs Temps de Sommeil</div>
+          <div class="dv-card-sub">Visualisation de la régression linéaire sur cette variable spécifique.</div>
+          <canvas id="chart-bp-sleep"></canvas>
+          <div class="src-badge"><div class="src-dot"></div> Gym Members Sportifs : r = 0,032</div>
         </div>
         <div class="dv-card">
-          <div class="dv-card-title">Pipeline du modèle</div>
-          <div class="dv-card-sub">Architecture de traitement</div>
-          <div style="margin-top:.5rem;display:flex;flex-direction:column;gap:.7rem">
-            <div style="background:var(--primary-lt);border:1px solid var(--primary-bd);border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:var(--primary)">① Données brutes (10 features)</div>
-            <div style="text-align:center;color:var(--muted);font-size:.75rem">▼ LabelEncoder</div>
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:#166534">② Catégorielles → entiers</div>
-            <div style="text-align:center;color:var(--muted);font-size:.75rem">▼ StandardScaler</div>
-            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:#9a3412">③ Normalisation (μ=0, σ=1)</div>
-            <div style="text-align:center;color:var(--muted);font-size:.75rem">▼ LinearRegression</div>
-            <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:.7rem 1rem;font-size:.78rem;font-weight:700;color:#7c3aed">④ Prédiction : durée sommeil (h)</div>
+          <div class="dv-card-title">Justification de l'exclusion</div>
+          <div class="dv-card-sub">
+            <p>La pression artérielle est souvent citée comme un indicateur de santé important. Cependant, nos analyses ont révélé deux obstacles majeurs pour son intégration dans IA-NAHA.</p>
+            <br>
+            <p><strong>Absence de lien statistique :</strong> Comme on peut le voir sur le graphique de régression, la ligne est quasiment horizontale. Le coefficient de corrélation est extrêmement faible (r = 0,032), ce qui signifie que la pression artérielle n'explique pratiquement pas les variations de sommeil dans notre population cible.</p>
+            <br>
+            <p><strong>Contrainte matérielle :</strong> Demander cette donnée à l'utilisateur nécessiterait l'usage quotidien d'un tensiomètre médical. Pour préserver la simplicité d'utilisation de notre plateforme, nous avons préféré écarter ce signal trop faible.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── SECTION 05 : PLANS NAHA LIVE ── -->
     <div class="dv-section">
       <div class="dv-section-head">
         <span class="dv-section-num">05</span>
         <div>
-          <div class="dv-section-title">Plans nutritionnels IA-NAHA</div>
-          <div class="dv-section-sub">Statistiques en temps réel depuis la base de données applicative</div>
+          <div class="dv-section-title">Le Modèle de Machine Learning Final</div>
+          <div class="dv-section-sub">Comprendre le fonctionnement de la Régression Linéaire et le poids des variables.</div>
         </div>
       </div>
 
-      <div class="charts-3" style="margin-bottom:1.4rem">
+      <div class="ml-metrics">
+        <div class="ml-metric"><div class="ml-metric-val">0,14</div><div class="ml-metric-lbl">R² Score K-Fold</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">0,85</div><div class="ml-metric-lbl">Erreur RMSE (h)</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">0,95</div><div class="ml-metric-lbl">RMSE LOO (h)</div></div>
+        <div class="ml-metric"><div class="ml-metric-val">10</div><div class="ml-metric-lbl">Features</div></div>
+      </div>
+
+      <div class="charts-1-2">
         <div class="dv-card">
-          <div class="dv-card-title">Répartition macronutriments</div>
-          <div class="dv-card-sub">Moyenne des plans générés (g/jour)</div>
-          <canvas id="chart-macros"></canvas>
-          <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+          <div class="dv-card-title">Comment fonctionne notre Régression Linéaire ?</div>
+          <div class="dv-card-sub">
+            <p>La Régression Linéaire est un algorithme qui cherche à tracer la meilleure ligne possible à travers nos données pour prédire une valeur future. Elle fonctionne en attribuant un coefficient spécifique, c'est à dire un poids mathématique, à chaque variable de l'utilisateur.</p>
+            <br>
+            <p>Concrètement, l'algorithme part d'un temps de sommeil moyen. Ensuite, il ajoute ou soustrait des minutes en fonction du profil. Par exemple, un stress très élevé va soustraire une part importante du temps de sommeil de base, tandis qu'un âge plus avancé ou une activité intense apporteront d'autres petits ajustements pour affiner le résultat final.</p>
+            <br>
+            <p><strong>Des performances réalistes :</strong> Bien que le R² de 0,14 puisse sembler faible d'un point de vue purement théorique, il est extrêmement cohérent lorsqu'il s'agit d'anticiper un comportement biologique humain. L'erreur moyenne de notre modèle (RMSE) est d'environ 50 minutes (0,85h), ce qui nous permet de formuler des recommandations solides et utiles.</p>
+          </div>
         </div>
         <div class="dv-card">
-          <div class="dv-card-title">Sommeil prédit par activité</div>
-          <div class="dv-card-sub">Durée prédite selon le sport pratiqué (h)</div>
-          <canvas id="chart-sleep-activity"></canvas>
-          <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+          <div class="dv-card-title">Poids absolu des coefficients dans l'algorithme</div>
+          <div class="dv-card-sub">Ce graphique représente l'impact relatif des variables dans l'équation de la Régression Linéaire, après normalisation des données. Ces valeurs modérées traduisent notre R² de 0,14, confirmant que le stress est le véritable moteur principal de l'équation.</div>
+          <canvas id="chart-feature-imp"></canvas>
         </div>
-        <div class="dv-card">
-          <div class="dv-card-title">Calories cibles par objectif</div>
-          <div class="dv-card-sub">Kcal/jour moyen selon l'objectif déclaré</div>
-          <canvas id="chart-cal-objectif"></canvas>
-          <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+      </div>
+    </div>
+
+    <div class="dv-section">
+      <div class="dv-section-head">
+        <span class="dv-section-num">06</span>
+        <div>
+          <div class="dv-section-title">Conclusion du Projet IA-NAHA</div>
+          <div class="dv-section-sub">Synthèse des apprentissages de notre exploration des données</div>
         </div>
       </div>
 
       <div class="dv-card">
-        <div class="dv-card-title">Évolution des plans générés dans le temps</div>
-        <div class="dv-card-sub">Nombre de plans et calories moyennes cibles par mois</div>
-        <canvas id="chart-timeline" style="max-height:200px"></canvas>
-        <div class="src-badge"><div class="src-dot live"></div> Live — Base IA-NAHA</div>
+        <div class="dv-card-title">Ce qu'il faut retenir de notre démarche analytique</div>
+        <div class="dv-card-sub" style="margin-bottom:0">
+          <p><strong>Côté Données :</strong> L'analyse exploratoire a rapidement mis en évidence l'importance absolue d'un ciblage rigoureux. En prenant soin d'exclure les profils sédentaires, nous avons pu isoler les véritables comportements de notre cible sportive. Contre toute attente, l'étude approfondie a prouvé que le volume de sport quotidien (nombre de pas, durée de l'effort) n'influence pas mécaniquement le temps de sommeil. Le <strong>niveau de stress</strong> s'est imposé avec force comme le seul véritable indicateur prédictif majeur de notre étude.</p>
+          <br>
+          <p><strong>Côté Machine Learning :</strong> Toute notre démarche de modélisation a consisté à privilégier la réalité complexe du terrain plutôt que la perfection mathématique illusoire. Nous avons délibérément rejeté la base de données secondaire qui offrait un résultat parfait de 0,99 à cause de variables biaisées, créant une fuite de données inacceptable pour un outil prédictif. À la place, notre Régression Linéaire a été entraînée sur 10 variables comportementales réalistes (âge, IMC, intensité). Elle offre un modèle robuste, réaliste vis-à-vis du comportement humain, et parfaitement adapté pour formuler des recommandations fiables dans le cadre de notre application.</p>
+          <br>
+          <p><strong>Limites:</strong> L'analyse de données biométriques et comportementales reste un exercice extrêmement difficile. Nous tenons à souligner que nous ne nous considérons pas comme des professionnels de la santé ou des experts infaillibles en data science. Ce projet représente avant tout une expérimentation rigoureuse, transparente et honnête, menée avec les outils à notre disposition pour tenter de comprendre au mieux ces phénomènes complexes.</p>
+        </div>
       </div>
     </div>
 
-  </div><!-- /content -->
-</main>
+  </div></main>
 
 <script>
+// Auth
 const _local = ['localhost','127.0.0.1'].includes(window.location.hostname);
 const API = window.location.origin + (_local ? '/SD4/IA-NAHA/Application/api' : '/IA-NAHA/Application/api');
+(async function loadUser() {
+  let name  = localStorage.getItem('naha_prenom') || sessionStorage.getItem('naha_prenom') || '';
+  let email = localStorage.getItem('naha_email')  || '';
 
-// ── Auth guard ──
-const _tok = localStorage.getItem('naha_token') || '';
-if (!_tok) { localStorage.setItem('naha_redirect', window.location.href); window.location.href = 'login.html'; }
+  if (!name) {
+    try {
+      const token = localStorage.getItem('naha_token') || sessionStorage.getItem('naha_token');
+      if (token) {
+        const res  = await fetch(`${API}/get_user.php`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        if (data.prenom) {
+          name  = data.prenom;
+          email = data.email || '';
+          localStorage.setItem('naha_prenom', name);
+          localStorage.setItem('naha_email',  email);
+        }
+      }
+    } catch(e) {}
+  }
 
-// ── Sidebar user ──
-(function() {
-  const tok = localStorage.getItem('naha_token') || '';
-  if (!tok) return;
-  fetch(`${API}/get_user.php`, { headers: { 'Authorization':'Bearer '+tok, 'X-Auth-Token': tok } })
-    .then(r => r.json()).then(u => {
-      if (u.error) return;
-      document.getElementById('user-avatar').textContent = (u.prenom||'?')[0].toUpperCase();
-      document.getElementById('user-name').textContent   = (u.prenom||'') + ' ' + (u.nom||'');
-      document.getElementById('user-email').textContent  = u.email || '';
-    }).catch(() => {});
+  if (name)  { document.getElementById('user-name').textContent  = name; document.getElementById('user-avatar').textContent = name[0].toUpperCase(); }
+  if (email) { document.getElementById('user-email').textContent = email; }
 })();
-function logout() { localStorage.clear(); sessionStorage.clear(); window.location.href = 'login.html'; }
+function logout() {
+  localStorage.clear(); sessionStorage.clear();
+  window.location.href = 'login.html';
+}
 
-// ── Palette & config ──
+// Configuration globale
 const C = {
   purple:'#4f46e5', purpleL:'rgba(79,70,229,.15)',
   green: '#10b981', greenL: 'rgba(16,185,129,.15)',
@@ -404,217 +330,86 @@ const C = {
   pink:  '#ec4899', pinkL:  'rgba(236,72,153,.15)',
   teal:  '#06b6d4', tealL:  'rgba(6,182,212,.15)',
   red:   '#ef4444', redL:   'rgba(239,68,68,.15)',
-  indigo:'#6366f1', sky:    '#0ea5e9', lime:'#84cc16', slate:'#94a3b8',
+  sky:   '#0ea5e9', lime:'#84cc16', slate:'#94a3b8',
 };
 const FONT = { family:"'Montserrat', sans-serif", weight:'700' };
 Chart.defaults.font = { family:"'Montserrat', sans-serif", size:11 };
 Chart.defaults.color = '#6b7280';
 
-const ACT_MAP = {0:'Vélo',1:'Danse',2:'HIIT',3:'Course',4:'Muscu',5:'Natation',6:'Marche',7:'Fitness',8:'Yoga'};
-const OBJ_MAP_ABBR = v => v ? v.split(',')[0].replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase()).slice(0,12) : '?';
+// Données DataViz et Notebooks
+const stressData = [7.62, 7.46, 7.54, 7.56, 7.34, 6.98, 6.70, 6.36, 6.35, 6.27];
 
-// ── Données hardcodées issues du notebook ──
 const DS = {
-  // Section 01
-  sedSport: { labels:['Sportifs (Cible)','Sédentaires (Exclus)'], data:[2011,989], colors:[C.green, C.slate] },
-
-  sleepDist: {
-    labels: ['< 5h','5–6h','6–7h','7–7,5h','7,5–8h','8–9h','> 9h'],
-    data:   [40, 161, 503, 402, 402, 402, 101],
-    // n=2011, mean=7.10, std=0.97, Q1=6.5, med=7.1, Q3=7.8
+  sedSport: { labels:['Sportifs retenus', 'Sédentaires exclus'], data:[2011, 989], colors:[C.green, C.slate] },
+  
+  corrFake: {
+    labels: ['Qualité du sommeil', 'Niveau de stress', 'Fréquence cardiaque', 'Activité physique'],
+    data: [0.88, -0.81, -0.51, 0.01],
+    colors: [C.red, C.red, C.amber, C.slate]
+  },
+  
+  corrReal: { 
+    labels: ['Niveau de stress', 'Âge', 'Hydratation', 'IMC', 'Pas / jour', 'Pression artérielle'], 
+    data: [-0.413, -0.027, -0.037, -0.019, -0.011, 0.032], 
+    colors: [C.red, C.slate, C.slate, C.slate, C.slate, C.slate] 
   },
 
-  activityDist: {
-    labels: ['Marche','Course','Natation','Yoga','Vélo','HIIT','Danse','Muscu','Tennis','Basketball'],
-    data:   [280, 260, 230, 220, 210, 198, 195, 192, 118, 108],
-    colors: [C.green,C.purple,C.teal,C.pink,C.amber,C.red,C.indigo,C.sky,C.lime,C.amber],
-  },
-
-  bmiCat: {
-    labels: ['Maigre','Normal','Surpoids','Obésité'],
-    data:   [120, 820, 880, 191],
-    colors: [C.sky, C.green, C.amber, C.red],
-  },
-
-  // Section 02 — Stress (r = -0.41)
-  // Valeurs prédites par la droite de régression : sleep = 7.10 - 0.159*(stress - 5.5)
   stressSleep: {
-    labels: ['1','2','3','4','5','6','7','8','9','10'],
-    data:   [7.82, 7.66, 7.50, 7.34, 7.18, 7.02, 6.86, 6.70, 6.54, 6.38],
-    colors: (s => s.map(v =>
-      v > 7.5 ? C.greenL : v > 7.0 ? C.amberL : v > 6.5 ? 'rgba(245,158,11,.35)' : C.redL
-    ))([7.82, 7.66, 7.50, 7.34, 7.18, 7.02, 6.86, 6.70, 6.54, 6.38]),
-    borders: (s => s.map(v =>
-      v > 7.5 ? C.green : v > 7.0 ? C.amber : v > 6.5 ? '#f97316' : C.red
-    ))([7.82, 7.66, 7.50, 7.34, 7.18, 7.02, 6.86, 6.70, 6.54, 6.38]),
+    labels: ['Niveau 1', 'Niveau 2', 'Niveau 3', 'Niveau 4', 'Niveau 5', 'Niveau 6', 'Niveau 7', 'Niveau 8', 'Niveau 9', 'Niveau 10'],
+    data: stressData,
+    colors: stressData.map(v => v > 7.5 ? C.greenL : v > 7.0 ? C.amberL : v > 6.5 ? 'rgba(245,158,11,.35)' : C.redL),
+    borders: stressData.map(v => v > 7.5 ? C.green : v > 7.0 ? C.amber : v > 6.5 ? '#f97316' : C.red)
   },
 
-  // Récapitulatif corrélations (r de Pearson)
-  corrSummary: {
-    labels: ['Stress (r=−0,41)','Hydratation','Âge','IMC','Pas/jour','Durée séance'],
-    data:   [-0.41, -0.037, -0.027, -0.019, -0.011, 0.004],
-    colors: v => v.map(r => Math.abs(r) > 0.1 ? C.red : Math.abs(r) > 0.03 ? C.amber : C.slate),
+  bpSleep: {
+    labels: [110, 115, 120, 125, 130, 135, 140],
+    data: [7.08, 7.10, 7.11, 7.09, 7.12, 7.10, 7.13]
   },
-
-  // Intensité (moyennes notebook)
-  intensity: {
-    labels: ['Faible (Low)','Modérée (Medium)','Élevée (High)'],
-    data:   [7.09, 7.13, 7.06],
-    colors: [C.greenL, C.amberL, C.redL],
-    borders:[C.green, C.amber, C.red],
-  },
-
-  // Âge (moyennes notebook)
-  ageGroup: {
-    labels: ['18–30 ans','31–45 ans','46–64 ans'],
-    data:   [7.17, 7.09, 7.07],
-    colors: [C.purpleL, C.tealL, C.pinkL],
-    borders:[C.purple, C.teal, C.pink],
-  },
-
-  // Activité vs sommeil (moyennes notebook)
-  actSleep: {
-    labels: ['HIIT','Tennis','Basketball','Vélo','Natation','Danse','Course','Marche','Yoga'],
-    data:   [7.25, 7.13, 7.12, 7.12, 7.11, 7.10, 7.09, 7.08, 7.08],
-    colors: [C.red,C.lime,C.sky,C.amber,C.teal,C.pink,C.purple,C.green,C.indigo],
-  },
-
-  // Feature importance (coefficients standardisés — modèle ML)
+  
   featureImp: {
-    labels: ['Niveau de stress','Type d\'activité','Statut tabac','Genre','Hydratation','Intensité','IMC','Pas / jour','Durée séance','Âge'],
-    data:   [0.82, 0.45, 0.38, 0.31, 0.24, 0.18, 0.14, 0.10, 0.08, 0.06],
-    colors: [C.red,C.purple,C.pink,C.sky,C.teal,C.amber,C.amber,C.green,C.indigo,C.lime],
-  },
+    labels: ['Stress', 'Âge', 'IMC', 'Durée séance', 'Pas / jour', 'Hydratation', 'Genre', 'Intensité', 'Type activité', 'Statut tabac'],
+    data:   [0.15, 0.05, 0.04, 0.03, 0.03, 0.02, 0.02, 0.01, 0.01, 0.01],
+    colors: [C.red, C.slate, C.slate, C.slate, C.slate, C.slate, C.slate, C.slate, C.slate, C.slate]
+  }
 };
 
-// ── Helpers Chart.js ──
-function mkBar(id, labels, datasets, opts={}) {
-  return new Chart(document.getElementById(id), {
-    type:'bar', data:{ labels, datasets },
-    options:{ responsive:true, plugins:{ legend:{ display:datasets.length>1, labels:{font:FONT,boxWidth:12} }, tooltip:{callbacks:{label:c=>` ${c.formattedValue}`}} }, scales:{ x:{grid:{display:false},ticks:{font:FONT}}, y:{grid:{color:'#f1f5f9'},ticks:{font:FONT}} }, ...opts }
-  });
-}
-function mkDoughnut(id, labels, data, colors) {
-  return new Chart(document.getElementById(id), {
-    type:'doughnut', data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:2, borderColor:'#fff', hoverOffset:8 }] },
-    options:{ responsive:true, cutout:'62%', plugins:{ legend:{ position:'bottom', labels:{font:FONT,boxWidth:10,padding:12} } } }
-  });
-}
-function mkHBar(id, labels, data, colors, opts={}) {
-  return new Chart(document.getElementById(id), {
-    type:'bar', data:{ labels, datasets:[{ data, backgroundColor:colors, borderWidth:1.5, borderRadius:5 }] },
-    options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{grid:{color:'#f1f5f9'},ticks:{font:FONT}}, y:{grid:{display:false},ticks:{font:FONT}} }, ...opts }
-  });
-}
-
-// ── Section 01 ──
-mkDoughnut('chart-sed-sport', DS.sedSport.labels, DS.sedSport.data, DS.sedSport.colors);
-
-mkBar('chart-sleep-dist', DS.sleepDist.labels, [{
-  label:'Nb profils', data:DS.sleepDist.data,
-  backgroundColor:C.purpleL, borderColor:C.purple, borderWidth:2, borderRadius:6,
-}], { plugins:{ annotation:{} } });
-
-mkDoughnut('chart-activity-dist', DS.activityDist.labels, DS.activityDist.data, DS.activityDist.colors);
-mkDoughnut('chart-bmi-cat', DS.bmiCat.labels, DS.bmiCat.data, DS.bmiCat.colors);
-
-// ── Section 02 — Stress ──
-mkBar('chart-stress-sleep', DS.stressSleep.labels, [{
-  label:'Sommeil moyen (h)', data:DS.stressSleep.data,
-  backgroundColor:DS.stressSleep.colors, borderColor:DS.stressSleep.borders, borderWidth:2, borderRadius:6,
-}], { scales:{ y:{ min:6.0, max:8.2, grid:{color:'#f1f5f9'}, ticks:{font:FONT, callback:v=>v.toFixed(1)+'h'} }, x:{grid:{display:false},ticks:{font:FONT}} } });
-
-// Corrélations summary (diverging)
-new Chart(document.getElementById('chart-corr-summary'), {
-  type:'bar',
-  data:{
-    labels: DS.corrSummary.labels,
-    datasets:[{
-      data: DS.corrSummary.data,
-      backgroundColor: DS.corrSummary.data.map(r => Math.abs(r)>0.1 ? C.redL : Math.abs(r)>0.03 ? C.amberL : 'rgba(148,163,184,.2)'),
-      borderColor:      DS.corrSummary.data.map(r => Math.abs(r)>0.1 ? C.red  : Math.abs(r)>0.03 ? C.amber  : C.slate),
-      borderWidth:2, borderRadius:5,
-    }]
-  },
-  options:{
-    indexAxis:'y', responsive:true,
-    plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` r = ${c.formattedValue}`}} },
-    scales:{
-      x:{ min:-0.5, max:0.1, grid:{color:'#f1f5f9'}, ticks:{font:FONT, callback:v=>v.toFixed(2)}, title:{display:true,text:'Coefficient de Pearson r',font:FONT} },
-      y:{ grid:{display:false}, ticks:{font:FONT} }
-    }
-  }
+// Initialisations
+new Chart(document.getElementById('chart-sed-sport'), {
+  type:'doughnut', 
+  data:{ labels: DS.sedSport.labels, datasets:[{ data: DS.sedSport.data, backgroundColor: DS.sedSport.colors, borderWidth:2, borderColor:'#fff', hoverOffset:8 }] },
+  options:{ responsive:true, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{font:FONT, boxWidth:12, padding:15} } } }
 });
 
-// Intensité
-mkBar('chart-intensity', DS.intensity.labels, [{
-  label:'Sommeil moyen (h)', data:DS.intensity.data,
-  backgroundColor:DS.intensity.colors, borderColor:DS.intensity.borders, borderWidth:2, borderRadius:6,
-}], { scales:{ y:{ min:6.9, max:7.3, ticks:{font:FONT,callback:v=>v.toFixed(2)+'h'}, grid:{color:'#f1f5f9'} }, x:{grid:{display:false},ticks:{font:FONT}} } });
+new Chart(document.getElementById('chart-corr-fake'), {
+  type:'bar', 
+  data:{ labels: DS.corrFake.labels, datasets:[{ data: DS.corrFake.data, backgroundColor: DS.corrFake.colors.map(c=>c+'cc'), borderWidth:1.5, borderRadius:4 }] },
+  options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{ min:-1, max:1, grid:{color:'#f1f5f9'} }, y:{grid:{display:false}, ticks:{font:FONT}} } }
+});
 
-// Âge
-mkBar('chart-age-group', DS.ageGroup.labels, [{
-  label:'Sommeil moyen (h)', data:DS.ageGroup.data,
-  backgroundColor:DS.ageGroup.colors, borderColor:DS.ageGroup.borders, borderWidth:2, borderRadius:6,
-}], { scales:{ y:{ min:6.9, max:7.3, ticks:{font:FONT,callback:v=>v.toFixed(2)+'h'}, grid:{color:'#f1f5f9'} }, x:{grid:{display:false},ticks:{font:FONT}} } });
+new Chart(document.getElementById('chart-corr-real'), {
+  type:'bar', 
+  data:{ labels: DS.corrReal.labels, datasets:[{ data: DS.corrReal.data, backgroundColor: DS.corrReal.colors.map(c=>c+'cc'), borderWidth:1.5, borderRadius:4 }] },
+  options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{ min:-0.5, max:0.1, grid:{color:'#f1f5f9'} }, y:{grid:{display:false}, ticks:{font:FONT}} } }
+});
 
-// Activité vs sommeil
-mkHBar('chart-activity-type',
-  DS.actSleep.labels,
-  DS.actSleep.data,
-  DS.actSleep.colors.map(c=>c+'bb'),
-  { scales:{ x:{ min:6.9, max:7.4, ticks:{font:FONT,callback:v=>v.toFixed(2)+'h'}, grid:{color:'#f1f5f9'} }, y:{grid:{display:false},ticks:{font:FONT}} } }
-);
+new Chart(document.getElementById('chart-stress-sleep'), {
+  type:'bar', 
+  data:{ labels: DS.stressSleep.labels, datasets:[{ label:'Sommeil (h)', data:DS.stressSleep.data, backgroundColor:DS.stressSleep.colors, borderColor:DS.stressSleep.borders, borderWidth:2, borderRadius:6 }] },
+  options:{ responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ min:6.0, max:8.2, grid:{color:'#f1f5f9'}, ticks:{font:FONT, callback:v=>v.toFixed(1)+'h'} }, x:{grid:{display:false}, ticks:{font:FONT}} } }
+});
 
-// ── Section 04 — Feature importance ──
-mkHBar('chart-feature-imp',
-  DS.featureImp.labels,
-  DS.featureImp.data,
-  DS.featureImp.colors.map(c=>c+'cc'),
-  { scales:{ x:{ max:1, ticks:{font:FONT,callback:v=>(v*100).toFixed(0)+'%'}, grid:{color:'#f1f5f9'} }, y:{grid:{display:false},ticks:{font:FONT}} } }
-);
+new Chart(document.getElementById('chart-bp-sleep'), {
+  type:'line',
+  data:{ labels: DS.bpSleep.labels, datasets:[{ label:'Sommeil (h)', data:DS.bpSleep.data, borderColor:C.purple, backgroundColor:C.purpleL, fill:true, tension:0.1, pointRadius:4 }] },
+  options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ min:6.5, max:7.5, grid:{color:'#f1f5f9'}, ticks:{font:FONT, callback:v=>v.toFixed(1)+'h'} }, x:{title:{display:true, text:'Pression Systolique (mmHg)', font:FONT}, grid:{display:false}, ticks:{font:FONT}} } }
+});
 
-// ── Section 05 — Live ──
-const authH = { 'Authorization':'Bearer '+_tok, 'X-Auth-Token':_tok };
-fetch(`${API}/get_stats.php`, { headers: authH })
-  .then(r => r.json())
-  .then(d => {
-    if (d.kpis) {
-      if (d.kpis.total_plans) document.getElementById('h-plans').innerHTML = d.kpis.total_plans + '<span> plans</span>';
-      if (d.kpis.avg_sleep)   document.getElementById('h-sleep').innerHTML = d.kpis.avg_sleep + '<span>h</span>';
-    }
+new Chart(document.getElementById('chart-feature-imp'), {
+  type:'bar', 
+  data:{ labels: DS.featureImp.labels, datasets:[{ data: DS.featureImp.data, backgroundColor: DS.featureImp.colors.map(c=>c+'cc'), borderWidth:1.5, borderRadius:4 }] },
+  options:{ indexAxis:'y', responsive:true, plugins:{ legend:{display:false} }, scales:{ x:{ max:0.2, grid:{color:'#f1f5f9'} }, y:{grid:{display:false}, ticks:{font:FONT}} } }
+});
 
-    const m = d.macros_avg;
-    if (m && (m.avg_prot || m.avg_gluc || m.avg_lip)) {
-      mkDoughnut('chart-macros', ['Protéines','Glucides','Lipides'], [m.avg_prot||0, m.avg_gluc||0, m.avg_lip||0], [C.purple, C.amber, C.green]);
-    } else { document.getElementById('chart-macros').parentElement.querySelector('.dv-card-sub').textContent = 'Aucun plan en base pour l\'instant.'; }
-
-    if (d.sleep_by_activity && d.sleep_by_activity.length) {
-      const sa = d.sleep_by_activity;
-      mkBar('chart-sleep-activity', sa.map(r=>ACT_MAP[r.activity_type]||('Act.'+r.activity_type)),
-        [{ label:'Sommeil prédit (h)', data:sa.map(r=>r.avg_sleep), backgroundColor:C.tealL, borderColor:C.teal, borderWidth:2, borderRadius:6 }]);
-    }
-
-    if (d.cal_by_objectif && d.cal_by_objectif.length) {
-      const co = d.cal_by_objectif;
-      mkBar('chart-cal-objectif', co.map(r=>OBJ_MAP_ABBR(r.objectif)),
-        [{ label:'Kcal/j', data:co.map(r=>r.avg_cal), backgroundColor:C.amberL, borderColor:C.amber, borderWidth:2, borderRadius:6 }]);
-    }
-
-    if (d.plans_over_time && d.plans_over_time.length) {
-      const t = d.plans_over_time;
-      new Chart(document.getElementById('chart-timeline'), {
-        type:'line',
-        data:{ labels:t.map(r=>r.month), datasets:[
-          { label:'Plans', data:t.map(r=>r.n), borderColor:C.purple, backgroundColor:C.purpleL, fill:true, tension:.4, pointRadius:4, yAxisID:'y' },
-          { label:'Kcal moy.', data:t.map(r=>r.avg_cal), borderColor:C.amber, backgroundColor:'transparent', fill:false, tension:.4, pointRadius:4, yAxisID:'y2', borderDash:[4,4] }
-        ]},
-        options:{ responsive:true, interaction:{mode:'index'}, plugins:{legend:{labels:{font:FONT,boxWidth:12}}},
-          scales:{ x:{grid:{display:false},ticks:{font:FONT}}, y:{grid:{color:'#f1f5f9'},ticks:{font:FONT}}, y2:{position:'right',grid:{display:false},ticks:{font:FONT}} } }
-      });
-    }
-  })
-  .catch(() => {});
 </script>
 </body>
 </html>

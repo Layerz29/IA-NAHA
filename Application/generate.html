@@ -328,7 +328,8 @@ RÈGLES : commence par { , termine par } , aucun texte ni markdown autour.`;
     activateStep(2); animateProgress(15, 35, 600);
     try {
       const ciqualRes = await fetch(`${API_BASE}/ciqual.php`);
-      CIQUAL = await ciqualRes.json();
+      const ciqualData = await ciqualRes.json();
+      CIQUAL = Array.isArray(ciqualData) ? ciqualData : [];
     } catch (e) {
       CIQUAL = [];
     }

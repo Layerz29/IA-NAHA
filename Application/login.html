@@ -255,6 +255,7 @@
             localStorage.setItem('naha_user_id', data.user_id);
             localStorage.setItem('naha_prenom', data.prenom);
             localStorage.setItem('naha_token', data.token);
+            localStorage.setItem('naha_email', email);
             showAlert('login-success', '✓ Connexion réussie ! Redirection…', 'success');
             setTimeout(() => {
                 window.location.href = `dashboard.html`;
@@ -309,6 +310,8 @@
             setTimeout(() => {
                 localStorage.setItem('naha_user_id', data.user_id);
                 localStorage.setItem('naha_token', data.token);
+                localStorage.setItem('naha_prenom', data.prenom || prenom);
+                localStorage.setItem('naha_email', data.email || email);
                 window.location.href = `onboarding.html`;
             }, 1500);
 
