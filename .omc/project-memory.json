@@ -107,22 +107,40 @@
   },
   "hotPaths": [
     {
+      "path": "Application/generate.html",
+      "accessCount": 13,
+      "lastAccessed": 1775382846900,
+      "type": "file"
+    },
+    {
+      "path": "Application/onboarding.html",
+      "accessCount": 12,
+      "lastAccessed": 1775382845583,
+      "type": "directory"
+    },
+    {
+      "path": "Application/dashboard.html",
+      "accessCount": 11,
+      "lastAccessed": 1775382844814,
+      "type": "file"
+    },
+    {
+      "path": "Application/dataviz.html",
+      "accessCount": 11,
+      "lastAccessed": 1775382848298,
+      "type": "file"
+    },
+    {
       "path": "Application/api/gemini.php",
       "accessCount": 10,
       "lastAccessed": 1775381615325,
       "type": "file"
     },
     {
-      "path": "Application/generate.html",
-      "accessCount": 9,
-      "lastAccessed": 1775381607075,
-      "type": "file"
-    },
-    {
-      "path": "Application/onboarding.html",
+      "path": "Application/login.html",
       "accessCount": 8,
-      "lastAccessed": 1775381603726,
-      "type": "directory"
+      "lastAccessed": 1775382841910,
+      "type": "file"
     },
     {
       "path": "Notebook_DataViz.ipynb",
@@ -131,40 +149,28 @@
       "type": "directory"
     },
     {
-      "path": "Application/dashboard.html",
-      "accessCount": 7,
-      "lastAccessed": 1775381605146,
-      "type": "file"
-    },
-    {
-      "path": "Application/dataviz.html",
-      "accessCount": 7,
-      "lastAccessed": 1775381605921,
-      "type": "file"
-    },
-    {
       "path": "Application/api/config.php",
       "accessCount": 6,
       "lastAccessed": 1775380296065,
       "type": "file"
     },
     {
-      "path": "Application/login.html",
-      "accessCount": 4,
-      "lastAccessed": 1775381581606,
+      "path": "README.md",
+      "accessCount": 5,
+      "lastAccessed": 1775382538166,
       "type": "file"
+    },
+    {
+      "path": "Application",
+      "accessCount": 5,
+      "lastAccessed": 1775382835354,
+      "type": "directory"
     },
     {
       "path": "Application/api/ml_server.py",
       "accessCount": 3,
       "lastAccessed": 1775380853920,
       "type": "file"
-    },
-    {
-      "path": "Application",
-      "accessCount": 3,
-      "lastAccessed": 1775381577255,
-      "type": "directory"
     },
     {
       "path": "TECHNICAL.md",
@@ -185,12 +191,6 @@
       "type": "file"
     },
     {
-      "path": "README.md",
-      "accessCount": 2,
-      "lastAccessed": 1775302482877,
-      "type": "file"
-    },
-    {
       "path": "",
       "accessCount": 2,
       "lastAccessed": 1775324110910,
@@ -206,6 +206,48 @@
       "path": "Application/api/login.php",
       "accessCount": 2,
       "lastAccessed": 1775381723077,
+      "type": "file"
+    },
+    {
+      "path": "Application/src/login.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382425239,
+      "type": "file"
+    },
+    {
+      "path": "Application/src/index.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382426134,
+      "type": "file"
+    },
+    {
+      "path": "Application/src/dashboard.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382427421,
+      "type": "file"
+    },
+    {
+      "path": "Application/src/onboarding.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382428389,
+      "type": "file"
+    },
+    {
+      "path": "Application/src/generate.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382429709,
+      "type": "file"
+    },
+    {
+      "path": "Application/src/dataviz.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382430566,
+      "type": "file"
+    },
+    {
+      "path": "Application/index.html",
+      "accessCount": 2,
+      "lastAccessed": 1775382857939,
       "type": "file"
     },
     {
@@ -231,6 +273,12 @@
       "accessCount": 1,
       "lastAccessed": 1775381723666,
       "type": "file"
+    },
+    {
+      "path": "Application/src",
+      "accessCount": 1,
+      "lastAccessed": 1775382396777,
+      "type": "directory"
     }
   ],
   "userDirectives": []
