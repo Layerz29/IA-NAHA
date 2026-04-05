@@ -368,9 +368,12 @@ L'application nécessite **deux hébergements séparés** car elle combine PHP/M
 
 ```
 Navigateur
-  ├─► PlanetHoster  (PHP + MySQL)  — pages HTML + API PHP
+  ├─► InfinityFree  (PHP + MySQL)  — pages HTML + API PHP
   └─► Render.com    (Python Flask) — serveur ML prédiction sommeil
 ```
+
+**URLs de production :**
+- Page d'accueil : `https://ianaha.rf.gd/IA-NAHA/Application/index.html`
 
 ---
 
@@ -389,25 +392,26 @@ Navigateur
 
 ---
 
-### Étape 2 — Déployer PHP + MySQL sur PlanetHoster (gratuit)
+### Étape 2 — Déployer PHP + MySQL sur InfinityFree (gratuit)
 
-1. Créer un compte sur [planethoster.com](https://planethoster.com) → formule **World Lite**
-2. Dans le panel PlanetHoster :
-   - Créer une base de données MySQL
+1. Créer un compte sur [infinityfree.com](https://infinityfree.com)
+2. Dans le panel InfinityFree :
+   - Créer un hébergement → noter le sous-domaine attribué
+   - Créer une base de données MySQL via **MySQL Databases**
    - Noter : host, port, nom BDD, user, password
 3. Importer `database/ia-naha.sql` via phpMyAdmin
-4. Uploader le dossier `Application/` via **FTP** (FileZilla) à la racine `public_html/`
+4. Uploader le dossier via **FTP** (FileZilla) — déposer le repo à la racine `htdocs/` de façon à obtenir `htdocs/IA-NAHA/Application/`
 
 ---
 
 ### Étape 3 — Configurer le `.env` sur le serveur
 
-Créer le fichier `public_html/Application/.env` sur le serveur FTP avec :
+Créer le fichier `htdocs/IA-NAHA/Application/.env` sur le serveur FTP avec :
 
 ```
 GEMINI_API_KEY=ta_clé_gemini
 
-DB_HOST=host_fourni_par_planethoster
+DB_HOST=host_fourni_par_infinityfree
 DB_PORT=3306
 DB_NAME=nom_de_ta_bdd
 DB_USER=user_bdd
@@ -420,14 +424,14 @@ ML_SERVER_URL=https://ia-naha-ml.onrender.com
 
 ### Étape 4 — Ajouter le domaine dans le CORS
 
-Dans `Application/api/config.php`, ajouter le domaine PlanetHoster à la liste :
+Dans `Application/api/config.php`, ajouter le domaine InfinityFree à la liste :
 
 ```php
 $_allowed_origins = [
     'http://localhost:8888', 'http://127.0.0.1:8888',
     'http://localhost:8080', 'http://127.0.0.1:8080',
     'http://localhost',      'http://127.0.0.1',
-    'https://ton-domaine.planethoster.net',  // ← ajouter ici
+    'https://ianaha.rf.gd',  // InfinityFree
 ];
 ```
 
@@ -435,8 +439,8 @@ $_allowed_origins = [
 
 ### Étape 5 — Vérifier que tout fonctionne
 
-| Test | URL attendue |
+| Test | URL |
 |---|---|
-| Page d'accueil | `https://ton-domaine.planethoster.net/Application/login.html` |
+| Page d'accueil | `https://ianaha.rf.gd/IA-NAHA/Application/index.html` |
 | Serveur ML | `https://ia-naha-ml.onrender.com/health` |
-| API PHP | `https://ton-domaine.planethoster.net/Application/api/login.php` |
+| API PHP | `https://ianaha.rf.gd/IA-NAHA/Application/api/login.php` |
