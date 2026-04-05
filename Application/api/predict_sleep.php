@@ -16,7 +16,7 @@ if (!$body) {
 }
 
 $_env    = @parse_ini_file(__DIR__ . '/../.env') ?: [];
-$mlUrl   = trim($_env['ML_SERVER_URL'] ?? 'https://ia-naha.onrender.com') . '/predict';
+$mlUrl   = trim($_env['ML_SERVER_URL'] ?? 'http://127.0.0.1:5050') . '/predict';
 $ch = curl_init($mlUrl);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
@@ -31,12 +31,20 @@ $err      = curl_error($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-if ($err) {
-    echo json_encode([
-        'error'   => 'Serveur ML inaccessible. Lancez ml_server.py.',
-        'detail'  => $err,
-        'success' => false,
-    ]);
+if ($err || $httpCode === 0) {
+    // Fallback : estimation simple si le serveur ML est inaccessible
+    $data     = json_decode($body, true) ?: [];
+    $stress   = (float)($data['stress_level'] ?? 5);
+    $steps    = (float)($data['daily_steps']  ?? 8000);
+    $duration = (float)($data['duration_minutes'] ?? 30);
+
+    $estimate = 7.5
+        - ($stress - 5) * 0.2
+        + ($steps  - 8000) / 10000 * 0.3
+        + ($duration - 30) / 60 * 0.2;
+    $estimate = round(max(4.0, min(12.0, $estimate)), 1);
+
+    echo json_encode(['sleep_hours' => $estimate, 'success' => true, 'fallback' => true]);
     exit;
 }
 

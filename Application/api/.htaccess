@@ -9,4 +9,6 @@ SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 </IfModule>
 
 # Désactive l'affichage des erreurs PHP en prod
-php_flag display_errors off
+<IfModule mod_php.c>
+    php_flag display_errors off
+</IfModule>

@@ -2,6 +2,60 @@
 
 ---
 
+## 0. Accès à l'application
+
+### En ligne (aucune installation)
+
+L'application est accessible directement depuis n'importe quel navigateur :
+
+**`https://ianaha.rf.gd/IA-NAHA/Application/index.html`**
+
+Rien à installer, rien à configurer.
+
+---
+
+### En local (développement)
+
+L'application nécessite un serveur local Apache+PHP+MySQL et un serveur Python Flask pour la prédiction ML.
+
+**Étape 1 — Configurer le `.env`**
+
+Copier `.env.example` → `.env` dans le dossier `Application/` et remplir selon l'environnement :
+
+```
+# Clé API Gemini (obligatoire)
+GEMINI_API_KEY=ta_clé_gemini
+
+# Base de données
+DB_HOST=localhost
+DB_PORT=8889        # MAMP (macOS) → 8889 | XAMPP/WAMP (Windows) → 3306
+DB_NAME=ia-naha
+DB_USER=root
+DB_PASS=root
+
+# Serveur ML (laisser vide en local, le fallback 127.0.0.1:5050 est utilisé)
+# ML_SERVER_URL=https://ia-naha.onrender.com
+```
+
+**Étape 2 — Lancer le serveur ML**
+
+```bash
+# macOS
+python3 Application/api/ml_server.py
+
+# Windows
+python Application/api/ml_server.py
+```
+
+> Si le serveur ML n'est pas lancé, l'app fonctionne quand même — une estimation de sommeil est calculée directement côté PHP en fallback.
+
+**Étape 3 — Accéder à l'app**
+
+- macOS (MAMP) : `http://localhost:8888/SD4/IA-NAHA/Application/login.html`
+- Windows (XAMPP) : `http://localhost/SD4/IA-NAHA/Application/login.html`
+
+---
+
 ## 1. Prérequis
 
 ### Serveur local
@@ -19,38 +73,14 @@
 pip install flask joblib numpy pandas scikit-learn
 ```
 
-### Fichier `.env`
-
-Copier `.env.example` → `.env` dans le dossier `Application/` :
-
-```
-GEMINI_API_KEY=AIza...votre_clé...
-
-# Optionnel — à renseigner seulement si différent des valeurs par défaut
-# DB_PORT=3306     ← XAMPP/WAMP
-# DB_PORT=8889     ← MAMP (valeur par défaut)
-```
-
-> Clé Gemini : https://aistudio.google.com/app/apikey  
-> **Windows** : enregistrer le `.env` avec VS Code ou Notepad++ en **UTF-8 sans BOM**, jamais avec Notepad.
-
 ### Base de données
 
 1. Ouvrir phpMyAdmin (`http://localhost:8888/phpMyAdmin` sur MAMP, `http://localhost/phpmyadmin` sur XAMPP)
 2. Créer une base nommée `ia-naha`
 3. Importer le fichier `database/ia-naha.sql`
 
-### Démarrer le serveur ML
-
-```bash
-# macOS
-python3 Application/api/ml_server.py
-
-# Windows
-python Application/api/ml_server.py
-```
-
-Le serveur Flask écoute sur `http://127.0.0.1:5050`. **Il doit tourner en parallèle d'Apache** pour que la prédiction de sommeil fonctionne lors de la génération d'un plan.
+> **Windows** : éditer le `.env` avec VS Code ou Notepad++ en **UTF-8 sans BOM**, jamais avec Notepad.  
+> Clé Gemini : https://aistudio.google.com/app/apikey
 
 ---
 
@@ -339,13 +369,13 @@ L'application nécessite **deux hébergements séparés** car elle combine PHP/M
 
 ```
 Navigateur
-  ├─► PlanetHoster  (PHP + MySQL)  — pages HTML + API PHP
+  ├─► InfinityFree  (PHP + MySQL)  — pages HTML + API PHP
   └─► Render.com    (Python Flask) — serveur ML prédiction sommeil
 ```
 
 ---
 
-### Étape 1 — Déployer le serveur ML sur Render.com (gratuit)
+### Étape 1 — Déployer le serveur ML sur Render.com
 
 1. Créer un compte sur [render.com](https://render.com)
 2. **New → Web Service** → connecter le repo GitHub
@@ -353,61 +383,47 @@ Navigateur
    - **Root directory** : `Application/api`
    - **Build command** : `pip install flask joblib numpy pandas scikit-learn`
    - **Start command** : `python ml_server.py`
-4. Render fournit une URL publique, ex : `https://ia-naha-ml.onrender.com`
-5. Tester : `https://ia-naha-ml.onrender.com/health` doit retourner `{"status":"ok"}`
+4. URL publique du service : `https://ia-naha.onrender.com`
+5. Tester : `https://ia-naha.onrender.com/health` doit retourner `{"status":"ok"}`
 
-> **Note** : sur le plan gratuit Render, le serveur se met en veille après 15 min d'inactivité — la première requête peut prendre ~30 secondes à répondre.
+> **Note** : sur le plan gratuit Render, le serveur se met en veille après 15 min d'inactivité — la première requête peut prendre ~30 secondes.
 
 ---
 
-### Étape 2 — Déployer PHP + MySQL sur PlanetHoster (gratuit)
+### Étape 2 — Déployer PHP + MySQL sur InfinityFree
 
-1. Créer un compte sur [planethoster.com](https://planethoster.com) → formule **World Lite**
-2. Dans le panel PlanetHoster :
-   - Créer une base de données MySQL
+1. Créer un compte sur [infinityfree.com](https://infinityfree.com)
+2. Dans le panel InfinityFree :
+   - Créer un hébergement → noter le sous-domaine
+   - Créer une base MySQL via **MySQL Databases**
    - Noter : host, port, nom BDD, user, password
 3. Importer `database/ia-naha.sql` via phpMyAdmin
-4. Uploader le dossier `Application/` via **FTP** (FileZilla) à la racine `public_html/`
+4. Uploader le repo via **FTP** (FileZilla) dans `htdocs/` pour obtenir `htdocs/IA-NAHA/Application/`
 
 ---
 
 ### Étape 3 — Configurer le `.env` sur le serveur
 
-Créer le fichier `public_html/Application/.env` sur le serveur FTP avec :
+Créer `htdocs/IA-NAHA/Application/.env` via FTP :
 
 ```
 GEMINI_API_KEY=ta_clé_gemini
 
-DB_HOST=host_fourni_par_planethoster
+DB_HOST=host_fourni_par_infinityfree
 DB_PORT=3306
 DB_NAME=nom_de_ta_bdd
 DB_USER=user_bdd
 DB_PASS=mot_de_passe_bdd
 
-ML_SERVER_URL=https://ia-naha-ml.onrender.com
+ML_SERVER_URL=https://ia-naha.onrender.com
 ```
 
 ---
 
-### Étape 4 — Ajouter le domaine dans le CORS
+### Étape 4 — Vérifier que tout fonctionne
 
-Dans `Application/api/config.php`, ajouter le domaine PlanetHoster à la liste :
-
-```php
-$_allowed_origins = [
-    'http://localhost:8888', 'http://127.0.0.1:8888',
-    'http://localhost:8080', 'http://127.0.0.1:8080',
-    'http://localhost',      'http://127.0.0.1',
-    'https://ton-domaine.planethoster.net',  // ← ajouter ici
-];
-```
-
----
-
-### Étape 5 — Vérifier que tout fonctionne
-
-| Test | URL attendue |
+| Test | URL |
 |---|---|
-| Page d'accueil | `https://ton-domaine.planethoster.net/Application/login.html` |
-| Serveur ML | `https://ia-naha-ml.onrender.com/health` |
-| API PHP | `https://ton-domaine.planethoster.net/Application/api/login.php` |
+| Page d'accueil | `https://ianaha.rf.gd/IA-NAHA/Application/index.html` |
+| Serveur ML | `https://ia-naha.onrender.com/health` |
+
