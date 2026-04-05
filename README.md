@@ -75,6 +75,7 @@ IA-NAHA/
 │   │   ├── ciqual.php                  # CIQUAL database access
 │   │   ├── predict_sleep.php           # ML server call → sleep prediction
 │   │   └── ml_server.py                # Flask server (port 5050) - ML model
+         
 │   │
 │   ├── assets/css/                     # Stylesheets
 │   ├── index.html                      # Landing page
@@ -82,7 +83,8 @@ IA-NAHA/
 │   ├── onboarding.html                 # User profile form
 │   ├── generate.html                   # Plan generation + save
 │   ├── dashboard.html                  # Personal dashboard
-│   └── dataviz.html                    # Analyses & Visualizations
+│   ├── dataviz.html                    # Analyses & Visualizations
+    └── README.md
 │
 ├── data/
 │   ├── Raw/                            # Original raw datasets
