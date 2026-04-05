@@ -103,4 +103,6 @@ def health():
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5050, debug=False)
+    port = int(os.environ.get('PORT', 5050))
+    host = '0.0.0.0'  # Render exige 0.0.0.0, localhost ne fonctionne pas
+    app.run(host=host, port=port, debug=False)
