@@ -54,67 +54,7 @@ Le serveur Flask écoute sur `http://127.0.0.1:5050`. **Il doit tourner en paral
 
 ---
 
-## 2. Flux utilisateur
-
-```
-login.html
-  │
-  ├─ Connexion  ──────────────────────────────► dashboard.html
-  │                                                   │
-  └─ Inscription ──► onboarding.html                  ├─ Mes plans ──► dashboard.html
-                          │                           └─ Nouveau plan ─┐
-                          └─ Formulaire profil ──────────────────────► generate.html
-                                                                            │
-                                                                     Gemini AI + ML
-                                                                            │
-                                                                     Plan nutritionnel
-                                                                            │
-                                                              (sauvegardé en BDD)
-```
-
-`dataviz.html` est accessible depuis la sidebar à tout moment — il affiche les analyses EDA sur les datasets d'entraînement.
-
----
-
-## 3. Schéma de la base de données
-
-| Table | Rôle |
-|---|---|
-| `users` | Compte + profil santé complet (âge, poids, taille, BMI, intensité, objectif, restrictions…) |
-| `user_sessions` | Tokens de session Bearer (auth sans cookie) |
-| `login_logs` | Historique des connexions + rate limiting anti brute-force |
-| `nutrition_plans` | Plans nutritionnels générés (calories, macros, BMR, durée) |
-| `meals` | Repas détaillés liés à un plan (`plan_id`) |
-| `ciqual_nutrition` | Base alimentaire ANSES CIQUAL (nom, groupe, kcal, protéines, glucides, lipides, fibres) |
-| `password_resets` | Tokens de réinitialisation de mot de passe |
-| `activite_globale` | Dataset Kaggle — Gym Members Exercise Tracking (entraînement ML) |
-| `activite_uniquement_sportifs` | Sous-ensemble filtré du dataset activité |
-| `sommeil_logs` | Dataset Kaggle — Sleep data (entraînement ML) |
-| `sommeil_uniquement_sportifs` | Sous-ensemble filtré du dataset sommeil |
-| `fitness` | Dataset complémentaire fitness |
-| `compendium_sports` | Référentiel MET des activités sportives |
-
-Le MCD complet est disponible dans `database/MCD.png`.
-
----
-
-## 4. Modèles ML
-
-Les fichiers `.joblib` dans `/modeles/` sont générés par les notebooks Python d'entraînement :
-
-| Fichier | Rôle |
-|---|---|
-| `modele_machine_learning.joblib` | Modèle de régression linéaire — prédit le temps de sommeil (heures) |
-| `scaler_machine_learning.joblib` | StandardScaler ajusté sur les données d'entraînement — **doit être le même que celui utilisé à l'entraînement** |
-
-**Features utilisées par le modèle (10 variables) :**
-`age`, `gender`, `bmi`, `activity_type`, `intensity`, `duration_minutes`, `daily_steps`, `stress_level`, `hydration_level`, `smoking_status`
-
-> Pour régénérer les modèles : exécuter les notebooks dans `/notebooks/` puis copier les `.joblib` produits dans `/modeles/`.
-
----
-
-## 5. Bugs connus et solutions
+## 2. Bugs connus et solutions
 
 ### Apache bloque le header `Authorization`
 
@@ -202,35 +142,6 @@ const API = window.location.origin + '/SD4/IA-NAHA/Application/api';
 
 ---
 
-### `CIQUAL.filter is not a function` à la génération
-
-**Symptôme :** cliquer sur "Générer" déclenche l'erreur `CIQUAL.filter is not a function`.
-
-**Cause :** `ciqual.php` peut retourner un objet d'erreur JSON (ex : `{"error":"..."}`) au lieu d'un tableau si la BDD est injoignable. Assigner cet objet à `CIQUAL` rend `.filter()` indisponible.
-
-**Solution appliquée** dans `generate.html` :
-```javascript
-const ciqualData = await ciqualRes.json();
-CIQUAL = Array.isArray(ciqualData) ? ciqualData : [];
-```
-
----
-
-### Profil affiché "Chargement…" dans la sidebar
-
-**Symptôme :** le prénom et l'avatar ne s'affichent jamais dans la sidebar (dataviz, etc.) — reste bloqué sur "Chargement…".
-
-**Cause :** deux problèmes combinés :
-1. `register.php` ne renvoyait pas `prenom`/`email` dans sa réponse → `login.html` ne pouvait pas les stocker dans `localStorage`.
-2. Les utilisateurs déjà inscrits n'avaient pas `naha_prenom` en `localStorage`.
-
-**Solution appliquée :**
-- `register.php` retourne maintenant `prenom` et `email`
-- `login.html` stocke `naha_prenom` et `naha_email` dans les deux flows (connexion et inscription)
-- `dataviz.html` appelle `get_user.php` en fallback si `naha_prenom` est absent du `localStorage`, puis met la valeur en cache
-
----
-
 ### Le serveur ML ne démarre pas
 
 **Symptôme :** `ModuleNotFoundError` ou `FileNotFoundError`.
@@ -242,7 +153,7 @@ CIQUAL = Array.isArray(ciqualData) ? ciqualData : [];
 
 ---
 
-## 6. Code important commenté
+## 3. Code important commenté
 
 ### `config.php` — Connexion BDD (`getPDO`)
 
@@ -420,7 +331,7 @@ const authHeaders = {
 
 ---
 
-## 7. Mise en ligne (déploiement)
+## 4. Mise en ligne (déploiement)
 
 L'application nécessite **deux hébergements séparés** car elle combine PHP/MySQL et un serveur Python Flask.
 
@@ -428,12 +339,9 @@ L'application nécessite **deux hébergements séparés** car elle combine PHP/M
 
 ```
 Navigateur
-  ├─► InfinityFree  (PHP + MySQL)  — pages HTML + API PHP
+  ├─► PlanetHoster  (PHP + MySQL)  — pages HTML + API PHP
   └─► Render.com    (Python Flask) — serveur ML prédiction sommeil
 ```
-
-**URLs de production :**
-- Page d'accueil : `https://ianaha.rf.gd/IA-NAHA/Application/index.html`
 
 ---
 
@@ -452,26 +360,25 @@ Navigateur
 
 ---
 
-### Étape 2 — Déployer PHP + MySQL sur InfinityFree (gratuit)
+### Étape 2 — Déployer PHP + MySQL sur PlanetHoster (gratuit)
 
-1. Créer un compte sur [infinityfree.com](https://infinityfree.com)
-2. Dans le panel InfinityFree :
-   - Créer un hébergement → noter le sous-domaine attribué
-   - Créer une base de données MySQL via **MySQL Databases**
+1. Créer un compte sur [planethoster.com](https://planethoster.com) → formule **World Lite**
+2. Dans le panel PlanetHoster :
+   - Créer une base de données MySQL
    - Noter : host, port, nom BDD, user, password
 3. Importer `database/ia-naha.sql` via phpMyAdmin
-4. Uploader le dossier via **FTP** (FileZilla) — déposer le repo à la racine `htdocs/` de façon à obtenir `htdocs/IA-NAHA/Application/`
+4. Uploader le dossier `Application/` via **FTP** (FileZilla) à la racine `public_html/`
 
 ---
 
 ### Étape 3 — Configurer le `.env` sur le serveur
 
-Créer le fichier `htdocs/IA-NAHA/Application/.env` sur le serveur FTP avec :
+Créer le fichier `public_html/Application/.env` sur le serveur FTP avec :
 
 ```
 GEMINI_API_KEY=ta_clé_gemini
 
-DB_HOST=host_fourni_par_infinityfree
+DB_HOST=host_fourni_par_planethoster
 DB_PORT=3306
 DB_NAME=nom_de_ta_bdd
 DB_USER=user_bdd
@@ -484,14 +391,14 @@ ML_SERVER_URL=https://ia-naha-ml.onrender.com
 
 ### Étape 4 — Ajouter le domaine dans le CORS
 
-Dans `Application/api/config.php`, ajouter le domaine InfinityFree à la liste :
+Dans `Application/api/config.php`, ajouter le domaine PlanetHoster à la liste :
 
 ```php
 $_allowed_origins = [
     'http://localhost:8888', 'http://127.0.0.1:8888',
     'http://localhost:8080', 'http://127.0.0.1:8080',
     'http://localhost',      'http://127.0.0.1',
-    'https://ianaha.rf.gd',  // InfinityFree
+    'https://ton-domaine.planethoster.net',  // ← ajouter ici
 ];
 ```
 
@@ -499,8 +406,8 @@ $_allowed_origins = [
 
 ### Étape 5 — Vérifier que tout fonctionne
 
-| Test | URL |
+| Test | URL attendue |
 |---|---|
-| Page d'accueil | `https://ianaha.rf.gd/IA-NAHA/Application/index.html` |
+| Page d'accueil | `https://ton-domaine.planethoster.net/Application/login.html` |
 | Serveur ML | `https://ia-naha-ml.onrender.com/health` |
-| API PHP | `https://ianaha.rf.gd/IA-NAHA/Application/api/login.php` |
+| API PHP | `https://ton-domaine.planethoster.net/Application/api/login.php` |
