@@ -375,7 +375,8 @@
 </main>
 
 <script>
-const API = window.location.origin + '/SD4/IA-NAHA/Application/api';
+const _local = ['localhost','127.0.0.1'].includes(window.location.hostname);
+const API = window.location.origin + (_local ? '/SD4/IA-NAHA/Application/api' : '/IA-NAHA/Application/api');
 
 // ── Auth guard ──
 const _tok = localStorage.getItem('naha_token') || '';

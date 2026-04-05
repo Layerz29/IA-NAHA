@@ -116,7 +116,8 @@
   // ──────────────────────────────────────────────
   // CONFIG
   // ──────────────────────────────────────────────
-  const API_BASE = window.location.origin + '/SD4/IA-NAHA/Application/api';
+  const _local = ['localhost','127.0.0.1'].includes(window.location.hostname);
+  const API_BASE = window.location.origin + (_local ? '/SD4/IA-NAHA/Application/api' : '/IA-NAHA/Application/api');
 
   // ──────────────────────────────────────────────
   // CIQUAL — chargé dynamiquement depuis la BD via ciqual.php

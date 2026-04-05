@@ -328,3 +328,137 @@ const authHeaders = {
     'X-Auth-Token':   localStorage.getItem('naha_token'),
 };
 ```
+
+---
+
+## 4. Mise en ligne (déploiement)
+
+L'application tourne en production sur deux hébergements séparés :
+
+### Architecture de production
+
+```
+Navigateur
+  ├─► InfinityFree  (PHP + MySQL)  — ianaha.rf.gd
+  └─► Render.com    (Python Flask) — ia-naha.onrender.com
+```
+
+---
+
+### Étape 1 — Serveur ML sur Render.com (gratuit)
+
+1. Créer un compte sur [render.com](https://render.com)
+2. **New → Web Service** → connecter le repo GitHub `noahchrgs/IA-NAHA`
+3. Configurer :
+
+| Champ | Valeur |
+|---|---|
+| Root directory | *(vide — racine du repo)* |
+| Runtime | Python 3 |
+| Build command | `pip install -r Application/api/requirements.txt` |
+| Start command | `python Application/api/ml_server.py` |
+
+4. URL du service : `https://ia-naha.onrender.com`
+5. Vérification : `https://ia-naha.onrender.com/health` → `{"status":"ok"}`
+
+**Points importants :**
+- Le Root directory doit être **vide** (pas `Application/api`) pour que `ml_server.py` puisse accéder à `modeles/` via `../../modeles`
+- Flask doit écouter sur `0.0.0.0` et non `127.0.0.1` — sinon Render ne détecte pas le port et timeout
+- Le plan gratuit Render se met en veille après 15 min — la première requête peut prendre ~30s
+- Le timeout dans `predict_sleep.php` est à **35 secondes** pour absorber ce délai de réveil
+
+---
+
+### Étape 2 — PHP + MySQL sur InfinityFree (gratuit)
+
+1. Créer un compte sur [infinityfree.com](https://infinityfree.com)
+2. Créer un hébergement → domaine : `ianaha.rf.gd`
+3. Dans le panel → **MySQL Databases** : créer une BDD et noter les identifiants
+4. Importer `database/ia-naha.sql` via phpMyAdmin
+5. Uploader le dossier `IA-NAHA/` via **FileZilla** dans `htdocs/`
+
+---
+
+### Étape 3 — Fichier `.env` sur InfinityFree
+
+Créer `htdocs/IA-NAHA/Application/.env` via FileZilla :
+
+```
+GEMINI_API_KEY=ta_clé_gemini
+
+DB_HOST=sql211.infinityfree.com
+DB_PORT=3306
+DB_NAME=if0_41583765_ia_naha
+DB_USER=if0_41583765
+DB_PASS=ton_mot_de_passe
+
+ML_SERVER_URL=https://ia-naha.onrender.com
+```
+
+---
+
+### Étape 4 — URLs de vérification
+
+| Test | URL |
+|---|---|
+| Page de connexion | `https://ianaha.rf.gd/IA-NAHA/Application/login.html` |
+| Dashboard | `https://ianaha.rf.gd/IA-NAHA/Application/dashboard.html` |
+| API PHP | `https://ianaha.rf.gd/IA-NAHA/Application/api/login.php` |
+| Serveur ML | `https://ia-naha.onrender.com/health` |
+
+---
+
+### Problèmes rencontrés lors du déploiement
+
+| Problème | Cause | Solution |
+|---|---|---|
+| `load failed` sur register | URL API hardcodée sur `localhost:8888` | `window.location.origin` + détection locale/prod |
+| `Connexion BDD impossible` | `.env` absent ou mal configuré sur InfinityFree | Créer le `.env` avec les vraies valeurs InfinityFree |
+| CORS bloqué | Liste d'origines trop restrictive | `Access-Control-Allow-Origin: *` |
+| Render timeout | Flask écoutait sur `127.0.0.1` au lieu de `0.0.0.0` | `app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5050)))` |
+| Render ne trouve pas les `.joblib` | Root directory = `Application/api`, les modèles sont à la racine | Root directory vide + chemins relatifs `../../modeles` |
+| `requirements.txt` manquant | Fichier créé en local mais jamais pushé | `git add Application/api/requirements.txt && git push` |
+4. Uploader le dossier `Application/` via **FTP** (FileZilla) à la racine `public_html/`
+
+---
+
+### Étape 3 — Configurer le `.env` sur le serveur
+
+Créer le fichier `public_html/Application/.env` sur le serveur FTP avec :
+
+```
+GEMINI_API_KEY=ta_clé_gemini
+
+DB_HOST=host_fourni_par_planethoster
+DB_PORT=3306
+DB_NAME=nom_de_ta_bdd
+DB_USER=user_bdd
+DB_PASS=mot_de_passe_bdd
+
+ML_SERVER_URL=https://ia-naha-ml.onrender.com
+```
+
+---
+
+### Étape 4 — Ajouter le domaine dans le CORS
+
+Dans `Application/api/config.php`, ajouter le domaine PlanetHoster à la liste :
+
+```php
+$_allowed_origins = [
+    'http://localhost:8888', 'http://127.0.0.1:8888',
+    'http://localhost:8080', 'http://127.0.0.1:8080',
+    'http://localhost',      'http://127.0.0.1',
+    'https://ton-domaine.planethoster.net',  // ← ajouter ici
+];
+```
+
+---
+
+### Étape 5 — Vérifier que tout fonctionne
+
+| Test | URL attendue |
+|---|---|
+| Page d'accueil | `https://ton-domaine.planethoster.net/Application/login.html` |
+| Serveur ML | `https://ia-naha-ml.onrender.com/health` |
+| API PHP | `https://ton-domaine.planethoster.net/Application/api/login.php` |

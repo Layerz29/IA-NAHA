@@ -1,1 +1,12 @@
+# Passe le header Authorization à PHP (bloqué par certains Apache/MAMP)
 SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+# Fallback via RewriteRule si SetEnvIf ne suffit pas
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+</IfModule>
+
+# Désactive l'affichage des erreurs PHP en prod
+php_flag display_errors off

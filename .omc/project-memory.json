@@ -108,26 +108,38 @@
   "hotPaths": [
     {
       "path": "Application/generate.html",
-      "accessCount": 13,
-      "lastAccessed": 1775382846900,
+      "accessCount": 16,
+      "lastAccessed": 1775388695426,
       "type": "file"
     },
     {
       "path": "Application/onboarding.html",
-      "accessCount": 12,
-      "lastAccessed": 1775382845583,
+      "accessCount": 16,
+      "lastAccessed": 1775389200851,
       "type": "directory"
     },
     {
       "path": "Application/dashboard.html",
-      "accessCount": 11,
-      "lastAccessed": 1775382844814,
+      "accessCount": 14,
+      "lastAccessed": 1775388693110,
       "type": "file"
     },
     {
       "path": "Application/dataviz.html",
-      "accessCount": 11,
-      "lastAccessed": 1775382848298,
+      "accessCount": 14,
+      "lastAccessed": 1775388697196,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/config.php",
+      "accessCount": 13,
+      "lastAccessed": 1775389274266,
+      "type": "file"
+    },
+    {
+      "path": "Application/login.html",
+      "accessCount": 12,
+      "lastAccessed": 1775389200663,
       "type": "file"
     },
     {
@@ -137,15 +149,15 @@
       "type": "file"
     },
     {
-      "path": "Application/login.html",
-      "accessCount": 8,
-      "lastAccessed": 1775382841910,
-      "type": "file"
+      "path": "Application",
+      "accessCount": 9,
+      "lastAccessed": 1775394040018,
+      "type": "directory"
     },
     {
-      "path": "Application/api/config.php",
-      "accessCount": 8,
-      "lastAccessed": 1775383547656,
+      "path": "Application/README.md",
+      "accessCount": 9,
+      "lastAccessed": 1775394069793,
       "type": "file"
     },
     {
@@ -161,39 +173,45 @@
       "type": "file"
     },
     {
-      "path": "Application",
-      "accessCount": 5,
-      "lastAccessed": 1775382835354,
-      "type": "directory"
-    },
-    {
       "path": "TECHNICAL.md",
       "accessCount": 4,
       "lastAccessed": 1775383619710,
       "type": "file"
     },
     {
-      "path": "Application/api/ml_server.py",
-      "accessCount": 3,
-      "lastAccessed": 1775380853920,
+      "path": "Application/api/.htaccess",
+      "accessCount": 4,
+      "lastAccessed": 1775389266419,
       "type": "file"
+    },
+    {
+      "path": "Application/api/ml_server.py",
+      "accessCount": 4,
+      "lastAccessed": 1775390153439,
+      "type": "file"
+    },
+    {
+      "path": "Application/api/predict_sleep.php",
+      "accessCount": 4,
+      "lastAccessed": 1775390817580,
+      "type": "file"
+    },
+    {
+      "path": "Application/.env.example",
+      "accessCount": 3,
+      "lastAccessed": 1775384085898,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 3,
+      "lastAccessed": 1775384139400,
+      "type": "directory"
     },
     {
       "path": "database/ia-naha.sql",
       "accessCount": 2,
       "lastAccessed": 1775299292033,
-      "type": "directory"
-    },
-    {
-      "path": "Application/api/.htaccess",
-      "accessCount": 2,
-      "lastAccessed": 1775300205651,
-      "type": "file"
-    },
-    {
-      "path": "",
-      "accessCount": 2,
-      "lastAccessed": 1775324110910,
       "type": "directory"
     },
     {
@@ -251,12 +269,6 @@
       "type": "file"
     },
     {
-      "path": "Application/.env.example",
-      "accessCount": 2,
-      "lastAccessed": 1775383561975,
-      "type": "file"
-    },
-    {
       "path": "Application/api/save_profile.php",
       "accessCount": 1,
       "lastAccessed": 1775299207211,
@@ -285,6 +297,12 @@
       "accessCount": 1,
       "lastAccessed": 1775382396777,
       "type": "directory"
+    },
+    {
+      "path": "Application/api/requirements.txt",
+      "accessCount": 1,
+      "lastAccessed": 1775390078469,
+      "type": "file"
     }
   ],
   "userDirectives": []

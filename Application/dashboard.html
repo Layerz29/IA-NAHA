@@ -142,7 +142,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-    const API     = window.location.origin + '/SD4/IA-NAHA/Application/api';
+    const _local = ['localhost','127.0.0.1'].includes(window.location.hostname);
+    const API     = window.location.origin + (_local ? '/SD4/IA-NAHA/Application/api' : '/IA-NAHA/Application/api');
     const params  = new URLSearchParams(window.location.search);
     // Priorité à l'URL, puis localStorage
     const _uid = params.get('user_id') || localStorage.getItem('naha_user_id') || sessionStorage.getItem('naha_user_id') || null;

@@ -19,15 +19,9 @@ define('DB_NAME', trim($_cfg['DB_NAME'] ?? 'ia-naha'));
 define('DB_USER', trim($_cfg['DB_USER'] ?? 'root'));
 define('DB_PASS', trim($_cfg['DB_PASS'] ?? 'root'));
 
-// Headers CORS + JSON
+// Headers CORS + JSON — wildcard pour compatibilité locale et prod
 header('Content-Type: application/json; charset=utf-8');
-$_allowed_origins = [
-    'http://localhost:8888', 'http://127.0.0.1:8888',  // MAMP macOS
-    'http://localhost:8080', 'http://127.0.0.1:8080',  // XAMPP alternatif
-    'http://localhost',      'http://127.0.0.1',        // XAMPP/WAMP port 80
-];
-$_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-header('Access-Control-Allow-Origin: ' . (in_array($_origin, $_allowed_origins, true) ? $_origin : 'http://localhost:8888'));
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Auth-Token');
 
@@ -65,10 +59,13 @@ function jsonOut(array $data, int $code = 200): void {
     exit;
 }
 
-// Helper body JSON
+// Helper body JSON — fallback sur $_POST si php://input est restreint
 function getBody(): array {
     $raw = file_get_contents('php://input');
-    return json_decode($raw, true) ?? [];
+    if ($raw) return json_decode($raw, true) ?? [];
+    // fallback : certains hébergeurs (InfinityFree) peuvent restreindre php://input
+    if (!empty($_POST)) return $_POST;
+    return [];
 }
 
 // Auth — valide le token Bearer et retourne le user_id

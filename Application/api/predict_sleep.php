@@ -15,13 +15,15 @@ if (!$body) {
     echo json_encode(['error' => 'Aucune donnée reçue', 'success' => false]); exit;
 }
 
-$ch = curl_init('http://127.0.0.1:5050/predict');
+$_env    = @parse_ini_file(__DIR__ . '/../.env') ?: [];
+$mlUrl   = trim($_env['ML_SERVER_URL'] ?? 'http://127.0.0.1:5050') . '/predict';
+$ch = curl_init($mlUrl);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $body,
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
     CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_TIMEOUT        => 10,
+    CURLOPT_TIMEOUT        => 35, 
 ]);
 
 $response = curl_exec($ch);
