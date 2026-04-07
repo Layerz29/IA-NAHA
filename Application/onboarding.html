@@ -50,9 +50,10 @@
             <h2 class="q-title">Quel est<br><em>votre âge ?</em></h2>
             <p class="q-hint">Pour calculer votre métabolisme de base (BMR)</p>
             <div class="num-input-wrap">
-                <input class="num-input" type="number" id="q-age" min="10" max="100" placeholder="25">
+                <input class="num-input" type="number" id="q-age" min="10" max="110" placeholder="25">
                 <span class="num-unit">ans</span>
             </div>
+            <small class="input-error" id="err-age"></small>
             <div class="actions">
                 <button class="btn-back" onclick="prev()">← Retour</button>
                 <button class="btn-next" onclick="next()">Continuer →</button>
@@ -88,9 +89,10 @@
             <h2 class="q-title">Quel est<br><em>votre poids ?</em></h2>
             <p class="q-hint">En kilogrammes, à jeun de préférence</p>
             <div class="num-input-wrap">
-                <input class="num-input" type="number" id="q-poids" min="30" max="300" placeholder="70">
+                <input class="num-input" type="number" id="q-poids" min="30" max="250" placeholder="70">
                 <span class="num-unit">kg</span>
             </div>
+            <small class="input-error" id="err-poids"></small>
             <div class="actions">
                 <button class="btn-back" onclick="prev()">← Retour</button>
                 <button class="btn-next" onclick="next()">Continuer →</button>
@@ -107,6 +109,7 @@
                 <input class="num-input" type="number" id="q-taille" min="100" max="250" placeholder="170">
                 <span class="num-unit">cm</span>
             </div>
+            <small class="input-error" id="err-taille"></small>
             <div class="actions">
                 <button class="btn-back" onclick="prev()">← Retour</button>
                 <button class="btn-next" onclick="next()">Continuer →</button>
@@ -148,7 +151,7 @@
         </div>
 
         <!-- Q6 : Stress -->
-        <div class="question" data-q="6">
+        <div class="question" data-q="6" style="overflow-y:auto">
             <div class="q-index">07 · Bien-être</div>
             <h2 class="q-title">Votre niveau de<br><em>stress quotidien ?</em></h2>
             <p class="q-hint">1 = très détendu · 10 = stress intense</p>
@@ -158,7 +161,7 @@
                 <button class="counter-btn" onclick="changeCounter('stress',1)">+</button>
             </div>
             <input type="hidden" id="q-stress" value="5">
-            <div class="actions" style="margin-top:2rem">
+            <div class="actions" style="margin-top:1rem">
                 <button class="btn-back" onclick="prev()">← Retour</button>
                 <button class="btn-next" onclick="next()">Continuer →</button>
             </div>
@@ -210,23 +213,26 @@
             <div style="margin-bottom:1.2rem">
                 <label class="number-label">Durée de séance (minutes)</label>
                 <div class="num-input-wrap">
-                    <input class="num-input" type="number" id="q-duration" min="5" max="300" placeholder="45">
+                    <input class="num-input" type="number" id="q-duration" min="5" max="240" placeholder="45">
                     <span class="num-unit">min</span>
                 </div>
+                <small class="input-error" id="err-duration"></small>
             </div>
             <div style="margin-bottom:1.2rem">
                 <label class="number-label">Pas quotidiens</label>
                 <div class="num-input-wrap">
-                    <input class="num-input" type="number" id="q-steps" min="500" max="50000" placeholder="8000">
+                    <input class="num-input" type="number" id="q-steps" min="500" max="40000" placeholder="8000">
                     <span class="num-unit">pas</span>
                 </div>
+                <small class="input-error" id="err-steps"></small>
             </div>
             <div>
                 <label class="number-label">Hydratation (eau)</label>
                 <div class="num-input-wrap">
-                    <input class="num-input" type="number" id="q-hydration" min="0.5" max="10" step="0.1" placeholder="2.5">
+                    <input class="num-input" type="number" id="q-hydration" min="0.5" max="5" step="0.1" placeholder="2.5">
                     <span class="num-unit">L/j</span>
                 </div>
+                <small class="input-error" id="err-hydration"></small>
             </div>
 
             <div class="actions">
@@ -386,257 +392,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    const API      = window.location.origin + '/SD4/IA-NAHA/Application/api';
-    const TOTAL    = 13;
-    let current    = 0;
-
-    // user_id depuis localStorage
-    const USER_ID   = localStorage.getItem('naha_user_id') || sessionStorage.getItem('naha_user_id') || null;
-    const getToken  = () => localStorage.getItem('naha_token') || '';
-    const authHeaders = (extra={}) => ({ 'Content-Type':'application/json', 'Authorization':'Bearer '+getToken(), 'X-Auth-Token': getToken(), ...extra });
-
-    // ── Init dots ──
-    function initDots() {
-        const wrap = document.getElementById('step-dots');
-        wrap.innerHTML = '';
-        for (let i = 0; i < TOTAL; i++) {
-            const d = document.createElement('div');
-            d.className = 'dot' + (i === 0 ? ' active' : '');
-            wrap.appendChild(d);
-        }
-    }
-    initDots();
-    document.getElementById('nav-total').textContent = TOTAL;
-
-    // ── Update UI ──
-    function updateUI() {
-        const pct = Math.round(((current + 1) / TOTAL) * 100);
-        document.getElementById('progress-fill').style.width = pct + '%';
-        document.getElementById('nav-current').textContent = current + 1;
-        document.getElementById('bottom-pct').textContent = pct + '%';
-
-        document.querySelectorAll('.dot').forEach((d, i) => {
-            d.className = 'dot' + (i < current ? ' done' : i === current ? ' active' : '');
-        });
-    }
-
-    // ── Navigation ──
-    function next() {
-        if (!validate(current)) return;
-
-        const qs = document.querySelectorAll('.question');
-        qs[current].classList.add('exit-up');
-
-        setTimeout(() => {
-            qs[current].classList.remove('active', 'exit-up');
-            if (current < TOTAL - 1) {
-                current++;
-                qs[current].classList.add('active');
-                updateUI();
-                focusQuestion(current);
-            }
-        }, 300);
-    }
-
-    function prev() {
-        if (current === 0) return;
-        const qs = document.querySelectorAll('.question');
-        qs[current].classList.remove('active');
-        current--;
-        qs[current].classList.add('active');
-        updateUI();
-        focusQuestion(current);
-    }
-
-    function focusQuestion(idx) {
-        setTimeout(() => {
-            const inp = document.querySelector(`.question[data-q="${idx}"] input`);
-            if (inp) inp.focus();
-        }, 400);
-    }
-
-    // ── Validation ──
-    function validate(idx) {
-        switch(idx) {
-            case 0: return !!document.getElementById('q-prenom').value.trim();
-            case 1: { const v = +document.getElementById('q-age').value; return v >= 10 && v <= 100; }
-            case 2: return !!document.querySelector('.choice[data-group="sexe"].selected');
-            case 3: { const v = +document.getElementById('q-poids').value; return v >= 30 && v <= 300; }
-            case 4: { const v = +document.getElementById('q-taille').value; return v >= 100 && v <= 250; }
-            case 5: return !!document.querySelector('.choice[data-group="activite"].selected');
-            case 6: return true; // stress : toujours valide (counter initialisé à 5)
-            case 7: return !!document.querySelector('.choice[data-group="activity_type"].selected');
-            case 8: {
-                const dur = +document.getElementById('q-duration').value;
-                const stp = +document.getElementById('q-steps').value;
-                const hyd = +document.getElementById('q-hydration').value;
-                return dur >= 5 && stp >= 500 && hyd >= 0.5;
-            }
-            case 9:  return !!document.querySelector('.choice[data-group="smoking_status"].selected');
-            case 10: return true; // objectifs optionnels
-            case 11: return true; // restrictions optionnelles
-            case 12: return !!(
-                document.querySelector('.choice[data-group="duree"].selected') &&
-                document.querySelector('.choice[data-group="repas"].selected')
-            );
-            default: return true;
-        }
-    }
-
-    // ── Choice selection ──
-    function selectChoice(el) {
-        const group = el.dataset.group;
-        document.querySelectorAll(`.choice[data-group="${group}"]`)
-            .forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-    }
-
-    // ── Collect data ──
-    function collectData() {
-        const getSelected = (group, multi = false) => {
-            const els = [...document.querySelectorAll(
-                multi ? `.mchip[data-group="${group}"].selected`
-                    : `.choice[data-group="${group}"].selected`
-            )];
-            if (multi) return els.map(e => e.dataset.val).join(', ');
-            return els[0]?.dataset.val || '';
-        };
-
-        return {
-            prenom:           document.getElementById('q-prenom').value.trim(),
-            age:              document.getElementById('q-age').value,
-            sexe:             getSelected('sexe'),
-            poids:            document.getElementById('q-poids').value,
-            taille:           document.getElementById('q-taille').value,
-            activite:         getSelected('activite'),
-            // nouvelles variables ML
-            stress_level:     document.getElementById('q-stress').value,
-            activity_type:    getSelected('activity_type'),
-            duration_minutes: document.getElementById('q-duration').value,
-            daily_steps:      document.getElementById('q-steps').value,
-            hydration_level:  document.getElementById('q-hydration').value,
-            smoking_status:   getSelected('smoking_status'),
-            // nutrition
-            objectif:         getSelected('objectifs', true),
-            restrictions:     getSelected('restrictions', true),
-            allergies:        document.getElementById('q-allergies').value.trim(),
-            duree:            getSelected('duree'),
-            repas:            getSelected('repas'),
-        };
-    }
-
-    // ── Counter stress ──
-    function changeCounter(key, delta) {
-        const inp = document.getElementById('q-' + key);
-        const lbl = document.getElementById(key + '-val');
-        let val = parseInt(inp.value) + delta;
-        val = Math.max(1, Math.min(10, val));
-        inp.value = val;
-        lbl.textContent = val;
-    }
-
-    // ── Submit ──
-    async function submitProfile() {
-        if (!validate(12)) return;
-
-        document.getElementById('loader').classList.add('show');
-
-        const data = collectData();
-
-        try {
-            // Sauvegarde profil si user connecté
-            if (USER_ID) {
-                await fetch(`${API}/save_profile.php`, {
-                    method: 'POST',
-                    headers: authHeaders(),
-                    body: JSON.stringify(data),
-                });
-            }
-
-            // Prédiction sommeil via modèle ML
-            try {
-                const sleepRes = await fetch(`${API}/predict_sleep.php`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                });
-                const sleepData = await sleepRes.json();
-                if (sleepData.success) {
-                    sessionStorage.setItem('naha_sleep_prediction', sleepData.sleep_hours);
-                }
-            } catch(e) {
-                console.warn('Prédiction sommeil indisponible :', e.message);
-            }
-
-            // Stocke dans sessionStorage pour la page de génération
-            sessionStorage.setItem('naha_profil', JSON.stringify(data));
-            sessionStorage.setItem('naha_user_id', USER_ID || '');
-
-            // Redirige vers la génération
-            window.location.href = 'generate.html';
-
-        } catch(e) {
-            document.getElementById('loader').classList.remove('show');
-            alert('Erreur : ' + e.message);
-        }
-    }
-
-    // ── Keyboard ──
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-            if (current === TOTAL - 1) submitProfile();
-            else next();
-        }
-        if (e.key === 'Backspace' && e.target.tagName !== 'INPUT') prev();
-
-        // Raccourcis clavier pour les choices
-        const keyMap = { 'h':'homme','f':'femme','a':'autre', '1':'sedentaire','2':'leger','3':'modere','4':'actif','5':'tres_actif' };
-        if (keyMap[e.key.toLowerCase()]) {
-            const el = document.querySelector(`.choice[data-val="${keyMap[e.key.toLowerCase()]}"]`);
-            if (el && document.querySelector(`.question[data-q="${current}"].active`)) {
-                const group = el.dataset.group;
-                document.querySelectorAll(`.choice[data-group="${group}"]`).forEach(c => c.classList.remove('selected'));
-                el.classList.add('selected');
-            }
-        }
-    });
-
-    // ── Récapitulatif ──
-    const RECAP_LABELS = {
-        prenom:'Prénom', age:'Âge', sexe:'Sexe', poids:'Poids', taille:'Taille',
-        activite:'Niveau d\'activité', stress_level:'Stress', activity_type:'Sport principal',
-        duration_minutes:'Durée séance', daily_steps:'Pas / jour', hydration_level:'Hydratation',
-        smoking_status:'Tabac', objectif:'Objectifs', restrictions:'Restrictions',
-        allergies:'Allergies', duree:'Durée du plan', repas:'Repas / jour',
-    };
-    const RECAP_UNITS = {
-        age:' ans', poids:' kg', taille:' cm', duration_minutes:' min',
-        daily_steps:' pas', hydration_level:' L/j', duree:' jour(s)', repas:' repas/j', stress_level:'/10',
-    };
-
-    function showRecap() {
-        if (!validate(12)) return;
-        const data = collectData();
-        const content = document.getElementById('recap-content');
-        content.innerHTML = Object.entries(data)
-            .filter(([, v]) => v !== '' && v !== null && v !== undefined)
-            .map(([k, v]) => `
-                <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:.9rem 1.1rem;">
-                    <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:.3rem;font-weight:700">${RECAP_LABELS[k] || k}</div>
-                    <div style="font-size:.95rem;font-weight:800;color:var(--ink)">${v}${RECAP_UNITS[k] || ''}</div>
-                </div>
-            `).join('');
-        document.getElementById('recap-screen').style.display = 'flex';
-    }
-
-    function hideRecap() {
-        document.getElementById('recap-screen').style.display = 'none';
-    }
-
-    // Focus premier input
-    focusQuestion(0);
-</script>
+<script src="assets/js/onboarding.js"></script>
 </body>
 </html>

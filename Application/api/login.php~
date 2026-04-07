@@ -1,0 +1,57 @@
+<?php
+require_once __DIR__ . '/config.php';
+
+// ✅ السماح بالتجربة من المتصفح (GET)
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    echo json_encode([
+        "message" => "API LOGIN works ✅",
+        "method_required" => "POST",
+        "example" => [
+            "email" => "test@test.com",
+            "password" => "123456"
+        ]
+    ]);
+    exit;
+}
+
+// ❌ فقط POST للـ login الحقيقي
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonOut(['error' => 'Méthode non autorisée'], 405);
+}
+
+$body = getBody();
+
+$email    = trim($body['email'] ?? '');
+$password = $body['password'] ?? '';
+
+if (!$email || !$password) {
+    jsonOut(['error' => 'Email et mot de passe requis.'], 422);
+}
+
+$pdo = getPDO();
+
+$stmt = $pdo->prepare('SELECT id, prenom, nom, password FROM users WHERE email = ? LIMIT 1');
+$stmt->execute([$email]);
+$user = $stmt->fetch();
+
+if (!$user || !password_verify($password, $user['password'])) {
+    jsonOut(['error' => 'Email ou mot de passe incorrect.'], 401);
+}
+
+$userId = (int)$user['id'];
+
+// إنشاء token
+$token = bin2hex(random_bytes(32));
+
+$pdo->prepare('
+    INSERT INTO user_sessions (id, user_id, payload, last_activity, ip_address)
+    VALUES (?, ?, ?, UNIX_TIMESTAMP(), ?)
+')->execute([$token, $userId, '', $_SERVER['REMOTE_ADDR'] ?? '']);
+
+jsonOut([
+    'success' => true,
+    'user_id' => $userId,
+    'prenom'  => $user['prenom'],
+    'nom'     => $user['nom'],
+    'token'   => $token
+]);

@@ -1,0 +1,475 @@
+ // ──────────────────────────────────────────────
+  // CONFIG
+  // ──────────────────────────────────────────────
+  const _local = ['localhost','127.0.0.1'].includes(window.location.hostname);
+  const API_BASE = window.location.origin + '/IA-NAHA/Application/api';
+
+  // ──────────────────────────────────────────────
+  // CIQUAL — chargé dynamiquement depuis la BD via ciqual.php
+  // ──────────────────────────────────────────────
+  let CIQUAL = [];
+
+  // ──────────────────────────────────────────────
+  // AUTH
+  // ──────────────────────────────────────────────
+  const getToken    = () => localStorage.getItem('naha_token') || '';
+  const authHeaders = (extra={}) => ({ 'Content-Type':'application/json', 'Authorization':'Bearer '+getToken(), 'X-Auth-Token': getToken(), ...extra });
+
+  // ──────────────────────────────────────────────
+  // STATE
+  // ──────────────────────────────────────────────
+  let currentPlan = null;
+  let profil      = null;
+  let activeJour  = 1;
+
+  const params  = new URLSearchParams(window.location.search);
+  const USER_ID = params.get('user_id') || sessionStorage.getItem('naha_user_id') || localStorage.getItem('naha_user_id') || null;
+
+  // ──────────────────────────────────────────────
+  // CIQUAL FILTER
+  // ──────────────────────────────────────────────
+  function ciqualForPrompt(restrictions, objectif) {
+    const r   = (restrictions||'').toLowerCase();
+    const obj = (objectif||'').toLowerCase();
+    const isVegan   = r.includes('vegan');
+    const isVege    = r.includes('végétarien') || obj.includes('vegetarien') || isVegan;
+    const noLactose = r.includes('sans_lactose');
+    const noNoix    = r.includes('sans_noix');
+
+    const viande  = ['viandes crues','viandes cuites','charcuteries et alternatives végétales','poissons crus','poissons cuits','mollusques et crustacés crus','mollusques et crustacés cuits','produits à base de poissons et produits de la mer'];
+    const laitier = ['fromages et alternatives végétales','laits','produits laitiers frais et alternatives végétales','crèmes et spécialités à base de crème'];
+    const priority = ['viandes cuites','poissons cuits','oeufs','légumes','légumineuses','fruits','pâtes, riz et céréales','pains et assimilés','fromages et alternatives végétales','produits laitiers frais et alternatives végétales','fruits à coque et graines oléagineuses','ingrédients pour végétariens','huiles et graisses végétales','pommes de terre et autres tubercules','céréales de petit-déjeuner','produits à base de poissons et produits de la mer','charcuteries et alternatives végétales'];
+
+    // Filtre
+    let list = CIQUAL.filter(a => {
+      if (isVegan   && [...viande,'oeufs'].includes(a.g)) return false;
+      if (isVege    && viande.includes(a.g))              return false;
+      if (noLactose && laitier.includes(a.g))             return false;
+      if (noNoix    && a.g === 'fruits à coque et graines oléagineuses') return false;
+      return priority.includes(a.g);
+    });
+
+    // 1 seul representant par nom de base (evite les doublons cru/cuit)
+    const seen = new Set();
+    list = list.filter(a => {
+      const key = a.n.split(',')[0].split('(')[0].trim().toLowerCase().slice(0,30);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // Max 80 aliments, format ultra-compact
+    return list.slice(0, 80)
+            .map(a => a.n.slice(0,40) + '|' + a.c + '|' + a.p + '|' + a.gl + '|' + a.l)
+            .join('\n');
+  }
+
+
+  // ──────────────────────────────────────────────
+  // PROMPT BUILDER
+  // ──────────────────────────────────────────────
+  function buildPrompt(p) {
+    return `Tu es un expert en nutrition. Génère un plan alimentaire JSON strict.
+
+PROFIL :
+- Prénom: ${p.prenom} | Âge: ${p.age} ans | Sexe: ${p.sexe}
+- Poids: ${p.poids} kg | Taille: ${p.taille} cm | Activité: ${p.activite}
+- Objectifs: ${p.objectif || 'Santé générale'}
+- Restrictions: ${p.restrictions || 'Aucune'}
+- Allergies: ${p.allergies || 'Aucune'}
+- Plan: ${p.duree} jour(s), ${p.repas} repas/jour
+
+BASE CIQUAL ANSES — valeurs pour 100g — format: nom|kcal|proteines_g|glucides_g|lipides_g
+Utilise UNIQUEMENT ces aliments. Pour chaque aliment, calcule les macros selon la quantité choisie.
+${ciqualForPrompt(p.restrictions, p.objectif)}
+
+INSTRUCTIONS :
+1. Calcule le BMR (Harris-Benedict) puis ajuste : déficit -15% si perte de poids, surplus +10% si prise de masse
+2. Choisis 3 à 6 aliments CIQUAL par repas et calcule les macros selon les grammes
+3. Varie les aliments entre les jours
+4. Donne 4 conseils personnalisés selon le profil
+
+RÉPONDS UNIQUEMENT avec ce JSON brut, sans markdown :
+{
+  "bmr": 0,
+  "calories_cibles": 0,
+  "proteines_g": 0,
+  "glucides_g": 0,
+  "lipides_g": 0,
+  "jours": [
+    {
+      "jour": 1,
+      "repas": [
+        {
+          "type": "petit_dejeuner",
+          "nom": "Nom du repas",
+          "calories": 0,
+          "proteines": 0,
+          "glucides": 0,
+          "lipides": 0,
+          "fibres": 0,
+          "aliments": [
+            { "nom": "Nom exact aliment CIQUAL", "quantite_g": 0 }
+          ]
+        }
+      ]
+    }
+  ],
+  "conseils": ["conseil 1", "conseil 2", "conseil 3", "conseil 4"]
+}
+
+RÈGLES : commence par { , termine par } , aucun texte ni markdown autour.`;
+  }
+
+
+  // ──────────────────────────────────────────────
+  // PROGRESS ANIMATION
+  // ──────────────────────────────────────────────
+  let progVal = 0;
+  let progTimer = null;
+
+  function setProgress(val) {
+    progVal = val;
+    const circumference = 283;
+    const offset = circumference - (val / 100) * circumference;
+    document.getElementById('loader-prog').style.strokeDashoffset = offset;
+    document.getElementById('loader-pct').textContent = Math.round(val) + '%';
+  }
+
+  function animateProgress(from, to, duration) {
+    const start = performance.now();
+    const diff = to - from;
+    function tick(now) {
+      const elapsed = now - start;
+      const prog = Math.min(elapsed / duration, 1);
+      const eased = prog < 0.5 ? 2*prog*prog : -1+(4-2*prog)*prog;
+      setProgress(from + diff * eased);
+      if (prog < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function activateStep(n) {
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('ls-'+i);
+      if (i < n)      { el.className = 'l-step done'; }
+      else if (i === n){ el.className = 'l-step active'; }
+      else            { el.className = 'l-step'; }
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // MAIN GENERATE
+  // ──────────────────────────────────────────────
+
+  // helper appel Gemini (via proxy serveur — clé non exposée)
+  async function callGemini(prompt) {
+    const res = await fetch(`${API_BASE}/gemini.php`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ prompt }),
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e?.error || 'Erreur serveur Gemini'); }
+    const data = await res.json();
+    console.log('[Gemini debug]', data._debug);
+    if (data.error) throw new Error(data.error);
+    let text = data.text || '';
+    text = text.replace(/^```json\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('JSON introuvable dans la réponse Gemini');
+    try {
+      return JSON.parse(match[0]);
+    } catch (jsonErr) {
+      throw new Error('Réponse Gemini invalide (JSON malformé) : ' + jsonErr.message);
+    }
+  }
+
+  async function generate() {
+    // Récupère le profil depuis sessionStorage
+    const raw = sessionStorage.getItem('naha_profil');
+    if (!raw) {
+      // Profil de démo si pas de session
+      profil = {
+        prenom: localStorage.getItem('naha_prenom') || 'Utilisateur',
+        age: '28', sexe: 'homme', poids: '75', taille: '178',
+        activite: 'modere', objectif: 'sante', restrictions: '',
+        allergies: '', duree: '3', repas: '3',
+      };
+    } else {
+      try {
+        profil = JSON.parse(raw);
+      } catch {
+        showError('⚠ Profil invalide. Veuillez recommencer l\'onboarding.');
+        setTimeout(() => window.location.href = 'onboarding.html', 2000);
+        return;
+      }
+    }
+
+    // Step 1
+    activateStep(1); animateProgress(0, 15, 800);
+    await sleep(800);
+
+    // Step 2 — chargement CIQUAL depuis la BD
+    activateStep(2); animateProgress(15, 35, 600);
+    try {
+      const ciqualRes = await fetch(`${API_BASE}/ciqual.php`);
+      const ciqualData = await ciqualRes.json();
+      CIQUAL = Array.isArray(ciqualData) ? ciqualData : [];
+    } catch (e) {
+      CIQUAL = [];
+    }
+    await sleep(600);
+
+    // Step 3
+    activateStep(3); animateProgress(35, 55, 500);
+    await sleep(500);
+
+    // Step 4 — appel Gemini
+    activateStep(4); animateProgress(55, 85, 8000);
+
+    try {
+      const duree = parseInt(profil.duree) || 3;
+      const CHUNK = 3; // max 3 jours par appel pour eviter la troncature
+      let allJours = [];
+      let planMeta = null;
+      let chunkCount = Math.ceil(duree / CHUNK);
+
+      for (let i = 0; i < duree; i += CHUNK) {
+        const chunkDuree = Math.min(CHUNK, duree - i);
+        const chunkProfil = { ...profil, duree: chunkDuree };
+        const result = await callGemini(buildPrompt(chunkProfil));
+
+        if (i === 0) planMeta = result;
+
+        // Renumeroter les jours
+        result.jours.forEach(j => { j.jour = j.jour + i; });
+        allJours = allJours.concat(result.jours);
+
+        const progDone = 55 + ((i/CHUNK + 1) / chunkCount) * 28;
+        animateProgress(progDone - 5, progDone, 1000);
+      }
+
+      currentPlan = { ...planMeta, jours: allJours };
+
+      // Step 5
+      activateStep(5); animateProgress(85, 100, 600);
+      await sleep(700);
+
+      renderResult(currentPlan);
+
+    } catch(e) {
+      console.error(e);
+      showError('⚠ ' + (e.message || 'Erreur inconnue'));
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // RENDER
+  // ──────────────────────────────────────────────
+  function renderResult(plan) {
+    document.getElementById('screen-loader').style.display = 'none';
+
+    // Prédiction sommeil ML
+    const sleepHours = parseFloat(sessionStorage.getItem('naha_sleep_prediction'));
+    if (sleepHours) {
+      document.getElementById('sleep-hours-val').textContent = sleepHours;
+      const hint = sleepHours < 6   ? 'En dessous des recommandations — pensez à réduire le stress et l\'écran le soir.'
+                 : sleepHours < 7   ? 'Légèrement insuffisant — visez 7h+ pour une récupération optimale.'
+                 : sleepHours <= 9  ? 'Idéal ! Votre profil indique une bonne qualité de sommeil.'
+                 :                    'Temps élevé — peut indiquer un besoin de récupération accru.';
+      document.getElementById('sleep-hint').textContent = hint;
+      document.getElementById('sleep-card').style.display = 'flex';
+    }
+
+    // Sub
+    document.getElementById('result-sub').textContent =
+            `Plan ${plan.jours.length} jour(s) · ${profil.repas} repas/jour · Généré par Gemini AI`;
+
+    // Macros
+    const mg = document.getElementById('macros-grid');
+    mg.innerHTML = [
+      { lbl:'Calories / jour', val: plan.calories_cibles, unit:'kcal', color:'#9ecf7a' },
+      { lbl:'Protéines',       val: plan.proteines_g,     unit:'g',    color:'#4ade80' },
+      { lbl:'Glucides',        val: plan.glucides_g,      unit:'g',    color:'#facc15' },
+      { lbl:'Lipides',         val: plan.lipides_g,       unit:'g',    color:'#f97316' },
+    ].map(m => `
+    <div class="macro-card">
+      <span class="macro-val" style="color:${m.color}">${m.val}</span>
+      <span class="macro-unit">${m.unit}</span>
+      <span class="macro-lbl">${m.lbl}</span>
+    </div>
+  `).join('');
+
+    // BMR info
+    document.getElementById('bmr-info').innerHTML = `
+    <strong>BMR calculé :</strong> ${plan.bmr} kcal/jour<br>
+    <strong>Objectif calorique :</strong> ${plan.calories_cibles} kcal/jour<br>
+    <strong>Protéines :</strong> ${plan.proteines_g}g · <strong>Glucides :</strong> ${plan.glucides_g}g · <strong>Lipides :</strong> ${plan.lipides_g}g<br>
+    <strong>Profil :</strong> ${profil.prenom}, ${profil.age} ans, ${profil.poids}kg, ${profil.taille}cm
+  `;
+
+    // Pie
+    renderPie(plan.proteines_g, plan.glucides_g, plan.lipides_g);
+
+    // Tabs
+    const tabsHeader = document.getElementById('day-tabs');
+    tabsHeader.innerHTML = plan.jours.map(j => `
+    <button class="day-tab ${j.jour === 1 ? 'active' : ''}"
+      onclick="switchDay(${j.jour}, this)">Jour ${j.jour}</button>
+  `).join('');
+
+    activeJour = 1;
+    renderMeals(plan, 1);
+
+    // Conseils
+    document.getElementById('conseils-body').innerHTML =
+            plan.conseils.map(c => `<div class="conseil">${c}</div>`).join('');
+
+    document.getElementById('screen-result').classList.add('show');
+  }
+
+  function switchDay(jour, btn) {
+    document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    activeJour = jour;
+    renderMeals(currentPlan, jour);
+  }
+
+  function renderMeals(plan, jour) {
+    const jourData = plan.jours.find(j => j.jour === jour);
+    if (!jourData) return;
+    document.getElementById('meals-body').innerHTML = jourData.repas.map(r => `
+    <div class="meal-card">
+      <div class="meal-head">
+        <div>
+          <span class="meal-type-badge">${r.type.replace(/_/g,' ')}</span>
+          <div class="meal-name">${r.nom}</div>
+        </div>
+        <span class="meal-kcal">${r.calories} kcal</span>
+      </div>
+      <div class="meal-macros">P: ${r.proteines}g · G: ${r.glucides}g · L: ${r.lipides}g · F: ${r.fibres}g</div>
+      <div class="meal-aliments">
+        ${r.aliments.map(a =>
+            `<span class="aliment-tag">${a.nom} <span class="qty">${a.quantite_g}g</span></span>`
+    ).join('')}
+      </div>
+    </div>
+  `).join('');
+  }
+
+  // ──────────────────────────────────────────────
+  // PIE CHART
+  // ──────────────────────────────────────────────
+  function renderPie(prot, gluc, lip) {
+    const total = prot*4 + gluc*4 + lip*9;
+    if (!total) return;
+    const slices = [
+      { pct: prot*4/total, color:'#4ade80', label:'Protéines' },
+      { pct: gluc*4/total, color:'#facc15', label:'Glucides' },
+      { pct: lip*9/total,  color:'#f97316', label:'Lipides' },
+    ];
+    let cumul = 0, paths = '';
+    const cx = 55, cy = 55, r = 42;
+    slices.forEach(({ pct, color }) => {
+      if (pct <= 0) return;
+      const s = cumul * 2 * Math.PI - Math.PI/2;
+      cumul += pct;
+      const e = cumul * 2 * Math.PI - Math.PI/2;
+      const x1 = cx+r*Math.cos(s), y1 = cy+r*Math.sin(s);
+      const x2 = cx+r*Math.cos(e), y2 = cy+r*Math.sin(e);
+      paths += `<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${pct>0.5?1:0},1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${color}" opacity="0.85"/>`;
+    });
+    document.getElementById('pie-svg').innerHTML = paths;
+    document.getElementById('pie-legend').innerHTML = slices.map(s =>
+            `<div class="pie-leg-item"><div class="pie-leg-dot" style="background:${s.color}"></div>${s.label} ${Math.round(s.pct*100)}%</div>`
+    ).join('');
+  }
+
+  // ──────────────────────────────────────────────
+  // SAVE
+  // ──────────────────────────────────────────────
+  async function savePlan() {
+    if (!currentPlan) return;
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.textContent = 'Sauvegarde…';
+
+    // Récupère user_id depuis toutes les sources possibles
+    const uid = USER_ID
+            || params.get('user_id')
+            || sessionStorage.getItem('naha_user_id')
+            || localStorage.getItem('naha_user_id');
+
+    if (!uid) {
+      showToast('✗ Non connecté — redirige vers login', 'error');
+      setTimeout(() => window.location.href = 'login.html', 1500);
+      btn.disabled = false;
+      btn.textContent = '↓ Sauvegarder';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/save_plan.php`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          profil,
+          plan: currentPlan,
+          temps_sommeil: parseFloat(sessionStorage.getItem('naha_sleep_prediction')) || null,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      showToast('✓ Plan sauvegardé avec succès !', 'success');
+      btn.textContent = '✓ Sauvegardé';
+
+      setTimeout(() => {
+        window.location.href = `dashboard.html`;
+      }, 1800);
+
+    } catch(e) {
+      showToast('✗ Erreur : ' + e.message);
+      btn.disabled = false;
+      btn.textContent = '↓ Sauvegarder';
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // REGENERATE
+  // ──────────────────────────────────────────────
+  function regenerate() {
+    currentPlan = null;
+    document.getElementById('screen-result').classList.remove('show');
+    document.getElementById('screen-loader').style.display = 'flex';
+    setProgress(0);
+    activateStep(1);
+    generate();
+  }
+
+  // ──────────────────────────────────────────────
+  // HELPERS
+  // ──────────────────────────────────────────────
+  function showError(msg) {
+    document.getElementById('screen-loader').style.display = 'none';
+    const box = document.getElementById('error-box');
+    box.textContent = msg;
+    box.classList.add('show');
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' '+type : '');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ── AUTH GUARD ──
+  if (!getToken()) {
+    localStorage.setItem('naha_redirect', window.location.href);
+    window.location.href = 'login.html';
+  } else {
+    generate();
+  }
