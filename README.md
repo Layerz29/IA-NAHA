@@ -77,7 +77,8 @@ IA-NAHA/
 │   │   └── ml_server.py                # Flask server (port 5050) - ML model
          
 │   │
-│   ├── assets/css/                     # Stylesheets
+│   ├── assets/css                      # Stylesheets
+│   ├── assets/js                       # Scripts JS
 │   ├── index.html                      # Landing page
 │   ├── login.html                      # Login / Registration
 │   ├── onboarding.html                 # User profile form
