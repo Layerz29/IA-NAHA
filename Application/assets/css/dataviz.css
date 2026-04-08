@@ -1,0 +1,51 @@
+.dv-hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0f2b1b 100%);
+      border-radius: var(--radius-lg); padding: 2.4rem 2.8rem;
+      margin-bottom: 2.5rem; position: relative; overflow: hidden;
+    }
+    .dv-hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--green), #f59e0b);
+    }
+    .dv-hero-badge { font-size:.68rem; font-weight:700; color:#818cf8; text-transform:uppercase; letter-spacing:2.5px; margin-bottom:.7rem; }
+    .dv-hero-title { font-size:2rem; font-weight:800; color:#fff; line-height:1.15; margin-bottom:.6rem; letter-spacing:-.5px; }
+    .dv-hero-title em { font-style:normal; color:#6ee7b7; }
+    .dv-hero-sub { font-size:.88rem; color:#94a3b8; max-width:680px; line-height:1.7; }
+    .dv-hero-kpis { display:flex; gap:2.5rem; margin-top:2rem; flex-wrap:wrap; }
+    .dv-kpi-val { font-size:2.2rem; font-weight:800; color:#fff; line-height:1; letter-spacing:-1px; }
+    .dv-kpi-val span { font-size:1rem; font-weight:600; color:#94a3b8; margin-left:2px; }
+    .dv-kpi-lbl { font-size:.7rem; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:1.5px; margin-top:.3rem; }
+
+    .dv-section { margin-bottom:3rem; }
+    .dv-section-head { display:flex; align-items:baseline; gap:.9rem; margin-bottom:1.5rem; }
+    .dv-section-num { font-size:.65rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:2px; border:1px solid var(--primary-bd); border-radius:6px; padding:2px 8px; background:var(--primary-lt); }
+    .dv-section-title { font-size:1.1rem; font-weight:800; color:var(--ink); }
+    .dv-section-sub { font-size:.8rem; color:var(--muted); margin-top:.15rem; }
+
+    .charts-2  { display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; }
+    .charts-3  { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.4rem; }
+    .charts-1-2{ display:grid; grid-template-columns:1fr 2fr; gap:1.4rem; }
+    .charts-2-1{ display:grid; grid-template-columns:2fr 1fr; gap:1.4rem; }
+    @media(max-width:900px){.charts-2,.charts-3,.charts-1-2,.charts-2-1{grid-template-columns:1fr;}}
+
+    .dv-card { background:#fff; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.6rem 1.8rem; box-shadow:var(--shadow-sm); }
+    .dv-card-title { font-size:.9rem; font-weight:800; color:var(--ink); margin-bottom:.5rem; }
+    .dv-card-sub { font-size:.75rem; color:var(--muted); margin-bottom:1.2rem; line-height:1.6; }
+    .dv-card canvas { max-height:260px; }
+    .dv-card.tall canvas { max-height:300px; }
+
+    .ml-metrics { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.4rem; }
+    .ml-metric { flex:1; min-width:120px; background:var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:1.2rem 1rem; text-align:center; }
+    .ml-metric-val { font-size:1.8rem; font-weight:800; color:var(--primary); letter-spacing:-1px; }
+    .ml-metric-lbl { font-size:.65rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:.4rem; }
+
+    .src-badge { display:inline-flex; align-items:center; gap:5px; font-size:.63rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-top:1rem; }
+    .src-dot { width:6px; height:6px; border-radius:50%; background:var(--green); flex-shrink:0; }
+
+    .insights-row { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+    .insight { flex:1; min-width:180px; background:var(--primary-lt); border:1px solid var(--primary-bd); border-radius:12px; padding:.9rem 1rem; }
+    .insight-icon { font-size:1.3rem; margin-bottom:.4rem; display:block; }
+    .insight-text { font-size:.78rem; color:var(--ink2); line-height:1.5; font-weight:600; }
+
+    .r-highlight { display:inline-block; font-size:.7rem; font-weight:800; background:#fee2e2; color:#dc2626; border-radius:6px; padding:2px 8px; margin-left:.5rem; }
+    .github-notice { background: var(--bg-soft); border-left: 4px solid var(--primary); padding: 1.2rem; border-radius: 8px; font-size: 0.85rem; color: var(--ink); margin-bottom: 2rem; line-height: 1.6;}
